@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FarmFresh — Driver</title>
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+<header class="bg-green-500 text-white p-4 text-lg font-bold">FarmFresh — Driver</header>
+
+<main class="p-4 max-w-xl mx-auto">
+  <div class="bg-white p-4 rounded-lg shadow mb-4">
+    <label class="block mb-2">Tracking Code / Delivery ID</label>
+    <input id="deliveryId" class="border p-2 w-full rounded mb-2" placeholder="e.g., D12345" />
+    <button id="startBtn" class="bg-green-500 text-white px-4 py-2 rounded">Start Sending</button>
+    <button id="stopBtn" class="bg-red-500 text-white px-4 py-2 rounded ml-2" disabled>Stop</button>
+    <p class="mt-2 text-sm text-gray-600" id="status">Idle</p>
+  </div>
+
+  <div class="bg-white p-4 rounded-lg shadow">
+    <p>Lat: <span id="lat">—</span>, Lng: <span id="lng">—</span></p>
+    <p>Speed: <span id="speed">—</span> m/s, Heading: <span id="heading">—</span>°</p>
+    <p>Last sent: <span id="lastSent">—</span></p>
+  </div>
+</main>
+
+<script>
+const socket = io("http://localhost:5000"); // backend server
+let watchId = null;
+let currentDeliveryId = null;
+
+const statusEl = document.getElementById('status');
+const latEl = document.getElementById('lat');
+const lngEl = document.getElementById('lng');
+const speedEl = document.getElementById('speed');
+const headingEl = document.getElementById('heading');
+const lastSentEl = document.getElementById('lastSent');
+
+document.getElementById('startBtn').addEventListener('click', () => {
+  const deliveryId = document.getElementById('deliveryId').value.trim();
+  if (!deliveryId) { alert('Enter a tracking code'); return; }
+  currentDeliveryId = deliveryId;
+
+  if (!navigator.geolocation) { alert('Geolocation not supported'); return; }
+
+  watchId = navigator.geolocation.watchPosition((pos) => {
+    const { latitude, longitude, speed, heading } = pos.coords;
+    const payload = { deliveryId: currentDeliveryId, lat: latitude, lng: longitude, speed, heading, ts: Date.now() };
+    socket.emit('driver:location', payload);
+
+    latEl.textContent = latitude.toFixed(6);
+    lngEl.textContent = longitude.toFixed(6);
+    speedEl.textContent = (speed ?? 0).toFixed(2);
+    headingEl.textContent = heading ?? '—';
+    lastSentEl.textContent = new Date().toLocaleTimeString();
+    statusEl.textContent = `Sending for ${currentDeliveryId}`;
+  }, (err) => { alert(err.message); }, { enableHighAccuracy: true });
+
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('stopBtn').disabled = false;
+});
+
+document.getElementById('stopBtn').addEventListener('click', () => {
+  if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+  watchId = null;
+  statusEl.textContent = 'Stopped';
+  document.getElementById('startBtn').disabled = false;
+  document.getElementById('stopBtn').disabled = true;
+});
+</script>
+</body>
+</html>

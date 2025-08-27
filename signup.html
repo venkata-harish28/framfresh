@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Farm Fresh - Signup</title>
+  <style>
+    body {
+      text-align: center;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-image: url("https://www.shutterstock.com/image-photo/fresh-vegetables-fruits-on-white-260nw-1722298993.jpg");
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    div {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      width: 350px;
+    }
+    h1 { margin-bottom: 10px; color: #2e7d32; }
+    label { display:block; text-align:left; margin:10px 0 5px; font-weight:bold; }
+    input, button {
+      width:100%;
+      padding:10px;
+      border-radius:10px;
+      border:1px solid #ccc;
+      margin-bottom:15px;
+      font-size:16px;
+    }
+    button { background-color:#4CAF50; color:white; cursor:pointer; border:none; }
+    button:hover { background-color:#388e3c; }
+    a { display:block; margin-top:10px; font-size:14px; color:#2e7d32; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+  </style>
+</head>
+<body>
+  <div>
+    <form id="signupForm">
+      <h1>Farm Fresh</h1>
+      <hr />
+      <h2>Sign Up</h2>
+
+      <label for="name">Name:</label>
+      <input type="text" id="name" placeholder="Enter your Name" required />
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" placeholder="Enter your Email" required />
+
+      <label for="phone">Phone Number:</label>
+      <input type="text" id="phone" placeholder="Enter your Phone Number" required />
+
+      <label for="address">Address (Optional):</label>
+      <input type="text" id="address" placeholder="Enter your Address" />
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" placeholder="Enter your Password" required />
+
+      <button type="submit">Sign Up</button>
+      <a href="login.html">Already have an account? Login</a>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("signupForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const address = document.getElementById("address").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!name || !email || !phone || !password) {
+        alert("⚠️ Please fill all required fields.");
+        return;
+      }
+
+      const user = { name, email, phone, address, password };
+
+      // Save to localStorage
+      localStorage.setItem("userProfile", JSON.stringify(user));
+
+      try {
+        const res = await fetch("http://localhost:5000/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(user)
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          alert("✅ Signup successful! Profile saved.");
+          window.location.href = "webpage.html"; // redirect to profile page
+        } else {
+          alert("❌ " + data.message);
+        }
+      } catch (err) {
+        alert("❌ Error: " + err.message);
+      }
+    });
+  </script>
+</body>
+</html>

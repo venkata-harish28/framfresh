@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sell Your Vegetables</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-green-100 via-green-200 to-green-300">
+  <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
+    <h1 class="text-2xl font-bold text-center text-green-700 mb-6">
+      Sell Your Vegetables Online
+    </h1>
+    
+    <form id="productForm" class="space-y-4">
+      
+      <div>
+        <label for="vegetableName" class="block text-sm font-medium text-gray-700">Vegetable Name</label>
+        <input type="text" id="vegetableName" name="vegetableName" required
+               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-400">
+      </div>
+
+      <div>
+        <label for="price" class="block text-sm font-medium text-gray-700">Price (per unit)</label>
+        <input type="number" id="price" name="price" required
+               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-400">
+      </div>
+
+      <div>
+        <label for="quantity" class="block text-sm font-medium text-gray-700">Available Quantity</label>
+        <div class="flex gap-2">
+          <input type="number" id="quantity" name="quantity" required
+                 class="w-1/2 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-400">
+          <select id="unit" name="unit" required
+                  class="w-1/2 border border-gray-300 rounded-lg p-2 bg-white focus:outline-none focus:ring-2 focus:ring-green-400">
+            <option value="kg">KG</option>
+            <option value="litre">Litres</option>
+            <option value="dozen">Dozen</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+        <select id="category" name="category" required
+                class="mt-1 w-full border border-gray-300 rounded-lg p-2 bg-white focus:outline-none focus:ring-2 focus:ring-green-400">
+          <option value="">Select a category</option>
+          <option value="leafy">Leafy Green</option>
+          <option value="root">Root Vegetable</option>
+          <option value="gourd">Gourd & Fruit</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+        <textarea id="description" name="description" rows="3"
+                  class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+                  placeholder="Add a short description (optional)"></textarea>
+      </div>
+
+      <div>
+        <label for="image" class="block text-sm font-medium text-gray-700">Upload Vegetable Photo</label>
+        <input type="file" id="image" name="image" accept="image/*" required
+               class="mt-1 w-full text-gray-700">
+      </div>
+
+      <div>
+        <label for="farmerContact" class="block text-sm font-medium text-gray-700">Your Contact (Email or Phone)</label>
+        <input type="text" id="farmerContact" name="farmerContact" required
+               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+               placeholder="Email or Phone">
+      </div>
+
+      <div class="pt-4">
+        <button type="submit"
+                class="w-full bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">
+          Submit Product
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("productForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("vegetableName").value;
+      const price = document.getElementById("price").value;
+      const unit = document.getElementById("unit").value;
+      const quantity = document.getElementById("quantity").value;
+      const category = document.getElementById("category").value;
+      const description = document.getElementById("description").value;
+      const contact = document.getElementById("farmerContact").value;
+      const imageInput = document.getElementById("image");
+
+      if (imageInput.files.length === 0) {
+        alert("Please upload an image");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const imageData = event.target.result;
+
+        const product = { name, price, unit, quantity, category, description, image: imageData, contact };
+
+        let pendingProducts = JSON.parse(localStorage.getItem("pendingProducts")) || [];
+        pendingProducts.push(product);
+        localStorage.setItem("pendingProducts", JSON.stringify(pendingProducts));
+
+        alert("✅ Product submitted successfully! Admin will review it.");
+        window.location.href = "index.html";
+      };
+
+      reader.readAsDataURL(imageInput.files[0]);
+    });
+  </script>
+</body>
+</html>

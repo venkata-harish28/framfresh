@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Honey Product</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body class="bg-gray-100">
+
+  <div class="p-6">
+    <h1 class="text-2xl font-bold mb-4">Honey Products</h1>
+
+    <!-- Grid container -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+
+      <!-- Honey Product Card -->
+      <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
+        <div class="relative">
+          <img src="https://www.news-medical.net/images/news/ImageForNews_753423_16891547829825380.jpg"
+               alt="Honey" class="w-full h-48 object-cover" />
+          <span class="absolute top-4 right-4 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Natural</span>
+        </div>
+        <div class="p-4">
+          <div class="flex justify-between items-start mb-2">
+            <h3 class="font-bold text-lg">Pure Honey</h3>
+            <span class="font-bold text-green-600">&#8377;250/500g</span>
+          </div>
+          <p class="text-gray-600 text-sm mb-4">Pure, organic honey packed with antioxidants and natural sweetness.</p>
+          <div class="flex justify-between items-center">
+            <div class="flex items-center text-yellow-400">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+              <i class="far fa-star"></i>
+              <span class="text-gray-600 text-sm ml-1">(34)</span>
+            </div>
+            <button
+              class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add
+              <i class="fas fa-plus ml-1"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification (hidden by default) -->
+  <div id="toast"
+       class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg opacity-0 transition-all duration-500">
+    <span id="toastMessage"></span>
+  </div>
+
+  <script>
+    const sellButton = document.getElementById('sellBtn');
+
+            sellButton.addEventListener('click', function () {
+                alert("Sign-in for selling");
+                window.location.href = "signup.html";
+            });
+            //browse the products
+            const browseButton = document.getElementById('product-browser');
+
+            browseButton.addEventListener('click', function () {
+                alert("Sign-in for Buying");
+                window.location.href = "signup.html";
+            });
+
+    // Show toast message
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toastMessage');
+      toastMessage.textContent = message;
+
+      toast.classList.remove('opacity-0', '-translate-y-10');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      // Hide after 2 seconds
+      setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', '-translate-y-10');
+      }, 2000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const addButtons = document.querySelectorAll('.product-card button');
+
+      addButtons.forEach(button => {
+        button.addEventListener('click', function () {
+          const card = this.closest('.product-card');
+          const name = card.querySelector('h3').textContent.trim();
+
+          const priceText = card.querySelector('span.font-bold.text-green-600').textContent.trim();
+          const priceMatch = priceText.match(/₹(\d+)/);
+          const price = priceMatch ? parseInt(priceMatch[1]) : 0;
+
+          const image = card.querySelector('img').src;
+
+          let cart = JSON.parse(localStorage.getItem('cart')) || [];
+          let existingItem = cart.find(item => item.name === name);
+
+          if (existingItem) {
+            existingItem.quantity += 1;
+          } else {
+            cart.push({ name, price, quantity: 1, image });
+          }
+
+          localStorage.setItem('cart', JSON.stringify(cart));
+
+          // Show toast instead of alert
+          showToast(`${name} added to cart!`);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

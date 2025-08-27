@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Farm Fresh - Login</title>
+  <style>
+    body { 
+      text-align: center; margin:0; font-family: Arial, sans-serif; 
+      background-image: url("https://www.shutterstock.com/image-photo/fresh-vegetables-fruits-on-white-260nw-1722298993.jpg");
+      background-size: cover; background-position: center; height:100vh;
+      display:flex; align-items:center; justify-content:center;
+    }
+    div { 
+      background-color: rgba(255,255,255,0.9); padding:40px; border-radius:15px; 
+      box-shadow:0 8px 16px rgba(0,0,0,0.3); width:350px;
+    }
+    h1 { margin-bottom:10px; color:#2e7d32; }
+    label { display:block; text-align:left; margin:10px 0 5px; font-weight:bold; }
+    input, button { width:100%; padding:10px; border-radius:10px; border:1px solid #ccc; margin-bottom:15px; font-size:16px;}
+    button { background-color:#4CAF50; color:white; border:none; cursor:pointer;}
+    button:hover { background-color:#388e3c; }
+    .link { display:block; font-size:14px; color:#2e7d32; text-decoration:none; margin-top:10px; }
+    .link:hover { text-decoration:underline; }
+  </style>
+</head>
+<body>
+  <div>
+    <form id="loginForm">
+      <h1>Farm Fresh</h1>
+      <hr>
+      <h1>Login</h1>
+      <label for="email">E-mail:</label>
+      <input type="email" id="email" placeholder="Enter your Email" required />
+      <label for="password">Password:</label>
+      <input type="password" id="password" placeholder="Enter your Password" required />
+      <button type="submit">Login</button>
+      <a href="forgot-password.html" class="link">Forgot Password?</a>
+      <a href="signup.html" class="link">Don’t have an account? Sign Up</a>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!email || !password) {
+        alert("⚠️ Please enter both email and password.");
+        return;
+      }
+
+      try {
+        const res = await fetch("http://localhost:5000/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          alert("✅ Login successful!");
+          // Save token + user info in localStorage
+          localStorage.setItem("farmfresh_current_user", JSON.stringify({
+            token: data.token,
+            email: data.user.email,
+            name: data.user.name,
+            phone: data.user.phone,
+            address: data.user.address
+          }));
+          window.location.href = "webpage.html";
+        } else {
+          alert("❌ " + data.message);
+        }
+      } catch (err) {
+        alert("❌ Error: " + err.message);
+      }
+    });
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const res = await fetch("http://localhost:5000/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+
+  const data = await res.json();
+
+  if (data.success) {
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+  } else {
+    alert("Invalid email or password");
+  }
+});
+
+  </script>
+</body>
+</html>

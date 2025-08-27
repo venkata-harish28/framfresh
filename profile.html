@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profile - FarmFresh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body class="bg-gray-100 font-sans">
+<div class="flex h-screen">
+  <!-- Left Sidebar -->
+  <div class="w-1/4 bg-white shadow-lg p-6 flex flex-col">
+    <!-- Profile Header -->
+    <div class="text-center mb-6">
+      <img id="profilePic" src="https://via.placeholder.com/100" class="w-24 h-24 mx-auto rounded-full border-4 border-blue-500" alt="Profile" />
+      <h2 id="profileName" class="text-2xl font-bold mt-2">Guest</h2>
+      <p id="profileEmail" class="text-gray-500">No email</p>
+      <p id="profilePhone" class="text-gray-500">📞 Not provided</p>
+      <p id="profileAddress" class="text-gray-500">🏠 Address not provided</p>
+    </div>
+
+    <!-- Logout -->
+    <button id="logoutBtn" class="flex items-center space-x-2 bg-red-500 text-white px-4 py-2 rounded-full shadow hover:bg-red-600 transition mb-6 justify-center">
+      <i class="fa-solid fa-right-from-bracket"></i>
+      <span>Logout</span>
+    </button>
+
+    <!-- Menu Options -->
+    <div class="space-y-3 mt-2 flex-1">
+      <button class="option-btn flex items-center space-x-3 p-3 rounded-xl w-full text-left hover:bg-indigo-100 transition" data-content="address">
+        <i class="fa-solid fa-location-dot text-indigo-500 text-xl"></i>
+        <span>Address</span>
+      </button>
+      <button class="option-btn flex items-center space-x-3 p-3 rounded-xl w-full text-left hover:bg-gray-200 transition" data-content="editProfile">
+        <i class="fa-solid fa-pen-to-square text-gray-600 text-xl"></i>
+        <span>Edit Profile</span>
+      </button>
+      <button class="option-btn flex items-center space-x-3 p-3 rounded-xl w-full text-left hover:bg-green-100 transition" data-content="history">
+        <i class="fa-solid fa-clock-rotate-left text-green-500 text-xl"></i>
+        <span>History</span>
+      </button>
+      <button class="option-btn flex items-center space-x-3 p-3 rounded-xl w-full text-left hover:bg-yellow-100 transition" data-content="help">
+        <i class="fa-solid fa-circle-info text-yellow-500 text-xl"></i>
+        <span>Help</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Right Content Area -->
+  <div class="flex-1 p-8 bg-gray-50 overflow-auto">
+    <div id="contentArea" class="h-full flex items-center justify-center">
+      <div class="bg-gradient-to-r from-green-400 to-blue-500 shadow-2xl rounded-3xl p-12 w-3/4 text-center text-white transform hover:scale-105 transition">
+        <h1 class="text-4xl font-bold mb-4">Welcome to FarmFresh!</h1>
+        <p class="text-lg">Your one-stop solution for fresh groceries delivered to your doorstep.</p>
+        <i class="fa-solid fa-leaf text-6xl mt-6"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* -------------------- Utilities -------------------- */
+function safeParse(json, fallback) { try { return JSON.parse(json); } catch { return fallback; } }
+function getUser() {
+  const user = safeParse(localStorage.getItem("userProfile"), {});
+  if (!Array.isArray(user.addresses)) {
+    user.addresses = [];
+    if (user.address) user.addresses.push(user.address);
+  }
+  return user;
+}
+function saveUser(user) { localStorage.setItem("userProfile", JSON.stringify(user)); }
+function setAvatarFromName(name) {
+  const url = `https://ui-avatars.com/api/?name=${encodeURIComponent(name||"G")}&background=random&color=fff&bold=true`;
+  const img = document.getElementById("profilePic"); if(img) img.src=url;
+}
+
+/* -------------------- Initial Load -------------------- */
+document.addEventListener("DOMContentLoaded", () => {
+  const user = getUser();
+  if (!user.name && !user.email) { alert("No profile found! Please signup."); window.location.href="signup.html"; return; }
+
+  document.getElementById("profileName").textContent = user.name||"Guest";
+  document.getElementById("profileEmail").textContent = user.email||"No email";
+  document.getElementById("profilePhone").textContent = user.phone||"📞 Not provided";
+  document.getElementById("profileAddress").textContent = user.address||"🏠 Address not provided";
+  setAvatarFromName(user.name);
+
+  document.querySelectorAll(".option-btn").forEach(btn=>{
+    btn.addEventListener("click",()=>{ renderTab(btn.getAttribute("data-content")); });
+  });
+});
+
+/* -------------------- Logout -------------------- */
+document.getElementById("logoutBtn").addEventListener("click",()=>{
+  localStorage.removeItem("userProfile");
+  localStorage.removeItem("token");
+  window.location.href="web.html";
+});
+
+/* -------------------- Tabs -------------------- */
+const contentArea = document.getElementById("contentArea");
+function renderTab(key){
+  if(key==="address") renderAddressTab();
+  else if(key==="editProfile") renderEditProfileTab();
+  else if(key==="history") renderHistoryTab();
+  else if(key==="help") renderHelpTab();
+  else contentArea.innerHTML="<p>No content available</p>";
+}
+
+/* ---------- Address Tab ---------- */
+function renderAddressTab(){
+  const user=getUser();
+  const addresses=user.addresses||[];
+  contentArea.innerHTML=`
+    <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-2xl">
+      <h2 class="text-3xl font-bold mb-6">Address</h2>
+      <div class="mb-6">
+        <h3 class="font-semibold mb-2">Saved Addresses</h3>
+        ${addresses.length?`<ul id="addressList" class="space-y-2">
+          ${addresses.map((addr,i)=>`
+            <li class="flex items-start justify-between p-3 border rounded-lg">
+              <div>
+                <p class="font-medium">${addr}</p>
+                ${user.address===addr?`<span class="text-green-600 text-sm">Current</span>`:`<span class="text-gray-400 text-sm">Saved</span>`}
+              </div>
+              ${user.address===addr?"":`<button class="make-current px-3 py-1 text-sm bg-blue-500 text-white rounded" data-index="${i}">Make Current</button>`}
+            </li>`).join("")}
+        </ul>`:`<p class="text-gray-500">No addresses saved yet.</p>`}
+      </div>
+      <div class="mt-4">
+        <h3 class="font-semibold mb-2">Add New Address</h3>
+        <textarea id="newAddress" class="w-full border rounded-lg p-3 mb-3" placeholder="Type full address"></textarea>
+        <button id="addAddressBtn" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Add New Address</button>
+      </div>
+    </div>
+  `;
+  document.getElementById("addAddressBtn").addEventListener("click",()=>{
+    const val=(document.getElementById("newAddress").value||"").trim();
+    if(!val) return alert("Please enter an address.");
+    const u=getUser(); u.addresses.push(val); u.address=val; saveUser(u);
+    document.getElementById("profileAddress").textContent=u.address;
+    alert("Address added and set as current."); renderAddressTab();
+  });
+  document.querySelectorAll(".make-current").forEach(btn=>{
+    btn.addEventListener("click",e=>{
+      const idx=Number(e.currentTarget.getAttribute("data-index")); const u=getUser();
+      u.address=u.addresses[idx]; saveUser(u); document.getElementById("profileAddress").textContent=u.address; renderAddressTab();
+    });
+  });
+}
+
+/* ---------- Edit Profile Tab ---------- */
+function renderEditProfileTab(){
+  const user=getUser();
+  contentArea.innerHTML=`
+    <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-2xl">
+      <h2 class="text-3xl font-bold mb-4">Edit Profile</h2>
+      <form id="editProfileForm" class="space-y-4">
+        <input type="text" id="editName" class="w-full p-2 border rounded" placeholder="Name" value="${user.name||""}" disabled />
+        <input type="email" id="editEmail" class="w-full p-2 border rounded" placeholder="Email" value="${user.email||""}" disabled />
+        <input type="text" id="editPhone" class="w-full p-2 border rounded" placeholder="Phone" value="${user.phone||""}" disabled />
+        <input type="text" id="editAddress" class="w-full p-2 border rounded" placeholder="Address" value="${user.address||""}" disabled />
+        <div class="flex gap-2">
+          <button type="button" id="enableEdit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Edit</button>
+          <button type="submit" id="saveEdit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" disabled>Save</button>
+        </div>
+      </form>
+    </div>
+  `;
+  const form=document.getElementById("editProfileForm");
+  const nameInput=document.getElementById("editName");
+  const emailInput=document.getElementById("editEmail");
+  const phoneInput=document.getElementById("editPhone");
+  const addressInput=document.getElementById("editAddress");
+  const enableBtn=document.getElementById("enableEdit");
+  const saveBtn=document.getElementById("saveEdit");
+
+  enableBtn.addEventListener("click",()=>{ [nameInput,emailInput,phoneInput,addressInput].forEach(el=>el.disabled=false); saveBtn.disabled=false; });
+  form.addEventListener("submit",(e)=>{
+    e.preventDefault();
+    const u=getUser();
+    u.name=nameInput.value.trim(); u.email=emailInput.value.trim();
+    u.phone=phoneInput.value.trim(); u.address=addressInput.value.trim();
+    if(!Array.isArray(u.addresses)) u.addresses=[];
+    if(u.address&&!u.addresses.includes(u.address)) u.addresses.push(u.address);
+    saveUser(u);
+    document.getElementById("profileName").textContent=u.name||"Guest";
+    document.getElementById("profileEmail").textContent=u.email||"No email";
+    document.getElementById("profilePhone").textContent=u.phone||"📞 Not provided";
+    document.getElementById("profileAddress").textContent=u.address||"🏠 Address not provided";
+    setAvatarFromName(u.name);
+    alert("Profile updated!");
+    [nameInput,emailInput,phoneInput,addressInput].forEach(el=>el.disabled=true); saveBtn.disabled=true;
+  });
+}
+
+/* ---------- History Tab (MongoDB) ---------- */
+async function renderHistoryTab(){
+  const token = localStorage.getItem("token");
+  if (!token) {
+    contentArea.innerHTML = `
+      <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-2xl text-center">
+        <p class="text-red-500">⚠️ Please log in to see your history.</p>
+      </div>`;
+    return;
+  }
+
+  contentArea.innerHTML = `
+    <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-4xl">
+      <h2 class="text-3xl font-bold mb-6">Purchase History</h2>
+      <div id="ordersWrap" class="space-y-6"><p class="text-gray-500">Loading...</p></div>
+    </div>`;
+
+  const wrap = document.getElementById("ordersWrap");
+
+  try {
+    const res = await fetch("http://localhost:5000/api/orders", {
+      headers: { "Authorization": token }
+    });
+    const result = await res.json();
+
+    if (!result.success || !Array.isArray(result.orders) || result.orders.length === 0) {
+      wrap.innerHTML = `<p class="text-gray-500">No purchase history yet.</p>`;
+      return;
+    }
+
+    wrap.innerHTML = result.orders.map((order, idx) => `
+      <div class="border rounded-2xl p-6 shadow">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <h3 class="font-bold text-xl">Order #${result.orders.length - idx}</h3>
+          <div class="text-sm text-gray-600">${new Date(order.createdAt).toLocaleString()}</div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          ${order.items.map(it => `
+            <div class="flex items-center space-x-4 p-3 border rounded-lg">
+              <img src="${it.image || 'https://via.placeholder.com/80'}" class="w-16 h-16 object-cover rounded-lg" alt="${it.name}" />
+              <div>
+                <p class="font-semibold">${it.name}</p>
+                <p class="text-gray-500">₹${Number(it.price).toFixed(2)} × ${Number(it.quantity)}</p>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+        <div class="mt-4 flex items-center justify-between">
+          <div class="text-gray-600 text-sm">${order.items.length} item(s)</div>
+          <div class="text-right">
+            <p class="font-semibold text-lg">Total: ₹${Number(order.total).toFixed(2)}</p>
+          </div>
+        </div>
+      </div>
+    `).join("");
+  } catch (err) {
+    console.error(err);
+    wrap.innerHTML = `<p class="text-red-500">❌ Error loading history.</p>`;
+  }
+}
+
+/* ---------- Help Tab ---------- */
+function renderHelpTab(){
+  contentArea.innerHTML=`
+    <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-2xl">
+      <h2 class="text-3xl font-bold mb-4">Help & Support</h2>
+      <div class="border rounded-lg p-4 h-64 flex flex-col">
+        <div class="flex-1 overflow-y-auto mb-4" id="chatMessages"></div>
+        <div class="flex space-x-2">
+          <input id="chatInput" type="text" placeholder="Type your message..." class="flex-1 border rounded-lg px-3 py-2" />
+          <button id="chatSend" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Send</button>
+        </div>
+      </div>
+    </div>
+  `;
+  const input=document.getElementById("chatInput");
+  const messages=document.getElementById("chatMessages");
+  document.getElementById("chatSend").addEventListener("click",()=>{
+    const msg=(input.value||"").trim(); if(!msg) return;
+    messages.innerHTML+=`<div class="text-right mb-2"><span class="bg-blue-500 text-white px-3 py-1 rounded-lg inline-block">${msg}</span></div>`;
+    input.value="";
+    setTimeout(()=>{
+      messages.innerHTML+=`<div class="text-left mb-2"><span class="bg-gray-200 px-3 py-1 rounded-lg inline-block">Support will reply soon...</span></div>`;
+      messages.scrollTop=messages.scrollHeight;
+    },600);
+    messages.scrollTop=messages.scrollHeight;
+  });
+}
+fetch("http://localhost:5000/api/auth/login", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ email, password })
+})
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      localStorage.setItem("token", data.token);  // ✅ Save JWT
+      window.location.href = "profile.html";      // redirect
+    } else {
+      alert(data.message);
+    }
+  });
+
+</script>
+</body>
+</html>

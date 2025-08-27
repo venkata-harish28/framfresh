@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FarmFresh - Cart & Delivery Tracking</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+  <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+  <!-- Razorpay SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      padding: 2rem;
+    }
+
+    .page-container {
+      display: flex;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    #map-container {
+      flex: 2;
+      display: none;
+      position: relative;
+      height: 600px;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .status-card {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: #fff;
+      padding: 10px 15px;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+      font-weight: 600;
+    }
+
+    .cart-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      width: 100px;
+    }
+
+    .cart-items {
+      flex: 2;
+    }
+
+    .cart-summary {
+      flex: 1;
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
+      background: white;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+      align-items: center;
+    }
+
+    .cart-item img {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 0.5rem;
+    }
+
+    .cart-item-details {
+      flex-grow: 1;
+    }
+
+    .cart-item-details h4 {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .cart-item-details span {
+      color: #4CAF50;
+      font-weight: 700;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+    }
+
+    .quantity-controls button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      font-size: 1.25rem;
+      padding: 0 0.5rem;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .quantity-number {
+      min-width: 30px;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .summary-row span.value {
+      color: #4CAF50;
+    }
+
+    .summary-total {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-top: 1rem;
+      border-top: 2px solid #4CAF50;
+      padding-top: 1rem;
+      color: #2E7D32;
+    }
+
+    .summary-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+    }
+
+    .summary-buttons button {
+      flex: 1;
+      margin: 0 0.25rem;
+      padding: 0.75rem 0;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    #buyBtn {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    #buyBtn:hover {
+      background-color: #388E3C;
+    }
+
+    #btn-cancel {
+      background-color: #f44336;
+      color: white;
+    }
+
+    #btn-cancel:hover {
+      background-color: #d32f2f;
+    }
+
+    .empty-cart {
+      text-align: center;
+      font-size: 1.5rem;
+      color: #777;
+      margin-top: 5rem;
+    }
+
+    /* Payment Modal Styles */
+    #payment-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+
+    .payment-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border-radius: 15px;
+      padding: 1.2rem;
+      width: 90%;
+      max-width: 400px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .payment-header {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .payment-header h2 {
+      color: #4CAF50;
+      margin-bottom: 0.2rem;
+      font-size: 1.4rem;
+    }
+
+    .payment-header p {
+      color: #666;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+
+    .payment-amount {
+      background: #e8f5e8;
+      padding: 0.6rem;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #2E7D32;
+    }
+
+    .payment-methods {
+      margin-bottom: 1rem;
+    }
+
+    .payment-method {
+      display: flex;
+      align-items: center;
+      padding: 0.6rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      margin-bottom: 0.6rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .payment-method:hover {
+      border-color: #4CAF50;
+      background: #f8f9f8;
+    }
+
+    .payment-method.selected {
+      border-color: #4CAF50;
+      background: #e8f5e8;
+    }
+
+    .payment-method input[type="radio"] {
+      margin-right: 0.8rem;
+      transform: scale(1.1);
+    }
+
+    .payment-method-icon {
+      font-size: 1.3rem;
+      margin-right: 0.8rem;
+      width: 25px;
+      text-align: center;
+    }
+
+    .payment-method-info h4 {
+      margin: 0;
+      font-weight: 600;
+      font-size: 1rem;
+      line-height: 1.2;
+    }
+
+    .payment-method-info p {
+      margin: 0;
+      font-size: 0.8rem;
+      color: #666;
+      line-height: 1.1;
+    }
+
+    .payment-buttons {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+    }
+
+    .payment-buttons button {
+      padding: 0.6rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+    }
+
+    .pay-now-btn {
+      background: #4CAF50;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .pay-now-btn:hover {
+      background: #388E3C;
+      transform: translateY(-1px);
+    }
+
+    .cancel-payment-btn {
+      background: #f5f5f5;
+      color: #666;
+    }
+
+    .cancel-payment-btn:hover {
+      background: #e0e0e0;
+    }
+
+    /* Order Placed container */
+    #order-placed {
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+      /* slightly less gap */
+      text-align: center;
+      width: 95%;
+      max-width: 400px;
+      height: auto;
+      /* allow height to fit content */
+      margin: 2rem auto;
+      padding: 2rem;
+      background: #f0fff4;
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+      font-family: Arial, sans-serif;
+      font-size: 1.1rem;
+      /* slightly smaller font */
+    }
+
+    #order-placed h3 {
+      font-size: 2.5rem;
+      /* smaller heading */
+      color: #28a745;
+      margin-bottom: 0.5rem;
+    }
+
+    #order-placed p {
+      font-size: 1.2rem;
+      /* slightly smaller text */
+      color: #333;
+      margin-bottom: 1rem;
+    }
+
+    #driverDetails {
+      margin-top: 0.5rem;
+      /* less top margin */
+      font-size: 1rem;
+      /* smaller text for driver info */
+      line-height: 1.4;
+    }
+
+
+    #toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #4CAF50;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      display: none;
+      z-index: 1000;
+    }
+
+    /* Loading spinner */
+    .loading-spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #4CAF50;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+
+      .payment-content {
+        width: 95%;
+        max-width: 350px;
+        padding: 1rem;
+      }
+
+      .payment-method {
+        padding: 0.5rem;
+      }
+
+      .payment-method-info h4 {
+        font-size: 0.9rem;
+      }
+
+      .payment-method-info p {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1 class="text-3xl font-bold mb-8 text-center text-green-700">Your Cart</h1>
+
+  <div class="page-container">
+    <!-- LEFT: MAP -->
+    <div id="map-container">
+      <div id="map" style="height:100%; border-radius:0.5rem;"></div>
+      <div class="status-card">
+        <strong>Out for delivery</strong> | ETA: <span id="eta">--</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: CART / ORDER INFO -->
+    <div class="cart-container" id="cart-container">
+      <div class="cart-items" id="cart-items"></div>
+
+      <!-- Cart Summary -->
+      <div class="cart-summary" id="cart-summary">
+        <div>
+          <h3 class="text-xl font-semibold mb-4">Order Summary</h3>
+          <div class="summary-row"><span>Cost:</span><span class="value" id="cost-value">₹0.00</span></div>
+          <div class="summary-row"><span>Delivery:</span><span class="value" id="delivery-value">₹0.00</span></div>
+          <div class="summary-row"><span>Tax (5%):</span><span class="value" id="tax-value">₹0.00</span></div>
+          <div class="summary-row summary-total"><span>Total:</span><span class="value" id="total-value">₹0.00</span>
+          </div>
+        </div>
+
+        <div class="summary-buttons">
+          <button id="buyBtn" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Buy</button>
+          <button id="btn-cancel">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Order Placed -->
+      <div id="order-placed">
+        <h3>✅ Order Placed!</h3>
+        <p>Your delivery is on the way.</p>
+
+        <div class="summary-row">
+          <span>Estimated Delivery Time:</span>
+          <span class="value" id="order-eta">25 mins</span>
+        </div>
+
+        <div id="driverDetails"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Payment Modal -->
+  <div id="payment-modal">
+    <div class="payment-content">
+      <div class="payment-header">
+        <h2>🔒 Secure Payment</h2>
+        <p>Choose your payment method</p>
+      </div>
+
+      <div class="payment-amount">
+        Total: <span id="payment-total">₹0.00</span>
+      </div>
+
+      <div class="payment-methods">
+        <div class="payment-method" data-method="upi">
+          <input type="radio" name="payment" value="upi">
+          <div class="payment-method-icon">📱</div>
+          <div class="payment-method-info">
+            <h4>UPI Payment</h4>
+            <p>PhonePe, GPay, Paytm</p>
+          </div>
+        </div>
+
+        <div class="payment-method" data-method="card">
+          <input type="radio" name="payment" value="card">
+          <div class="payment-method-icon">💳</div>
+          <div class="payment-method-info">
+            <h4>Credit/Debit Card</h4>
+            <p>Visa, MasterCard, RuPay</p>
+          </div>
+        </div>
+
+        <div class="payment-method" data-method="netbanking">
+          <input type="radio" name="payment" value="netbanking">
+          <div class="payment-method-icon">🏦</div>
+          <div class="payment-method-info">
+            <h4>Net Banking</h4>
+            <p>All major banks</p>
+          </div>
+        </div>
+
+        <div class="payment-method" data-method="wallet">
+          <input type="radio" name="payment" value="wallet">
+          <div class="payment-method-icon">💰</div>
+          <div class="payment-method-info">
+            <h4>Digital Wallet</h4>
+            <p>Paytm, Amazon Pay</p>
+          </div>
+        </div>
+
+        <div class="payment-method" data-method="cod">
+          <input type="radio" name="payment" value="cod">
+          <div class="payment-method-icon">💵</div>
+          <div class="payment-method-info">
+            <h4>Cash on Delivery</h4>
+            <p>Pay when delivered</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="payment-buttons">
+        <button class="pay-now-btn" id="payNowBtn">
+          <span id="pay-btn-text">Proceed to Pay</span>
+          <div id="pay-loading" class="loading-spinner" style="display: none;"></div>
+        </button>
+        <button class="cancel-payment-btn" id="cancelPaymentBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const DELIVERY_FEE = 40;
+
+    const cartItemsContainer = document.getElementById('cart-items');
+    const cartSummary = document.getElementById('cart-summary');
+    const orderPlaced = document.getElementById('order-placed');
+    const paymentModal = document.getElementById('payment-modal');
+    const costValue = document.getElementById('cost-value');
+    const deliveryValue = document.getElementById('delivery-value');
+    const taxValue = document.getElementById('tax-value');
+    const totalValue = document.getElementById('total-value');
+    const paymentTotal = document.getElementById('payment-total');
+    const orderEta = document.getElementById('order-eta');
+    const toast = document.getElementById('toast');
+
+    let map, driverMarker, routeLine, etaInterval;
+    let selectedPaymentMethod = 'upi';
+
+    // Save cart to localStorage
+    function saveCart() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    // Render cart items
+    function renderCart() {
+      cartItemsContainer.innerHTML = '';
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = `<p class="empty-cart">Your cart is empty</p>`;
+        cartSummary.style.display = 'none';
+        return;
+      }
+      cartSummary.style.display = 'flex';
+      orderPlaced.style.display = 'none';
+      cart.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+      <img src="${item.image || 'https://via.placeholder.com/80'}" alt="${item.name}" />
+      <div class="cart-item-details">
+        <h4>${item.name}</h4>
+        <span>₹${item.price}</span>
+      </div>
+      <div class="quantity-controls">
+        <button class="qty-decrease" data-index="${index}">-</button>
+        <div class="quantity-number">${item.quantity}</div>
+        <button class="qty-increase" data-index="${index}">+</button>
+      </div>`;
+        cartItemsContainer.appendChild(div);
+      });
+      updateSummary();
+      addQuantityListeners();
+    }
+
+    // Update cart summary
+    function updateSummary() {
+      let cost = 0;
+      cart.forEach(item => cost += item.price * item.quantity);
+      costValue.textContent = `₹${cost.toFixed(2)}`;
+      deliveryValue.textContent = cost > 0 ? `₹${DELIVERY_FEE.toFixed(2)}` : '₹0.00';
+      let tax = cost * 0.05;
+      taxValue.textContent = `₹${tax.toFixed(2)}`;
+      const total = cost + tax + (cost > 0 ? DELIVERY_FEE : 0);
+      totalValue.textContent = `₹${total.toFixed(2)}`;
+      paymentTotal.textContent = `₹${total.toFixed(2)}`;
+    }
+
+    // Quantity buttons
+    function addQuantityListeners() {
+      document.querySelectorAll('.qty-increase').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const index = btn.dataset.index;
+          cart[index].quantity++;
+          saveCart();
+          renderCart();
+        });
+      });
+      document.querySelectorAll('.qty-decrease').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const index = btn.dataset.index;
+          if (cart[index].quantity > 1) cart[index].quantity--;
+          else cart.splice(index, 1);
+          saveCart();
+          renderCart();
+        });
+      });
+    }
+
+    // Show payment modal
+    function showPaymentModal() {
+      if (cart.length === 0) {
+        showToast("Your cart is empty!");
+        return;
+      }
+      paymentModal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+      document.querySelector('input[value="upi"]').checked = true;
+      document.querySelector('.payment-method[data-method="upi"]').classList.add('selected');
+    }
+
+    // Hide payment modal
+    function hidePaymentModal() {
+      paymentModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    // Toast message
+    function showToast(message) {
+      toast.textContent = message;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    }
+
+    // Payment method selection
+    document.querySelectorAll('.payment-method').forEach(method => {
+      method.addEventListener('click', () => {
+        document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+        document.querySelectorAll('input[name="payment"]').forEach(r => r.checked = false);
+        method.classList.add('selected');
+        const radio = method.querySelector('input[type="radio"]');
+        radio.checked = true;
+        selectedPaymentMethod = radio.value;
+      });
+    });
+
+    // Driver data
+    const drivers = [
+      { name: "Ramesh Kumar", vehicle: "AP39 AB 1234", phone: "+91 9876543210" },
+      { name: "Suresh Naidu", vehicle: "AP16 CD 5678", phone: "+91 9876501234" },
+      { name: "Mahesh Rao", vehicle: "AP05 EF 9101", phone: "+91 9876512345" }
+    ];
+
+    function assignDriver() {
+      const randomIndex = Math.floor(Math.random() * drivers.length);
+      const driver = drivers[randomIndex];
+      document.getElementById("driverDetails").innerHTML = `
+    <p><strong>Name:</strong> ${driver.name}</p>
+    <p><strong>Vehicle:</strong> ${driver.vehicle}</p>
+    <p><strong>Phone:</strong> ${driver.phone}</p>
+  `;
+    }
+
+    // Generate random delivery coordinates
+    function generateRandomUserCoordinates() {
+      const lat = 16.5439 + (Math.random() - 0.5) * 0.18;
+      const lng = 81.5212 + (Math.random() - 0.5) * 0.18;
+      return [lat, lng];
+    }
+
+    // Process payment
+    function processPayment() {
+      const payBtn = document.getElementById('payNowBtn');
+      const payBtnText = document.getElementById('pay-btn-text');
+      const payLoading = document.getElementById('pay-loading');
+
+      // Show loading
+      payBtnText.style.display = 'none';
+      payLoading.style.display = 'block';
+      payBtn.disabled = true;
+
+      setTimeout(() => {
+        hidePaymentModal();
+        showToast('✅ Payment successful! Order placed.');
+        startDeliveryTracking();
+      }, 2000);
+    }
+
+    // Start delivery tracking on map
+    function startDeliveryTracking() {
+      document.getElementById('map-container').style.display = 'block';
+      cartSummary.style.display = 'none';
+      orderPlaced.style.display = 'flex';
+      cartItemsContainer.innerHTML = '';
+
+      if (!map) {
+        map = L.map('map').setView([16.8, 81.9], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+        const southWest = L.latLng(16.0, 80.9);
+        const northEast = L.latLng(17.8, 82.5);
+        map.setMaxBounds(L.latLngBounds(southWest, northEast));
+      }
+
+      const startCoords = [16.5439, 81.5212];
+      const userCoords = generateRandomUserCoordinates();
+
+      if (routeLine) map.removeControl(routeLine);
+
+      routeLine = L.Routing.control({
+        waypoints: [L.latLng(startCoords), L.latLng(userCoords)],
+        routeWhileDragging: false,
+        show: false,
+        lineOptions: { styles: [{ color: 'green', weight: 5 }] },
+        createMarker: function (i, wp) {
+          if (i === 0) {
+            if (!driverMarker) {
+              driverMarker = L.marker(wp.latLng, {
+                icon: L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/135/135763.png', iconSize: [35, 35], iconAnchor: [15, 15] })
+              }).addTo(map);
+            } else driverMarker.setLatLng(wp.latLng);
+            return driverMarker;
+          } else if (i === 1) {
+            return L.marker(wp.latLng).addTo(map);
+          }
+        }
+      }).addTo(map);
+
+      map.fitBounds([startCoords, userCoords]);
+
+      routeLine.getPlan().on('routesfound', function (e) {
+        const routeCoords = e.routes[0].coordinates;
+        let step = 0;
+        let eta = Math.ceil(routeCoords.length / 10);
+        document.getElementById('eta').textContent = eta + ' mins';
+        orderEta.textContent = eta + ' mins';
+
+        if (etaInterval) clearInterval(etaInterval);
+        etaInterval = setInterval(() => {
+          if (eta > 0) {
+            eta--;
+            document.getElementById('eta').textContent = eta + ' mins';
+            orderEta.textContent = eta + ' mins';
+          }
+        }, 60000);
+
+        const interval = setInterval(() => {
+          if (step >= routeCoords.length) {
+            clearInterval(interval);
+            clearInterval(etaInterval);
+
+            cart = [];
+            saveCart();
+            renderCart();
+            document.getElementById('map-container').style.display = 'none';
+            orderPlaced.style.display = 'none';
+            showToast('✅ Order Delivered!');
+            return;
+          }
+          const coord = routeCoords[step];
+          driverMarker.setLatLng([coord.lat, coord.lng]);
+          step++;
+        }, 400);
+      });
+    }
+
+    // Event listeners
+    document.getElementById('buyBtn').addEventListener('click', showPaymentModal);
+    document.getElementById('payNowBtn').addEventListener('click', processPayment);
+    document.getElementById('cancelPaymentBtn').addEventListener('click', hidePaymentModal);
+    document.getElementById('btn-cancel').addEventListener('click', () => {
+      cart = [];
+      saveCart();
+      renderCart();
+      document.getElementById('map-container').style.display = 'none';
+      if (routeLine) { map.removeControl(routeLine); routeLine = null; }
+    });
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', () => {
+      renderCart();
+      assignDriver();
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+  const placeOrderBtn = document.getElementById("placeOrderBtn"); // your place order button
+  if (!placeOrderBtn) return;
+
+  placeOrderBtn.addEventListener("click", () => {
+    const cart = JSON.parse(localStorage.getItem("cartItems")) || [];
+    if (cart.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    }
+
+    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    // Create new order
+    const newOrder = {
+      id: Date.now(), // unique order ID
+      items: cart,
+      timestamp: new Date().toLocaleString()
+    };
+
+    // Add to orders array
+    orders.push(newOrder);
+    localStorage.setItem("orders", JSON.stringify(orders));
+
+    // Clear cart
+    localStorage.removeItem("cartItems");
+
+    alert("✅ Order placed successfully!");
+    // Optionally redirect to profile
+    window.location.href = "profile.html";
+  });
+});
+// ---- Place Order and Save in MongoDB ----
+async function saveOrderToMongo() {
+  const token = localStorage.getItem("token"); // saved on login
+  if (!token) {
+    alert("⚠️ Please log in first.");
+    return;
+  }
+
+  if (cart.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  try {
+    let response = await fetch("http://localhost:5000/api/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
+      body: JSON.stringify({ items: cart, total })
+    });
+
+    let result = await response.json();
+
+    if (result.success) {
+      alert("✅ Order placed successfully!");
+      cart = [];
+      saveCart();
+      renderCart();
+      window.location.href = "profile.html"; // redirect to history
+    } else {
+      alert("❌ " + result.message);
+    }
+  } catch (err) {
+    console.error(err);
+    alert("❌ Server error while saving order");
+  }
+}
+
+// Attach placeOrderBtn to Mongo
+document.addEventListener("DOMContentLoaded", () => {
+  const placeOrderBtn = document.getElementById("placeOrderBtn");
+  if (placeOrderBtn) {
+    placeOrderBtn.addEventListener("click", saveOrderToMongo);
+  }
+});
+
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+  <h1 class="text-3xl font-bold text-center mb-6">Admin Dashboard - Pending Products</h1>
+
+  <div id="productContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+  <script>
+    function renderProducts() {
+      const container = document.getElementById("productContainer");
+      container.innerHTML = "";
+      let pendingProducts = JSON.parse(localStorage.getItem("pendingProducts")) || [];
+
+      pendingProducts.forEach((product, index) => {
+        const card = document.createElement("div");
+        card.className = "bg-white p-4 rounded-lg shadow-md";
+
+        card.innerHTML = `
+          <img src="${product.image}" class="w-full h-48 object-cover rounded mb-2" />
+          <h2 class="font-bold text-lg mb-1">${product.name}</h2>
+          <p>Price: ₹${product.price}/${product.unit}</p>
+          <p>Quantity: ${product.quantity} ${product.unit}</p>
+          <p>Category: ${product.category}</p>
+          <p>Farmer Contact: ${product.contact}</p>
+          <div class="flex gap-2 mt-2">
+            <button class="approve bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Approve & Buy</button>
+            <button class="reject bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Reject</button>
+            <button class="contact bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Contact Farmer</button>
+          </div>
+        `;
+
+        // Approve button
+        card.querySelector(".approve").addEventListener("click", () => {
+          let storeProducts = JSON.parse(localStorage.getItem("storeProducts")) || [];
+          storeProducts.push(product);
+          localStorage.setItem("storeProducts", JSON.stringify(storeProducts));
+
+          pendingProducts.splice(index, 1);
+          localStorage.setItem("pendingProducts", JSON.stringify(pendingProducts));
+          renderProducts();
+        });
+
+        // Reject button
+        card.querySelector(".reject").addEventListener("click", () => {
+          pendingProducts.splice(index, 1);
+          localStorage.setItem("pendingProducts", JSON.stringify(pendingProducts));
+          renderProducts();
+        });
+
+        // Contact button
+        card.querySelector(".contact").addEventListener("click", () => {
+          window.location.href = `mailto:${product.contact}`;
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    renderProducts();
+  </script>
+</body>
+</html>
