@@ -1,12 +1,14 @@
+<!-- SIGNUP.HTML -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Farm Fresh - Signup</title>
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
       text-align: center;
-      margin: 0;
       font-family: Arial, sans-serif;
       background-image: url("https://www.shutterstock.com/image-photo/fresh-vegetables-fruits-on-white-260nw-1722298993.jpg");
       background-size: cover;
@@ -15,94 +17,262 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow-y: auto;
     }
-    div {
+
+    .container {
       background-color: rgba(255, 255, 255, 0.95);
       padding: 40px;
       border-radius: 15px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-      width: 350px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 350px;
+      margin: 20px 0;
     }
-    h1 { margin-bottom: 10px; color: #2e7d32; }
-    label { display:block; text-align:left; margin:10px 0 5px; font-weight:bold; }
-    input, button {
-      width:100%;
-      padding:10px;
-      border-radius:10px;
-      border:1px solid #ccc;
-      margin-bottom:15px;
-      font-size:16px;
+
+    h1 { 
+      margin-bottom: 10px;
+      color: #2e7d32;
+      font-size: 28px;
     }
-    button { background-color:#4CAF50; color:white; cursor:pointer; border:none; }
-    button:hover { background-color:#388e3c; }
-    a { display:block; margin-top:10px; font-size:14px; color:#2e7d32; text-decoration:none; }
-    a:hover { text-decoration:underline; }
+
+    h2 { 
+      margin-bottom: 20px;
+      color: #2e7d32;
+      font-size: 24px;
+    }
+
+    hr { margin: 10px 0 15px 0; border: none; border-top: 2px solid #ccc; }
+
+    label { 
+      display: block;
+      text-align: left;
+      margin: 10px 0 5px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+      font-size: 14px;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border: 2px solid #4CAF50;
+      box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #388e3c;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .link {
+      display: block;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #2e7d32;
+      text-decoration: none;
+      transition: text-decoration 0.2s;
+    }
+
+    .link:hover {
+      text-decoration: underline;
+    }
+
+    .error {
+      color: #d32f2f;
+      margin-bottom: 10px;
+      font-size: 14px;
+      padding: 10px;
+      background-color: #ffebee;
+      border-radius: 5px;
+      display: none;
+    }
+
+    .success {
+      color: #388e3c;
+      margin-bottom: 10px;
+      font-size: 14px;
+      padding: 10px;
+      background-color: #e8f5e9;
+      border-radius: 5px;
+      display: none;
+    }
+
+    .password-strength {
+      font-size: 12px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      padding: 5px;
+      border-radius: 4px;
+      display: none;
+    }
+
+    .strength-weak { background-color: #ffebee; color: #d32f2f; }
+    .strength-medium { background-color: #fff3e0; color: #f57c00; }
+    .strength-strong { background-color: #e8f5e9; color: #388e3c; }
   </style>
 </head>
 <body>
-  <div>
-    <form id="signupForm">
-      <h1>Farm Fresh</h1>
-      <hr />
-      <h2>Sign Up</h2>
+  <div class="container">
+    <h1>Farm Fresh</h1>
+    <hr>
+    <h2>Sign Up</h2>
 
+    <div id="error" class="error"></div>
+    <div id="success" class="success"></div>
+
+    <form id="signupForm">
       <label for="name">Name:</label>
-      <input type="text" id="name" placeholder="Enter your Name" required />
+      <input type="text" id="name" placeholder="Enter your Full Name" required />
 
       <label for="email">Email:</label>
       <input type="email" id="email" placeholder="Enter your Email" required />
 
       <label for="phone">Phone Number:</label>
-      <input type="text" id="phone" placeholder="Enter your Phone Number" required />
+      <input type="tel" id="phone" placeholder="Enter your Phone Number" required />
 
       <label for="address">Address (Optional):</label>
       <input type="text" id="address" placeholder="Enter your Address" />
 
       <label for="password">Password:</label>
-      <input type="password" id="password" placeholder="Enter your Password" required />
+      <input type="password" id="password" placeholder="Enter your Password (min 6 characters)" required />
+      <div id="passwordStrength" class="password-strength"></div>
 
-      <button type="submit">Sign Up</button>
-      <a href="login.html">Already have an account? Login</a>
+      <label for="role">Register as:</label>
+      <select id="role">
+        <option value="buyer">Buyer</option>
+        <option value="farmer">Farmer</option>
+      </select>
+
+      <button type="submit" id="submitBtn">Sign Up</button>
+      <a href="login.html" class="link">Already have an account? Login</a>
     </form>
   </div>
 
   <script>
-    document.getElementById("signupForm").addEventListener("submit", async function(e) {
+    const form = document.getElementById('signupForm');
+    const errorDiv = document.getElementById('error');
+    const successDiv = document.getElementById('success');
+    const submitBtn = document.getElementById('submitBtn');
+    const passwordInput = document.getElementById('password');
+    const strengthDiv = document.getElementById('passwordStrength');
+
+    // Password strength checker
+    passwordInput.addEventListener('input', (e) => {
+      const password = e.target.value;
+      let strength = 'weak';
+      let message = 'Weak password';
+
+      if (password.length >= 6) {
+        if (/[a-z]/.test(password) && /[A-Z]/.test(password) && /[0-9]/.test(password)) {
+          strength = 'strong';
+          message = 'Strong password ✓';
+        } else if (password.length >= 8) {
+          strength = 'medium';
+          message = 'Medium password';
+        }
+      }
+
+      strengthDiv.className = `password-strength strength-${strength}`;
+      strengthDiv.textContent = message;
+      strengthDiv.style.display = password.length > 0 ? 'block' : 'none';
+    });
+
+    function showError(message) {
+      errorDiv.textContent = '❌ ' + message;
+      errorDiv.style.display = 'block';
+      successDiv.style.display = 'none';
+    }
+
+    function showSuccess(message) {
+      successDiv.textContent = '✅ ' + message;
+      successDiv.style.display = 'block';
+      errorDiv.style.display = 'none';
+    }
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const address = document.getElementById("address").value.trim();
-      const password = document.getElementById("password").value.trim();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const role = document.getElementById('role').value;
 
       if (!name || !email || !phone || !password) {
-        alert("⚠️ Please fill all required fields.");
+        showError('Please fill all required fields.');
         return;
       }
 
-      const user = { name, email, phone, address, password };
+      if (password.length < 6) {
+        showError('Password must be at least 6 characters.');
+        return;
+      }
 
-      // Save to localStorage
-      localStorage.setItem("userProfile", JSON.stringify(user));
+      if (!/^\d{10}$/.test(phone)) {
+        showError('Please enter a valid 10-digit phone number.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating account...';
 
       try {
-        const res = await fetch("http://localhost:5000/signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(user)
+        const response = await fetch('http://localhost:5000/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, phone, address, password, role })
         });
 
-        const data = await res.json();
+        const data = await response.json();
 
         if (data.success) {
-          alert("✅ Signup successful! Profile saved.");
-          window.location.href = "webpage.html"; // redirect to profile page
+          showSuccess('Account created successfully! Redirecting...');
+          
+          // Save token and user info
+          sessionStorage.setItem('token', data.token);
+          sessionStorage.setItem('user', JSON.stringify(data.user));
+
+          setTimeout(() => {
+            window.location.href = 'webpage.html';
+          }, 1500);
         } else {
-          alert("❌ " + data.message);
+          showError(data.message || 'Signup failed');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign Up';
         }
       } catch (err) {
-        alert("❌ Error: " + err.message);
+        showError('Error: ' + err.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign Up';
       }
     });
   </script>

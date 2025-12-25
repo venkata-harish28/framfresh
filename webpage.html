@@ -3,17 +3,17 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FarmFresh - Marketplace for Farmers</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         :root {
-            --primary: #4CAF50;
-            --secondary: #8BC34A;
-            --light: #F1F8E9;
-            --dark: #2E7D32;
+            --primary: #4caf50;
+            --secondary: #8bc34a;
+            --light: #f1f8e9;
+            --dark: #2e7d32;
         }
 
         body {
@@ -62,76 +62,142 @@
             }
         }
 
-        #cart {
-            height: 50px;
-            width: 55px;
-            align-items: end;
+        .nav-container {
+            max-width: 7xl;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #ff5252;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .toast {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-in-out;
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
     </style>
 </head>
 
 <body>
     <!-- Navigation Bar -->
-    <nav class="bg-white shadow-lg fixed top-0 left-0 w-full z-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex items-center justify-between py-4">
-                <!-- Logo -->
-                <div class="flex items-center space-x-4">
-                    <img src="https://placehold.co/50x50" alt="FarmFresh logo - green leaf with the letter F"
-                        class="h-10" />
-                    <span class="text-2xl font-bold text-gray-800">
-                        Farm<span class="text-green-600">Fresh</span>
-                    </span>
-                </div>
+    <nav class="bg-white shadow-lg">
+        <div class="nav-container">
+            <!-- Logo -->
+            <div class="flex items-center space-x-4">
+                <img src="https://placehold.co/50x50" alt="FarmFresh logo" class="h-10" />
+                <span class="text-2xl font-bold text-gray-800">
+                    Farm<span class="text-green-600">Fresh</span>
+                </span>
+            </div>
 
-                <!-- Navigation Links + Profile and Cart -->
-                <div class="flex items-center space-x-4">
-                    <a href="cart.html">
-                        <div class="cart-container relative cursor-pointer">
-                            🛒
+            <!-- Navigation Links -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#" class="text-gray-800 hover:text-green-600 font-medium">Home</a>
+                <a href="store.html" class="text-gray-800 hover:text-green-600 font-medium">Marketplace</a>
+                <a href="#farmers" class="text-gray-800 hover:text-green-600 font-medium">Farmers</a>
+                <a href="#about" class="text-gray-800 hover:text-green-600 font-medium">About</a>
+                <a href="#contact" class="text-gray-800 hover:text-green-600 font-medium">Contact</a>
+            </div>
 
-                        </div>
+            <!-- Right Side Buttons -->
+            <div class="flex items-center space-x-4">
+                <!-- Cart -->
+                <a href="cart.html" class="relative text-green-600 hover:text-green-700">
+                    <i class="fas fa-shopping-cart text-2xl"></i>
+                    <span id="cartCount" class="cart-count" style="display: none;">0</span>
+                </a>
+
+                <!-- Profile -->
+                <a href="profile.html" class="text-green-600 hover:text-green-700">
+                    <i class="fas fa-user-circle text-2xl"></i>
+                </a>
+
+                <!-- Login/Signup -->
+                <div class="flex items-center space-x-2">
+                    <a href="login.html">
+                        <button class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition">
+                            Login
+                        </button>
                     </a>
-
-                    <a href="profile.html" class="flex items-center hover:opacity-80">
-                        <img src="https://static.vecteezy.com/system/resources/previews/002/318/271/non_2x/user-profile-icon-free-vector.jpg"
-                            alt="Profile" class="h-10 w-10 rounded-full border-2 border-green-600" />
+                    <a href="signup.html">
+                        <button class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition">
+                            Signup
+                        </button>
                     </a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Spacer to prevent content hiding under navbar -->
-    <div class="pt-20">
-        <!-- Your page content starts here -->
+    <!-- TOAST -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i> <span id="toastMessage"></span>
     </div>
-
 
     <!-- Hero Section -->
     <section class="hero-gradient text-white py-20">
         <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center">
             <div class="md:w-1/2 mb-10 md:mb-0">
                 <h1 class="text-4xl md:text-5xl font-bold mb-6">Fresh From the Fields — Straight to Your Plate</h1>
-                <p class="text-xl mb-8">Connect with local farmers to buy fresh produce or sell your farm products
-                    directly to consumers.</p>
+                <p class="text-xl mb-8">Connect with local farmers to buy fresh produce or sell your farm products directly to consumers.</p>
                 <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                     <a href="product.html">
-                        <button
-                            class="px-6 py-3 bg-white text-green-700 font-bold rounded-lg hover:bg-gray-100 transition">
+                        <button class="px-6 py-3 bg-white text-green-700 font-bold rounded-lg hover:bg-gray-100 transition">
                             Sell Products <i class="fas fa-seedling ml-2"></i>
                         </button>
                     </a>
-                    <button id="product-browser"
-                        class="px-6 py-3 bg-transparent border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-green-700 transition">
-                        Browse Marketplace <i class="fas fa-shopping-basket ml-2"></i>
-                    </button>
+
+                    <a href="store.html">
+                        <button class="px-6 py-3 bg-transparent border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-green-700 transition">
+                            Browse Marketplace <i class="fas fa-shopping-basket ml-2"></i>
+                        </button>
+                    </a>
                 </div>
             </div>
+
             <div class="md:w-1/2">
-                <img src="https://media.istockphoto.com/id/2163456407/photo/fresh-vegetables-and-fruits-for-sale-in-asian-farmer-market-stall.jpg?s=612x612&w=0&k=20&c=LNl7GM00YQPHNzCZlKTG9-M6v8zEG9Fg0tSWM9mIxGY="
-                    alt="Happy farmer holding basket of fresh vegetables in golden hour sunlight with farm field background"
-                    class="rounded-lg shadow-xl" />
+                <img src="https://media.istockphoto.com/id/2163456407/photo/fresh-vegetables-and-fruits-for-sale-in-asian-farmer-market-stall.jpg?s=612x612&w=0&k=20&c=LNl7GM00YQPHNzCZlKTG9-M6v8zEG9Fg0tSWM9mIxGY=" alt="Happy farmer holding basket of fresh vegetables in golden hour sunlight with farm field background" class="rounded-lg shadow-xl">
             </div>
         </div>
     </section>
@@ -141,48 +207,59 @@
         <div class="max-w-7xl mx-auto px-4">
             <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Marketplace Categories</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                <div
-                    class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md">
-                    <div class="w-16 h-16 mb-2 flex items-center justify-center">
-                        <i class="fas fa-carrot text-3xl text-orange-500"></i>
+                <a href="veg.html">
+                    <div class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md transition">
+                        <div class="w-16 h-16 mb-2 flex items-center justify-center">
+                            <i class="fas fa-carrot text-3xl text-orange-500"></i>
+                        </div>
+                        <span class="font-medium text-center">Vegetables</span>
                     </div>
-                    <span class="font-medium">Vegetables</span>
-                </div>
-                <div
-                    class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md">
-                    <div class="w-16 h-16 mb-2 flex items-center justify-center">
-                        <i class="fas fa-apple-alt text-3xl text-red-500"></i>
+                </a>
+
+                <a href="fruit.html">
+                    <div class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md transition">
+                        <div class="w-16 h-16 mb-2 flex items-center justify-center">
+                            <i class="fas fa-apple-alt text-3xl text-red-500"></i>
+                        </div>
+                        <span class="font-medium text-center">Fruits</span>
                     </div>
-                    <span class="font-medium">Fruits</span>
-                </div>
-                <div
-                    class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md">
-                    <div class="w-16 h-16 mb-2 flex items-center justify-center">
-                        <i class="fas fa-egg text-3xl text-yellow-600"></i>
+                </a>
+
+                <a href="dairy.html">
+                    <div class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md transition">
+                        <div class="w-16 h-16 mb-2 flex items-center justify-center">
+                            <i class="fas fa-egg text-3xl text-yellow-600"></i>
+                        </div>
+                        <span class="font-medium text-center">Dairy</span>
                     </div>
-                    <span class="font-medium">Dairy</span>
-                </div>
-                <div
-                    class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md">
-                    <div class="w-16 h-16 mb-2 flex items-center justify-center">
-                        <i class="fas fa-wheat-awn text-3xl text-amber-800"></i>
+                </a>
+
+                <a href="grain.html">
+                    <div class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md transition">
+                        <div class="w-16 h-16 mb-2 flex items-center justify-center">
+                            <i class="fas fa-wheat-awn text-3xl text-amber-800"></i>
+                        </div>
+                        <span class="font-medium text-center">Grains</span>
                     </div>
-                    <span class="font-medium">Grains</span>
-                </div>
-                <div
-                    class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md">
-                    <div class="w-16 h-16 mb-2 flex items-center justify-center">
-                        <i class="fas fa-drumstick-bite text-3xl text-brown-600"></i>
+                </a>
+
+                <a href="poultry.html">
+                    <div class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md transition">
+                        <div class="w-16 h-16 mb-2 flex items-center justify-center">
+                            <i class="fas fa-drumstick-bite text-3xl text-red-600"></i>
+                        </div>
+                        <span class="font-medium text-center">Poultry</span>
                     </div>
-                    <span class="font-medium">Poultry</span>
-                </div>
-                <div
-                    class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md">
-                    <div class="w-16 h-16 mb-2 flex items-center justify-center">
-                        <i class="fas fa-honey-pot text-3xl text-yellow-700"></i>
+                </a>
+
+                <a href="honey.html">
+                    <div class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md transition">
+                        <div class="w-16 h-16 mb-2 flex items-center justify-center">
+                            <i class="fas fa-droplet text-3xl text-yellow-600"></i>
+                        </div>
+                        <span class="font-medium text-center">Honey</span>
                     </div>
-                    <span class="font-medium">Honey</span>
-                </div>
+                </a>
             </div>
         </div>
     </section>
@@ -201,16 +278,13 @@
                 <!-- Product Card 1 -->
                 <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
                     <div class="relative">
-                        <img src="https://cdn.grofers.com/app/images/products/sliding_image/421699a.jpg"
-                            alt="Fresh organic tomatoes on vine ripened under Mediterranean sun"
-                            class="w-full h-48 object-cover" />
-                        <span
-                            class="absolute top-4 right-4 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Organic</span>
+                        <img src="https://cdn.grofers.com/app/images/products/sliding_image/421699a.jpg" alt="Fresh organic tomatoes on vine ripened under Mediterranean sun" class="w-full h-48 object-cover">
+                        <span class="absolute top-4 right-4 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Organic</span>
                     </div>
                     <div class="p-4">
                         <div class="flex justify-between items-start mb-2">
                             <h3 class="font-bold text-lg">Fresh Tomatoes</h3>
-                            <span class="font-bold text-green-600">&#8377;40/KG</span>
+                            <span class="font-bold text-green-600">₹40/KG</span>
                         </div>
                         <p class="text-gray-600 text-sm mb-4">Juicy, vine-ripened tomatoes grown organically.</p>
                         <div class="flex justify-between items-center">
@@ -222,10 +296,7 @@
                                 <i class="fas fa-star-half-alt"></i>
                                 <span class="text-gray-600 text-sm ml-1">(24)</span>
                             </div>
-                            <button
-                                class="add-to-cart-btn bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">
-                                Add <i class="fas fa-plus ml-1"></i>
-                            </button>
+                            <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition" onclick="addFeaturedProduct('Fresh Tomatoes', 40, 'https://cdn.grofers.com/app/images/products/sliding_image/421699a.jpg')">Add <i class="fas fa-plus ml-1"></i></button>
                         </div>
                     </div>
                 </div>
@@ -233,16 +304,13 @@
                 <!-- Product Card 2 -->
                 <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
                     <div class="relative">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6HHRdKjPSE3ZDgnSSnivwRbdw7Tk48txofg&s"
-                            alt="Golden honey jars from local beekeepers with honeycomb background"
-                            class="w-full h-48 object-cover" />
-                        <span
-                            class="absolute top-4 right-4 bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full">Local</span>
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6HHRdKjPSE3ZDgnSSnivwRbdw7Tk48txofg&s" alt="Golden honey jars from local beekeepers with honeycomb background" class="w-full h-48 object-cover">
+                        <span class="absolute top-4 right-4 bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full">Local</span>
                     </div>
                     <div class="p-4">
                         <div class="flex justify-between items-start mb-2">
                             <h3 class="font-bold text-lg">Raw Honey</h3>
-                            <span class="font-bold text-green-600">&#8377;500/KG</span>
+                            <span class="font-bold text-green-600">₹500/KG</span>
                         </div>
                         <p class="text-gray-600 text-sm mb-4">Pure, unfiltered honey from local beekeepers.</p>
                         <div class="flex justify-between items-center">
@@ -254,10 +322,7 @@
                                 <i class="far fa-star"></i>
                                 <span class="text-gray-600 text-sm ml-1">(18)</span>
                             </div>
-                            <button
-                                class="add-to-cart-btn bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">
-                                Add <i class="fas fa-plus ml-1"></i>
-                            </button>
+                            <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition" onclick="addFeaturedProduct('Raw Honey', 500, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6HHRdKjPSE3ZDgnSSnivwRbdw7Tk48txofg&s')">Add <i class="fas fa-plus ml-1"></i></button>
                         </div>
                     </div>
                 </div>
@@ -265,16 +330,13 @@
                 <!-- Product Card 3 -->
                 <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
                     <div class="relative">
-                        <img src="https://www.fleshkart.com/uploads/product/1740828471-desi-eggs.jpg"
-                            alt="Brown free-range chicken eggs in rustic wooden crate with hay"
-                            class="w-full h-48 object-cover" />
-                        <span
-                            class="absolute top-4 right-4 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Free-range</span>
+                        <img src="https://www.fleshkart.com/uploads/product/1740828471-desi-eggs.jpg" alt="Brown free-range chicken eggs in rustic wooden crate with hay" class="w-full h-48 object-cover">
+                        <span class="absolute top-4 right-4 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Free-range</span>
                     </div>
                     <div class="p-4">
                         <div class="flex justify-between items-start mb-2">
                             <h3 class="font-bold text-lg">Farm Eggs</h3>
-                            <span class="font-bold text-green-600">&#8377;70/DOZEN</span>
+                            <span class="font-bold text-green-600">₹70/DOZEN</span>
                         </div>
                         <p class="text-gray-600 text-sm mb-4">Pasture-raised eggs from happy chickens.</p>
                         <div class="flex justify-between items-center">
@@ -286,10 +348,7 @@
                                 <i class="fas fa-star"></i>
                                 <span class="text-gray-600 text-sm ml-1">(32)</span>
                             </div>
-                            <button
-                                class="add-to-cart-btn bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">
-                                Add <i class="fas fa-plus ml-1"></i>
-                            </button>
+                            <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition" onclick="addFeaturedProduct('Farm Eggs', 70, 'https://www.fleshkart.com/uploads/product/1740828471-desi-eggs.jpg')">Add <i class="fas fa-plus ml-1"></i></button>
                         </div>
                     </div>
                 </div>
@@ -297,16 +356,13 @@
                 <!-- Product Card 4 -->
                 <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
                     <div class="relative">
-                        <img src="https://nurserylive.com/cdn/shop/products/nurserylive-seeds-carrot-mohan-chantenay-nantes-vegetable-seeds-16968688959628.jpg?v=1634203415"
-                            alt="Freshly harvested organic carrots with green tops still attached"
-                            class="w-full h-48 object-cover" />
-                        <span
-                            class="absolute top-4 right-4 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Organic</span>
+                        <img src="https://nurserylive.com/cdn/shop/products/nurserylive-seeds-carrot-mohan-chantenay-nantes-vegetable-seeds-16968688959628.jpg?v=1634203415" alt="Freshly harvested organic carrots with green tops still attached" class="w-full h-48 object-cover">
+                        <span class="absolute top-4 right-4 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Organic</span>
                     </div>
                     <div class="p-4">
                         <div class="flex justify-between items-start mb-2">
                             <h3 class="font-bold text-lg">Organic Carrot</h3>
-                            <span class="font-bold text-green-600">&#8377;70/KG</span>
+                            <span class="font-bold text-green-600">₹70/KG</span>
                         </div>
                         <p class="text-gray-600 text-sm mb-4">Sweet, crunchy carrots grown without pesticides.</p>
                         <div class="flex justify-between items-center">
@@ -318,21 +374,12 @@
                                 <i class="fas fa-star-half-alt"></i>
                                 <span class="text-gray-600 text-sm ml-1">(21)</span>
                             </div>
-                            <button
-                                class="add-to-cart-btn bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">
-                                Add <i class="fas fa-plus ml-1"></i>
-                            </button>
+                            <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition" onclick="addFeaturedProduct('Organic Carrot', 70, 'https://nurserylive.com/cdn/shop/products/nurserylive-seeds-carrot-mohan-chantenay-nantes-vegetable-seeds-16968688959628.jpg?v=1634203415')">Add <i class="fas fa-plus ml-1"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Toast container -->
-        <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 
-            bg-green-600 text-white px-6 py-3 rounded shadow-lg opacity-0 transition-opacity duration-500 z-50">
-            Added to cart!
-        </div>
-
     </section>
 
     <!-- Farmer Spotlight -->
@@ -343,9 +390,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Farmer Card 1 -->
                 <div class="flex flex-col items-center text-center">
-                    <img src="https://www.shutterstock.com/image-photo/indian-farmer-standing-plant-his-260nw-2293422615.jpg"
-                        alt="Middle-aged female farmer with warm smile wearing straw hat surrounded by sunflowers"
-                        class="w-32 h-32 rounded-full object-cover mb-4" />
+                    <img src="https://www.shutterstock.com/image-photo/indian-farmer-standing-plant-his-260nw-2293422615.jpg" alt="Middle-aged female farmer with warm smile wearing straw hat surrounded by sunflowers" class="w-32 h-32 rounded-full object-cover mb-4">
                     <h3 class="text-xl font-bold mb-2">Ravi</h3>
                     <p class="text-gray-600 mb-3">Specializes in organic vegetables and heritage tomatoes</p>
                     <div class="flex justify-center space-x-4 text-green-600">
@@ -357,9 +402,7 @@
 
                 <!-- Farmer Card 2 -->
                 <div class="flex flex-col items-center text-center">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQR9Yl2R-Xv9rgHJFTbsDzYsJrFeUU0PObURw&s"
-                        alt="Elderly male farmer with weathered face tending to beehives at golden hour"
-                        class="w-32 h-32 rounded-full object-cover mb-4" />
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQR9Yl2R-Xv9rgHJFTbsDzYsJrFeUU0PObURw&s" alt="Elderly male farmer with weathered face tending to beehives at golden hour" class="w-32 h-32 rounded-full object-cover mb-4">
                     <h3 class="text-xl font-bold mb-2">Lakshmi</h3>
                     <p class="text-gray-600 mb-3">Local honey producer with 30 years experience</p>
                     <div class="flex justify-center space-x-4 text-green-600">
@@ -371,10 +414,8 @@
 
                 <!-- Farmer Card 3 -->
                 <div class="flex flex-col items-center text-center">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB8PwDWi6J8dGDIyk4V4ySzgx1PGv-LOr_2Q&s"
-                        alt="Young couple standing in apple orchard holding baskets of fresh picked apples"
-                        class="w-32 h-32 rounded-full object-cover mb-4">
-                    <h3 class="text-xl font-bold mb-2">koteswara rao</h3>
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB8PwDWi6J8dGDIyk4V4ySzgx1PGv-LOr_2Q&s" alt="Young couple standing in apple orchard holding baskets of fresh picked apples" class="w-32 h-32 rounded-full object-cover mb-4">
+                    <h3 class="text-xl font-bold mb-2">Koteswara Rao</h3>
                     <p class="text-gray-600 mb-3">Three generations growing orchard fruits</p>
                     <div class="flex justify-center space-x-4 text-green-600">
                         <a href="#"><i class="fab fa-facebook"></i></a>
@@ -392,10 +433,8 @@
             <h2 class="text-3xl font-bold mb-4">Stay Updated With FarmFresh</h2>
             <p class="mb-8">Get weekly updates on seasonal produce, farmer spotlights, and special offers.</p>
             <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                <input type="email" placeholder="Your email address"
-                    class="flex-grow px-4 py-3 rounded-lg text-gray-800 focus:outline-none" />
-                <button
-                    class="px-6 py-3 bg-yellow-500 text-gray-800 font-bold rounded-lg hover:bg-yellow-400 transition">
+                <input type="email" placeholder="Your email address" class="flex-grow px-4 py-3 rounded-lg text-gray-800 focus:outline-none">
+                <button class="px-6 py-3 bg-yellow-500 text-gray-800 font-bold rounded-lg hover:bg-yellow-400 transition">
                     Subscribe <i class="fas fa-paper-plane ml-2"></i>
                 </button>
             </div>
@@ -408,8 +447,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>
                     <div class="flex items-center space-x-2 mb-4">
-                        <img src="https://placehold.co/30x30" alt="FarmFresh logo icon - simplified leaf design"
-                            class="h-8" />
+                        <img src="https://placehold.co/30x30" alt="FarmFresh logo icon - simplified leaf design" class="h-8">
                         <span class="text-xl font-bold">FarmFresh</span>
                     </div>
                     <p class="text-gray-400">Connecting farmers directly with consumers since 2023.</p>
@@ -419,8 +457,7 @@
                     <h4 class="font-bold text-lg mb-4">Quick Links</h4>
                     <ul class="space-y-2">
                         <li><a href="#" class="text-gray-400 hover:text-white transition">Home</a></li>
-                        <li><a href="#marketplace" class="text-gray-400 hover:text-white transition">Marketplace</a>
-                        </li>
+                        <li><a href="#marketplace" class="text-gray-400 hover:text-white transition">Marketplace</a></li>
                         <li><a href="#farmers" class="text-gray-400 hover:text-white transition">For Farmers</a></li>
                         <li><a href="#about" class="text-gray-400 hover:text-white transition">About Us</a></li>
                         <li><a href="#contact" class="text-gray-400 hover:text-white transition">Contact</a></li>
@@ -430,34 +467,31 @@
                 <div>
                     <h4 class="font-bold text-lg mb-4">Categories</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Vegetables</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Fruits</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Dairy</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Grains</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Poultry</a></li>
+                        <li><a href="veg.html" class="text-gray-400 hover:text-white transition">Vegetables</a></li>
+                        <li><a href="fruit.html" class="text-gray-400 hover:text-white transition">Fruits</a></li>
+                        <li><a href="dairy.html" class="text-gray-400 hover:text-white transition">Dairy</a></li>
+                        <li><a href="grain.html" class="text-gray-400 hover:text-white transition">Grains</a></li>
+                        <li><a href="poultry.html" class="text-gray-400 hover:text-white transition">Poultry</a></li>
                     </ul>
                 </div>
 
                 <div>
                     <h4 class="font-bold text-lg mb-4">Contact</h4>
                     <ul class="space-y-2 text-gray-400">
-                        <li class="flex items-center"><i class="fas fa-map-marker-alt mr-2"></i> 123 Farm Rd, Agritown
-                        </li>
+                        <li class="flex items-center"><i class="fas fa-map-marker-alt mr-2"></i> 123 Farm Rd, Agritown</li>
                         <li class="flex items-center"><i class="fas fa-phone-alt mr-2"></i> (555) 123-4567</li>
                         <li class="flex items-center"><i class="fas fa-envelope mr-2"></i> hello@farmfresh.example</li>
                     </ul>
                     <div class="flex space-x-4 mt-4 text-xl">
-                        <a href="#" class="text-gray-400 hover:text-white transition"><i
-                                class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook"></i></a>
                         <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-gray-400 hover:text-white transition"><i
-                                class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
             </div>
 
             <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-500 text-sm mb-4 md:mb-0">© 2023 FarmFresh. All rights reserved.</p>
+                <p class="text-gray-500 text-sm mb-4 md:mb-0">© 2024 FarmFresh. All rights reserved.</p>
                 <div class="flex space-x-6">
                     <a href="#" class="text-gray-500 hover:text-white text-sm transition">Privacy Policy</a>
                     <a href="#" class="text-gray-500 hover:text-white text-sm transition">Terms of Service</a>
@@ -466,127 +500,86 @@
             </div>
         </div>
     </footer>
-    <!-- Toast container -->
-    <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 
-            bg-green-600 text-white px-6 py-3 rounded shadow-lg opacity-0 transition-opacity duration-500 z-50">
-        Added to cart!
-    </div>
-
-   
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-
-            // Function to show toast
-            function showToast(message) {
-                const toast = document.getElementById("toast");
-                toast.textContent = message;
-                toast.classList.remove("opacity-0");
-                toast.classList.add("opacity-100");
-
-                setTimeout(() => {
-                    toast.classList.remove("opacity-100");
-                    toast.classList.add("opacity-0");
-                }, 2000); // toast visible for 2 seconds
+        // ==================== CART MANAGEMENT ====================
+        class CartManager {
+            constructor() {
+                this.loadCart();
             }
 
-            // Animate hero background
-            const hero = document.querySelector('.hero-gradient');
-            if (hero) {
-                setTimeout(() => {
-                    hero.classList.add('animated-bg');
-                }, 500);
+            loadCart() {
+                try {
+                    const stored = sessionStorage.getItem('cart');
+                    this.cart = stored ? JSON.parse(stored) : [];
+                } catch (e) {
+                    this.cart = [];
+                }
             }
 
-            // Category chip click navigation
-            const categories = document.querySelectorAll('.category-chip');
-            categories.forEach(category => {
-                category.addEventListener('click', function () {
-                    const categoryName = this.querySelector('span').textContent.trim();
-                    if (categoryName === "Vegetables") {
-                        window.location.href = "veg.html";
-                    } else if (categoryName === "Fruits") {
-                        window.location.href = "fruit.html";
-                    } else if (categoryName === "Dairy") {
-                        window.location.href = "diary.html";
-                    } else if (categoryName === "Grains") {
-                        window.location.href = "grain.html";
-                    } else if (categoryName === "Poultry") {
-                        window.location.href = "poultry.html";
-                    } else if (categoryName === "Honey") {
-                        window.location.href = "honey.html";
-                    } else {
-                        showToast(`Filtering by ${categoryName}`);
-                    }
-                });
-            });
-
-            // Browse marketplace button
-            const browseButton = document.getElementById('product-browser');
-            if (browseButton) {
-                browseButton.addEventListener('click', function () {
-                    window.location.href = "store.html";
-                });
+            saveCart() {
+                sessionStorage.setItem('cart', JSON.stringify(this.cart));
+                this.updateCartCount();
             }
 
-            // Add to Cart functionality
-            const addButtons = document.querySelectorAll('.add-to-cart-btn');
-            addButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const card = this.closest('.product-card');
-                    const name = card.querySelector('h3').textContent.trim();
-
-                    const priceText = card.querySelector('span.font-bold.text-green-600').textContent.trim();
-                    const priceMatch = priceText.match(/₹(\d+)/);
-                    const price = priceMatch ? parseInt(priceMatch[1]) : 0;
-
-                    const image = card.querySelector('img').src;
-
-                    // Get existing cart from localStorage or empty array
-                    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-                    // Check if product already in cart
-                    let existingItem = cart.find(item => item.name === name);
-
-                    if (existingItem) {
-                        existingItem.quantity += 1; // increase quantity if exists
-                    } else {
-                        cart.push({ name, price, quantity: 1, image });
-                    }
-
-                    // Save updated cart back to localStorage
-                    localStorage.setItem('cart', JSON.stringify(cart));
-
-                    // Update cart count badge
-                    let cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
-                    document.getElementById('cartCount').textContent = cartCount;
-                    localStorage.setItem('cartCount', cartCount);
-
-                    // Show toast instead of alert
-                    showToast(`${name} added to cart!`);
-                });
-            });
-
-            // Selling button logic
-            const sellBtn = document.querySelector('#selling');
-            if (sellBtn) {
-                sellBtn.addEventListener('click', function () {
-                    const isLoggedIn = localStorage.getItem('isLoggedIn');
-                    if (isLoggedIn === 'true') {
-                        window.location.href = 'product.html';
-                    } else {
-                        showToast("You need to log in first!");
-                        setTimeout(() => {
-                            window.location.href = 'login.html';
-                        }, 2000);
-                    }
-                });
+            addToCart(product) {
+                const existingItem = this.cart.find(item => item.name === product.name);
+                
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    this.cart.push({ ...product, quantity: 1 });
+                }
+                
+                this.saveCart();
             }
 
-            // Initialize cart count on page load
-            let initialCartCount = parseInt(localStorage.getItem('cartCount')) || 0;
-            document.getElementById('cartCount').textContent = initialCartCount;
+            updateCartCount() {
+                const count = this.cart.reduce((total, item) => total + item.quantity, 0);
+                const badge = document.getElementById('cartCount');
+                
+                if (count > 0) {
+                    badge.textContent = count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+        const cartManager = new CartManager();
+
+        // ==================== EVENT HANDLERS ====================
+        function addFeaturedProduct(name, price, image) {
+            const product = {
+                name: name,
+                price: price,
+                unit: 'KG',
+                image: image,
+                quantity: 1
+            };
+            
+            cartManager.addToCart(product);
+            showToast(`✅ ${name} added to cart!`);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ==================== INITIALIZE ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            cartManager.updateCartCount();
         });
     </script>
-    </body>
-    </html>
+</body>
+
+</html>

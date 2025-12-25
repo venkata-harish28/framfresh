@@ -1,105 +1,212 @@
+<!-- LOGIN.HTML -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Farm Fresh - Login</title>
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     body { 
-      text-align: center; margin:0; font-family: Arial, sans-serif; 
+      text-align: center;
+      font-family: Arial, sans-serif; 
       background-image: url("https://www.shutterstock.com/image-photo/fresh-vegetables-fruits-on-white-260nw-1722298993.jpg");
-      background-size: cover; background-position: center; height:100vh;
-      display:flex; align-items:center; justify-content:center;
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    div { 
-      background-color: rgba(255,255,255,0.9); padding:40px; border-radius:15px; 
-      box-shadow:0 8px 16px rgba(0,0,0,0.3); width:350px;
+
+    .container { 
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 350px;
     }
-    h1 { margin-bottom:10px; color:#2e7d32; }
-    label { display:block; text-align:left; margin:10px 0 5px; font-weight:bold; }
-    input, button { width:100%; padding:10px; border-radius:10px; border:1px solid #ccc; margin-bottom:15px; font-size:16px;}
-    button { background-color:#4CAF50; color:white; border:none; cursor:pointer;}
-    button:hover { background-color:#388e3c; }
-    .link { display:block; font-size:14px; color:#2e7d32; text-decoration:none; margin-top:10px; }
-    .link:hover { text-decoration:underline; }
+
+    h1 { 
+      margin-bottom: 10px;
+      color: #2e7d32;
+      font-size: 28px;
+    }
+
+    h2 { 
+      margin-bottom: 20px;
+      color: #2e7d32;
+      font-size: 24px;
+    }
+
+    hr { margin: 10px 0 15px 0; border: none; border-top: 2px solid #ccc; }
+
+    label { 
+      display: block;
+      text-align: left;
+      margin: 10px 0 5px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    input:focus {
+      outline: none;
+      border: 2px solid #4CAF50;
+      box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #388e3c;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .link {
+      display: block;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #2e7d32;
+      text-decoration: none;
+      transition: text-decoration 0.2s;
+    }
+
+    .link:hover {
+      text-decoration: underline;
+    }
+
+    .error {
+      color: #d32f2f;
+      margin-bottom: 10px;
+      font-size: 14px;
+      padding: 10px;
+      background-color: #ffebee;
+      border-radius: 5px;
+      display: none;
+    }
+
+    .success {
+      color: #388e3c;
+      margin-bottom: 10px;
+      font-size: 14px;
+      padding: 10px;
+      background-color: #e8f5e9;
+      border-radius: 5px;
+      display: none;
+    }
   </style>
 </head>
 <body>
-  <div>
+  <div class="container">
+    <h1>Farm Fresh</h1>
+    <hr>
+    <h2>Login</h2>
+
+    <div id="error" class="error"></div>
+    <div id="success" class="success"></div>
+
     <form id="loginForm">
-      <h1>Farm Fresh</h1>
-      <hr>
-      <h1>Login</h1>
       <label for="email">E-mail:</label>
       <input type="email" id="email" placeholder="Enter your Email" required />
+
       <label for="password">Password:</label>
       <input type="password" id="password" placeholder="Enter your Password" required />
-      <button type="submit">Login</button>
+
+      <button type="submit" id="submitBtn">Login</button>
+
       <a href="forgot-password.html" class="link">Forgot Password?</a>
-      <a href="signup.html" class="link">Don’t have an account? Sign Up</a>
+      <a href="signup.html" class="link">Don't have an account? Sign Up</a>
     </form>
   </div>
 
   <script>
-    document.getElementById("loginForm").addEventListener("submit", async function(e) {
+    const form = document.getElementById('loginForm');
+    const errorDiv = document.getElementById('error');
+    const successDiv = document.getElementById('success');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function showError(message) {
+      errorDiv.textContent = '❌ ' + message;
+      errorDiv.style.display = 'block';
+      successDiv.style.display = 'none';
+    }
+
+    function showSuccess(message) {
+      successDiv.textContent = '✅ ' + message;
+      successDiv.style.display = 'block';
+      errorDiv.style.display = 'none';
+    }
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
 
       if (!email || !password) {
-        alert("⚠️ Please enter both email and password.");
+        showError('Please enter both email and password.');
         return;
       }
 
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Logging in...';
+
       try {
-        const res = await fetch("http://localhost:5000/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        const response = await fetch('http://localhost:5000/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
 
-        const data = await res.json();
+        const data = await response.json();
 
         if (data.success) {
-          alert("✅ Login successful!");
-          // Save token + user info in localStorage
-          localStorage.setItem("farmfresh_current_user", JSON.stringify({
-            token: data.token,
-            email: data.user.email,
-            name: data.user.name,
-            phone: data.user.phone,
-            address: data.user.address
-          }));
-          window.location.href = "webpage.html";
+          showSuccess('Login successful! Redirecting...');
+          
+          // Save token and user info
+          sessionStorage.setItem('token', data.token);
+          sessionStorage.setItem('user', JSON.stringify(data.user));
+
+          setTimeout(() => {
+            window.location.href = 'webpage.html';
+          }, 1500);
         } else {
-          alert("❌ " + data.message);
+          showError(data.message || 'Login failed');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Login';
         }
       } catch (err) {
-        alert("❌ Error: " + err.message);
+        showError('Error: ' + err.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Login';
       }
     });
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  const res = await fetch("http://localhost:5000/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
-
-  const data = await res.json();
-
-  if (data.success) {
-    localStorage.setItem("user", JSON.stringify(data.user));
-
-  } else {
-    alert("Invalid email or password");
-  }
-});
-
   </script>
 </body>
 </html>

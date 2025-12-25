@@ -1,0 +1,194 @@
+{
+  "setup_guide": "COMPLETE BACKEND SETUP INSTRUCTIONS",
+  "step_1_create_project": {
+    "commands": [
+      "mkdir farmfresh-backend",
+      "cd farmfresh-backend",
+      "npm init -y",
+      "npm install express mongoose bcryptjs jsonwebtoken cors dotenv"
+    ],
+    "description": "Initialize Node.js project with all required dependencies"
+  },
+  "step_2_package_json": {
+    "file": "package.json",
+    "content": {
+      "name": "farmfresh-backend",
+      "version": "1.0.0",
+      "description": "FarmFresh marketplace backend",
+      "main": "server.js",
+      "scripts": {
+        "start": "node server.js",
+        "dev": "nodemon server.js"
+      },
+      "dependencies": {
+        "express": "^4.18.2",
+        "mongoose": "^7.0.0",
+        "bcryptjs": "^2.4.3",
+        "jsonwebtoken": "^9.0.0",
+        "cors": "^2.8.5",
+        "dotenv": "^16.0.3"
+      },
+      "devDependencies": {
+        "nodemon": "^2.0.22"
+      }
+    }
+  },
+  "step_3_env_file": {
+    "file": ".env",
+    "content": "# Server Configuration\nPORT=5000\nNODE_ENV=development\n\n# MongoDB Configuration\nMONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/farmfresh?retryWrites=true&w=majority\n\n# JWT Configuration\nJWT_SECRET=your-super-secret-jwt-key-change-this-in-production\n\n# Email Configuration (Optional - for OTP)\nEMAIL_SERVICE=gmail\nEMAIL_USER=your-email@gmail.com\nEMAIL_PASS=your-app-password\n\n# API Configuration\nAPI_URL=http://localhost:5000\nFRONTEND_URL=http://localhost:3000"
+  },
+  "step_4_mongodb_setup": {
+    "instructions": [
+      "1. Go to https://www.mongodb.com/cloud/atlas",
+      "2. Create a free account",
+      "3. Create a new project",
+      "4. Click 'Build a Database'",
+      "5. Choose 'Shared' for free tier",
+      "6. Select your region",
+      "7. Create cluster (takes 2-3 minutes)",
+      "8. Click 'Connect' button",
+      "9. Add your IP address (0.0.0.0/0 for development)",
+      "10. Create database user with username and password",
+      "11. Copy connection string and paste in .env file",
+      "12. Replace <username> and <password> with your database credentials"
+    ]
+  },
+  "step_5_run_server": {
+    "commands": [
+      "# First time - install dependencies",
+      "npm install",
+      "",
+      "# Start development server with auto-reload",
+      "npm install -g nodemon",
+      "npm run dev",
+      "",
+      "# Or start normally",
+      "npm start"
+    ],
+    "expected_output": "🚀 Server running on port 5000"
+  },
+  "step_6_test_apis": {
+    "tool": "Postman or cURL",
+    "endpoints_to_test": [
+      {
+        "method": "POST",
+        "url": "http://localhost:5000/signup",
+        "body": {
+          "name": "John Doe",
+          "email": "john@example.com",
+          "phone": "9876543210",
+          "password": "password123",
+          "role": "buyer"
+        }
+      },
+      {
+        "method": "POST",
+        "url": "http://localhost:5000/login",
+        "body": {
+          "email": "john@example.com",
+          "password": "password123"
+        }
+      },
+      {
+        "method": "GET",
+        "url": "http://localhost:5000/api/products",
+        "headers": {}
+      }
+    ]
+  },
+  "step_7_common_issues": {
+    "issue_1": {
+      "problem": "Cannot connect to MongoDB",
+      "solutions": [
+        "Check if MongoDB_URI in .env is correct",
+        "Verify your IP is whitelisted in MongoDB Atlas",
+        "Check if username/password are correct (URL encoded if needed)",
+        "Ensure cluster is running"
+      ]
+    },
+    "issue_2": {
+      "problem": "Port 5000 already in use",
+      "solutions": [
+        "Change PORT in .env to 5001 or another free port",
+        "Kill process using port: lsof -ti:5000 | xargs kill -9 (Mac/Linux)",
+        "In Windows: netstat -ano | findstr :5000, then taskkill /PID <PID> /F"
+      ]
+    },
+    "issue_3": {
+      "problem": "CORS errors from frontend",
+      "solutions": [
+        "Make sure cors middleware is enabled in server.js",
+        "Add frontend URL to CORS whitelist if needed",
+        "Check if backend is actually running"
+      ]
+    },
+    "issue_4": {
+      "problem": "JWT errors",
+      "solutions": [
+        "Make sure JWT_SECRET is set in .env",
+        "Check token format in requests (should be 'Authorization: token')",
+        "Verify token hasn't expired"
+      ]
+    }
+  },
+  "step_8_deployment": {
+    "options": [
+      {
+        "platform": "Render.com",
+        "steps": [
+          "1. Push code to GitHub",
+          "2. Go to https://render.com",
+          "3. Click 'New +' -> 'Web Service'",
+          "4. Connect your GitHub repository",
+          "5. Set environment variables in Render dashboard",
+          "6. Deploy"
+        ]
+      },
+      {
+        "platform": "Railway.app",
+        "steps": [
+          "1. Push code to GitHub",
+          "2. Go to https://railway.app",
+          "3. Click 'New Project'",
+          "4. Select 'Deploy from GitHub'",
+          "5. Add environment variables",
+          "6. Deploy automatically"
+        ]
+      },
+      {
+        "platform": "Heroku (Legacy - may require credit card)",
+        "steps": [
+          "1. Create Heroku account",
+          "2. Install Heroku CLI",
+          "3. Run: heroku login",
+          "4. Run: heroku create your-app-name",
+          "5. Set environment: heroku config:set KEY=VALUE",
+          "6. Deploy: git push heroku main"
+        ]
+      }
+    ]
+  },
+  "frontend_api_base_url": {
+    "development": "http://localhost:5000",
+    "production": "https://your-deployed-backend-url.com",
+    "note": "Update API calls in all frontend files to use the correct base URL"
+  },
+  "security_checklist": [
+    "✓ Change JWT_SECRET to a strong, random value",
+    "✓ Use environment variables for all sensitive data",
+    "✓ Never commit .env file to GitHub (add to .gitignore)",
+    "✓ Enable HTTPS in production",
+    "✓ Implement rate limiting for APIs",
+    "✓ Validate all user inputs on backend",
+    "✓ Hash passwords with bcrypt (already done)",
+    "✓ Use CORS carefully - whitelist only trusted origins"
+  ],
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.0.2"
+  }
+}

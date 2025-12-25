@@ -7,649 +7,291 @@
     <title>FarmFresh - Product Catalog</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        body {
+            background-color: #f9f9f9;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #388E3C;
+            transform: translateX(-5px);
+        }
+
+        .toast {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-in-out;
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .product-card {
+            transition: all 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .cart-count-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 24px;
+            height: 24px;
+            background-color: #ff5252;
+            color: white;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+    </style>
 </head>
 
 <body class="bg-gray-100">
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <button class="back-button" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i>
+                    Back
+                </button>
+                <h1 class="text-2xl font-bold text-green-600">FarmFresh - Store</h1>
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="cart.html" class="flex items-center gap-2 text-green-600 font-bold hover:text-green-700">
+                    <i class="fas fa-shopping-cart text-2xl"></i>
+                    <span id="cartCountBadge" class="cart-count-badge" style="display: none;">0</span>
+                </a>
+                <a href="profile.html" class="text-green-600 font-bold hover:text-green-700">
+                    <i class="fas fa-user-circle text-2xl"></i>
+                </a>
+            </div>
+        </div>
+    </div>
 
+    <!-- TOAST -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i> <span id="toastMessage"></span>
+    </div>
+
+    <!-- HEADER -->
     <header class="bg-green-600 text-white text-center py-4 mb-6 shadow-md">
         <h1 class="text-2xl font-bold">FarmFresh - Fresh Products for You</h1>
     </header>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6">
-
-       
-        <!-- PRODUCT CARDS START -->
-
-        <!-- PRODUCT 1: Tomatoes -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://cdn.grofers.com/app/images/products/sliding_image/421699a.jpg" alt="Tomatoes"
-                    class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Organic</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Tomatoes</h3>
-                    <span class="font-bold text-green-600">&#8377;40/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Juicy red tomatoes, perfect for salads, sauces, and cooking.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                        <span class="text-gray-600 text-sm ml-1">(24)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- PRODUCT 2: Potatoes -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://www.oyedesi.co/wp-content/uploads/2021/09/Potato-3.png" alt="Potatoes"
-                    class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Fresh</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Potatoes</h3>
-                    <span class="font-bold text-green-600">&#8377;25/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Starchy and versatile, great for boiling, frying, or roasting.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(18)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- PRODUCT 3: Carrots -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://nurserylive.com/cdn/shop/products/nurserylive-seeds-carrot-mohan-chantenay-nantes-vegetable-seeds-16968688959628.jpg?v=1634203415"
-                    alt="Carrots" class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">Organic</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Carrots</h3>
-                    <span class="font-bold text-green-600">&#8377;70/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Naturally sweet and crunchy, full of beta-carotene.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i
-                            class="far fa-star"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(12)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- PRODUCT 4: Onion -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://www.bbassets.com/media/uploads/p/l/40023472_6-fresho-onion-organically-grown.jpg"
-                    alt="Onion" class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Organic</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Onion</h3>
-                    <span class="font-bold text-green-600">&#8377;50/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Pungent and flavorful, essential for Indian cooking.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(18)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- PRODUCT 5: OKRA -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://www.bbassets.com/media/uploads/p/l/10000142-2_1-fresho-ladies-finger.jpg" alt="OKRA"
-                    class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Fresh</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">OKRA</h3>
-                    <span class="font-bold text-green-600">&#8377;35/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Tender and fresh, ideal for bhindi fry or curry.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(18)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- PRODUCT 6: Brinjal -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://organicmandya.com/cdn/shop/files/Brinjal.jpg?v=1721370805" alt="Brinjal"
-                    class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Fresh</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Brinjal</h3>
-                    <span class="font-bold text-green-600">&#8377;65/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Glossy purple brinjal, soft and flavorful when cooked.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(18)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- PRODUCT 7: Mirchi -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://parajorganics.com/wp-content/uploads/2019/12/fresh-green-chilli-500x500-1.jpeg"
-                    alt="Green Chilli" class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Fresh</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Mirchi</h3>
-                    <span class="font-bold text-green-600">&#8377;30/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Spicy and sharp, adds heat to any dish.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(18)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://drvaidji.com/cdn/shop/articles/Bitter_Melon_1024x1024_37ab9838-93f6-4c88-83b4-508443174b78.jpg?v=1699514225"
-                    alt="Green Chilli" class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Fresh</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Bitter gourd </h3>
-                    <span class="font-bold text-green-600">&#8377;70/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Bold and bitter, this nutrient-rich veggie adds a healthy kick to
-                    your meals.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(18)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-        <!-- FRUITS -->
-
-        <!-- Lychee -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://www.allrecipes.com/thmb/f97jpLOG3lw2p2i0RIN_97qt1sc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/what-is-lychee-fruit-3x2-1-bb3f004f69804b4192a35481f80d1d48.jpg"
-                    alt="Lychee" class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-pink-100 text-pink-800 text-xs px-2 py-1 rounded-full">Fresh</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Lychee</h3>
-                    <span class="font-bold text-green-600">&#8377;90/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Sweet and juicy tropical fruit with a floral aroma.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(20)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Kiwi -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://d3mvlb3hz2g78.cloudfront.net/wp-content/uploads/2012/10/thumb_720_450_Kiwi_shutterstock_84220885-1.jpg"
-                    alt="Kiwi" class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Fresh</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Kiwi</h3>
-                    <span class="font-bold text-green-600">&#8377;100/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Tangy green fruit rich in Vitamin C and antioxidants.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i
-                            class="far fa-star"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(15)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sapota (Chikoo) -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://roadmandi.com/wp-content/uploads/2024/05/sapota-01.jpg" alt="Sapota"
-                    class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Seasonal</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Sapota</h3>
-                    <span class="font-bold text-green-600">&#8377;60/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Naturally sweet and grainy, perfect for desserts or smoothies.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="far fa-star"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(14)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Fruits: Mango -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://alphonsomango.in/cdn/shop/articles/img-1738571803380_91c02d8c-8a6e-4357-8120-c25ecd8ceb71.jpg?v=1741529236"
-                    alt="Mango" class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">Seasonal</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Alphonso Mango</h3>
-                    <span class="font-bold text-green-600">&#8377;200/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Juicy, sweet Alphonso mangoes directly from Ratnagiri farms.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(45)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- DAIRY -->
-
-        <!-- Curd -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://www.chezshuchi.com/images/homemade-dahi51.JPG" alt="Curd"
-                    class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Dairy</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Curd</h3>
-                    <span class="font-bold text-green-600">&#8377;50/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Smooth and creamy homemade curd, rich in probiotics.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(22)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative w-full h-48">
-                <img src="https://www.yummyfoodrecipes.com/resources/picture/org/Easy-Sweet-Lassi-Recipe.jpg"
-                    alt="Lassi" class="absolute inset-0 w-full h-full object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Dairy</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Lassi</h3>
-                    <span class="font-bold text-green-600">&#8377;50/Liter</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Smooth and refreshing traditional lassi made from rich curd.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                        <i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(22)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">
-                        Add <i class="fas fa-plus ml-1"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Ghee -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://m.media-amazon.com/images/I/51cAnoCvWkL._UF1000,1000_QL80_.jpg" alt="Ghee"
-                    class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Dairy</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Ghee</h3>
-                    <span class="font-bold text-green-600">&#8377;1200/L</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Pure desi ghee made from cow's milk, aromatic and healthy.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star-half-alt"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(19)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-        <!-- Dairy: Paneer -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://www.indianhealthyrecipes.com/wp-content/uploads/2024/05/how-to-make-paneer-recipe.jpg"
-                    alt="Paneer" class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Dairy</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Paneer</h3>
-                    <span class="font-bold text-green-600">&#8377;320/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Fresh soft paneer made from buffalo milk, perfect for curries.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(27)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Meat: Fish -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=1080/app/images/products/sliding_image/477403a.jpg?ts=1700378954"
-                    alt="Rohu Fish" class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Fish</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Rohu Fish</h3>
-                    <span class="font-bold text-green-600">&#8377;350/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Freshwater Rohu fish, cleaned and ready to cook.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="far fa-star"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(14)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Meat: Chicken -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=360/da/cms-assets/cms/product/bdd6c9e1-1f97-4e70-8cb0-3b1bfc721057.png"
-                    alt="Chicken Curry Cut" class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-rose-100 text-rose-800 text-xs px-2 py-1 rounded-full">Meat</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Chicken (Curry Cut)</h3>
-                    <span class="font-bold text-green-600">&#8377;280/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Tender chicken curry cuts — cleaned, skinless, and juicy.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i
-                            class="far fa-star"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(12)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Meat: Mutton -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://cdn.grofers.com/da/cms-assets/cms/product/e7e1fa7c-925b-4647-b364-65fb4c17b48a.jpg?ts=1740489253"
-                    alt="Mutton" class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-rose-200 text-rose-900 text-xs px-2 py-1 rounded-full">Meat</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Mutton (Curry Cut)</h3>
-                    <span class="font-bold text-green-600">&#8377;850/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Goat mutton curry cuts — juicy, tender, and high in protein.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="far fa-star"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(8)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Meat: Prawns -->
-        <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-            <div class="relative">
-                <img src="https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=1080/app/assets/products/sliding_images/jpeg/5fc16c5b-d843-493c-a680-42f8883f5f91.jpg?ts=1740395068"
-                    alt="Prawns" class="w-full h-48 object-cover" />
-                <span
-                    class="absolute top-4 right-4 bg-sky-100 text-sky-800 text-xs px-2 py-1 rounded-full">Seafood</span>
-            </div>
-            <div class="p-4">
-                <div class="flex justify-between items-start mb-2">
-                    <h3 class="font-bold text-lg">Prawns (Cleaned)</h3>
-                    <span class="font-bold text-green-600">&#8377;700/KG</span>
-                </div>
-                <p class="text-gray-600 text-sm mb-4">Medium-size prawns, deveined and ready to cook.</p>
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center text-yellow-400">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i><i
-                            class="far fa-star"></i><i class="far fa-star"></i>
-                        <span class="text-gray-600 text-sm ml-1">(17)</span>
-                    </div>
-                    <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i
-                            class="fas fa-plus ml-1"></i></button>
-                </div>
-            </div>
-        </div> 
-
-    </div>
-
-    <!-- Toast container -->
-    <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 
-            bg-green-600 text-white px-6 py-3 rounded shadow-lg opacity-0 transition-opacity duration-500 z-50">
-        Added to cart!
+    <!-- PRODUCTS GRID -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-6" id="productsGrid">
+        <!-- Products will be loaded here -->
     </div>
 
     <script>
-        const sellButton = document.getElementById('sellBtn');
+        // ==================== PRODUCT DATA ====================
+        const allProducts = [
+            // VEGETABLES
+            { id: 1, name: 'Tomatoes', price: 40, unit: 'KG', image: 'https://cdn.grofers.com/app/images/products/sliding_image/421699a.jpg', badge: 'Organic', rating: 4.5, reviews: 24 },
+            { id: 2, name: 'Potatoes', price: 25, unit: 'KG', image: 'https://www.oyedesi.co/wp-content/uploads/2021/09/Potato-3.png', badge: 'Fresh', rating: 4.3, reviews: 18 },
+            { id: 3, name: 'Carrots', price: 70, unit: 'KG', image: 'https://nurserylive.com/cdn/shop/products/nurserylive-seeds-carrot-mohan-chantenay-nantes-vegetable-seeds-16968688959628.jpg?v=1634203415', badge: 'Organic', rating: 4.2, reviews: 12 },
+            { id: 4, name: 'Onion', price: 50, unit: 'KG', image: 'https://www.bbassets.com/media/uploads/p/l/40023472_6-fresho-onion-organically-grown.jpg', badge: 'Organic', rating: 4.4, reviews: 18 },
+            { id: 5, name: 'OKRA', price: 35, unit: 'KG', image: 'https://www.bbassets.com/media/uploads/p/l/10000142-2_1-fresho-ladies-finger.jpg', badge: 'Fresh', rating: 4.3, reviews: 18 },
+            { id: 6, name: 'Brinjal', price: 65, unit: 'KG', image: 'https://organicmandya.com/cdn/shop/files/Brinjal.jpg?v=1721370805', badge: 'Fresh', rating: 4.3, reviews: 18 },
+            { id: 7, name: 'Mirchi', price: 30, unit: 'KG', image: 'https://parajorganics.com/wp-content/uploads/2019/12/fresh-green-chilli-500x500-1.jpeg', badge: 'Fresh', rating: 4.3, reviews: 18 },
+            { id: 8, name: 'Bitter Gourd', price: 70, unit: 'KG', image: 'https://drvaidji.com/cdn/shop/articles/Bitter_Melon_1024x1024_37ab9838-93f6-4c88-83b4-508443174b78.jpg?v=1699514225', badge: 'Fresh', rating: 4.3, reviews: 18 },
+            
+            // FRUITS
+            { id: 101, name: 'Lychee', price: 90, unit: 'KG', image: 'https://www.allrecipes.com/thmb/f97jpLOG3lw2p2i0RIN_97qt1sc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/what-is-lychee-fruit-3x2-1-bb3f004f69804b4192a35481f80d1d48.jpg', badge: 'Fresh', rating: 4.5, reviews: 20 },
+            { id: 102, name: 'Kiwi', price: 100, unit: 'KG', image: 'https://d3mvlb3hz2g78.cloudfront.net/wp-content/uploads/2012/10/thumb_720_450_Kiwi_shutterstock_84220885-1.jpg', badge: 'Fresh', rating: 4.2, reviews: 15 },
+            { id: 103, name: 'Sapota', price: 60, unit: 'KG', image: 'https://roadmandi.com/wp-content/uploads/2024/05/sapota-01.jpg', badge: 'Seasonal', rating: 4.1, reviews: 14 },
+            { id: 104, name: 'Alphonso Mango', price: 200, unit: 'KG', image: 'https://alphonsomango.in/cdn/shop/articles/img-1738571803380_91c02d8c-8a6e-4357-8120-c25ecd8ceb71.jpg?v=1741529236', badge: 'Seasonal', rating: 4.5, reviews: 45 },
+            
+            // DAIRY
+            { id: 201, name: 'Curd', price: 50, unit: 'KG', image: 'https://www.chezshuchi.com/images/homemade-dahi51.JPG', badge: 'Dairy', rating: 4.5, reviews: 22 },
+            { id: 202, name: 'Lassi', price: 50, unit: 'Liter', image: 'https://www.yummyfoodrecipes.com/resources/picture/org/Easy-Sweet-Lassi-Recipe.jpg', badge: 'Dairy', rating: 4.3, reviews: 22 },
+            { id: 203, name: 'Ghee', price: 1200, unit: 'L', image: 'https://m.media-amazon.com/images/I/51cAnoCvWkL._UF1000,1000_QL80_.jpg', badge: 'Dairy', rating: 4.4, reviews: 19 },
+            { id: 204, name: 'Paneer', price: 320, unit: 'KG', image: 'https://www.indianhealthyrecipes.com/wp-content/uploads/2024/05/how-to-make-paneer-recipe.jpg', badge: 'Dairy', rating: 4.5, reviews: 27 },
+            
+            // GRAINS
+            { id: 301, name: 'Basmati Rice', price: 80, unit: 'KG', image: 'https://img.cdnx.in/389805/basmati-rice-1723575831222.webp?width=600&format=webp', badge: 'Staple', rating: 4.4, reviews: 30 },
+            { id: 302, name: 'Red Gram (Dal)', price: 40, unit: 'KG', image: 'https://outputs.kalgudi.com/data/p_images/1585665844458.jpeg', badge: 'Essential', rating: 4.2, reviews: 18 },
+            { id: 303, name: 'Wheat', price: 70, unit: 'KG', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTq5vTEr98Q2mdcY0VwIsKHIdX7a06jeYXwrg&s', badge: 'Healthy', rating: 4.2, reviews: 12 },
+            { id: 304, name: 'Maize (Corn)', price: 55, unit: 'KG', image: 'https://upload.wikimedia.org/wikipedia/commons/7/78/Ab_food_06.jpg', badge: 'Popular', rating: 4.4, reviews: 25 },
+            
+            // POULTRY
+            { id: 401, name: 'Rohu Fish', price: 350, unit: 'KG', image: 'https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=1080/app/images/products/sliding_image/477403a.jpg?ts=1700378954', badge: 'Fish', rating: 4.2, reviews: 14 },
+            { id: 402, name: 'Chicken (Curry Cut)', price: 280, unit: 'KG', image: 'https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=360/da/cms-assets/cms/product/bdd6c9e1-1f97-4e70-8cb0-3b1bfc721057.png', badge: 'Meat', rating: 4.2, reviews: 12 },
+            { id: 403, name: 'Mutton (Curry Cut)', price: 850, unit: 'KG', image: 'https://cdn.grofers.com/da/cms-assets/cms/product/e7e1fa7c-925b-4647-b364-65fb4c17b48a.jpg?ts=1740489253', badge: 'Meat', rating: 4.2, reviews: 8 },
+            { id: 404, name: 'Prawns (Cleaned)', price: 700, unit: 'KG', image: 'https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=1080/app/assets/products/sliding_images/jpeg/5fc16c5b-d843-493c-a680-42f8883f5f91.jpg?ts=1740395068', badge: 'Seafood', rating: 4.3, reviews: 17 },
+            
+            // HONEY
+            { id: 501, name: 'Pure Honey', price: 250, unit: '500g', image: 'https://www.news-medical.net/images/news/ImageForNews_753423_16891547829825380.jpg', badge: 'Natural', rating: 4.5, reviews: 34 }
+        ];
 
-            sellButton.addEventListener('click', function () {
-                alert("Sign-in for selling");
-                window.location.href = "signup.html";
-            });
-            //browse the products
-            const browseButton = document.getElementById('product-browser');
+        // ==================== CART MANAGEMENT ====================
+        class CartManager {
+            constructor() {
+                this.loadCart();
+            }
 
-            browseButton.addEventListener('click', function () {
-                alert("Sign-in for Buying");
-                window.location.href = "signup.html";
-            });
+            loadCart() {
+                try {
+                    const stored = sessionStorage.getItem('cart');
+                    this.cart = stored ? JSON.parse(stored) : [];
+                } catch (e) {
+                    this.cart = [];
+                }
+            }
 
-        let cart = [];
+            saveCart() {
+                sessionStorage.setItem('cart', JSON.stringify(this.cart));
+                this.updateCartCount();
+            }
 
-        // Function to show toast
-        function showToast(message) {
-            const toast = document.getElementById("toast");
-            toast.textContent = message;
-            toast.classList.remove("opacity-0");
-            toast.classList.add("opacity-100");
+            addToCart(product) {
+                const existingItem = this.cart.find(item => item.id === product.id);
+                
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    this.cart.push({
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        unit: product.unit,
+                        image: product.image,
+                        quantity: 1
+                    });
+                }
+                
+                this.saveCart();
+                return true;
+            }
 
-            setTimeout(() => {
-                toast.classList.remove("opacity-100");
-                toast.classList.add("opacity-0");
-            }, 2000); // toast visible for 2 seconds
+            updateCartCount() {
+                const count = this.cart.reduce((total, item) => total + item.quantity, 0);
+                const badge = document.getElementById('cartCountBadge');
+                
+                if (count > 0) {
+                    badge.textContent = count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
         }
 
-        // Load cart from localStorage on page load
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedCart = localStorage.getItem("cart");
-            cart = savedCart ? JSON.parse(savedCart) : [];
+        const cartManager = new CartManager();
 
-            // Static product buttons
-            const addButtons = document.querySelectorAll(".product-card button");
-            addButtons.forEach((button) => {
-                button.addEventListener("click", function () {
-                    const card = this.closest(".product-card");
-
-                    const name = card.querySelector("h3").textContent.trim();
-                    const priceText = card.querySelector("span.font-bold.text-green-600").textContent.trim();
-                    const priceMatch = priceText.match(/₹(\d+)/);
-                    const price = priceMatch ? parseInt(priceMatch[1]) : 0;
-
-                    const image = card.querySelector("img").src;
-
-                    const product = { name, price, image, quantity: 1 };
-                    const existing = cart.find((item) => item.name === product.name);
-                    if (existing) existing.quantity += 1;
-                    else cart.push(product);
-
-                    localStorage.setItem("cart", JSON.stringify(cart));
-                    showToast(`${product.name} added to cart!`);
-                });
-            });
-
-            // Dynamic product loading from localStorage
-            const container = document.querySelector(".grid");
-            const products = JSON.parse(localStorage.getItem("products")) || [];
-
-            products.forEach(product => {
-                const card = document.createElement("div");
-                card.classList.add("product-card", "bg-white", "rounded-xl", "overflow-hidden", "shadow-md");
-
-                card.innerHTML = `
+        // ==================== RENDER PRODUCTS ====================
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = allProducts.map(product => `
+                <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
                     <div class="relative">
-                      <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover" />
-                      <span class="absolute top-4 right-4 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">${product.category}</span>
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover" />
+                        <span class="absolute top-4 right-4 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                            ${product.badge}
+                        </span>
                     </div>
                     <div class="p-4">
-                      <div class="flex justify-between items-start mb-2">
-                        <h3 class="font-bold text-lg">${product.name}</h3>
-                        <span class="font-bold text-green-600">&#8377;${product.price}</span>
-                      </div>
-                      <div class="flex justify-between items-center">
-                        <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition">Add <i class="fas fa-plus ml-1"></i></button>
-                      </div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-lg">${product.name}</h3>
+                            <span class="font-bold text-green-600">₹${product.price}/${product.unit}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center text-yellow-400">
+                                ${Array(Math.floor(product.rating)).fill('<i class="fas fa-star"></i>').join('')}
+                                ${product.rating % 1 !== 0 ? '<i class="fas fa-star-half-alt"></i>' : ''}
+                                <span class="text-gray-600 text-sm ml-1">(${product.reviews})</span>
+                            </div>
+                            <button 
+                                class="add-to-cart-btn bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition"
+                                onclick="handleAddToCart(${product.id})"
+                            >
+                                Add <i class="fas fa-plus ml-1"></i>
+                            </button>
+                        </div>
                     </div>
-                `;
+                </div>
+            `).join('');
+        }
 
-                // Attach Add-to-Cart functionality
-                card.querySelector("button").addEventListener("click", function() {
-                    const prod = { name: product.name, price: product.price, image: product.image, quantity: 1 };
-                    const existing = cart.find(item => item.name === prod.name);
-                    if (existing) existing.quantity += 1;
-                    else cart.push(prod);
-                    localStorage.setItem("cart", JSON.stringify(cart));
-                    showToast(`${prod.name} added to cart!`);
-                });
+        // ==================== EVENT HANDLERS ====================
+        function handleAddToCart(productId) {
+            const product = allProducts.find(p => p.id === productId);
+            if (product) {
+                cartManager.addToCart(product);
+                showToast(`✅ ${product.name} added to cart!`);
+            }
+        }
 
-                container.appendChild(card);
-            });
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function goBack() {
+            window.location.href = 'webpage.html';
+        }
+
+        // ==================== INITIALIZE ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            cartManager.updateCartCount();
         });
     </script>
-
 </body>
+
 </html>
