@@ -49,6 +49,12 @@
 
   <!-- Right Content Area -->
   <div class="flex-1 p-8 bg-gray-50 overflow-auto">
+    <div class="flex items-center justify-between mb-4">
+      <button id="backBtn" class="flex items-center space-x-2 text-gray-700 bg-white px-4 py-2 rounded shadow hover:bg-gray-100 transition">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Back</span>
+      </button>
+    </div>
     <div id="contentArea" class="h-full flex items-center justify-center">
       <div class="bg-gradient-to-r from-green-400 to-blue-500 shadow-2xl rounded-3xl p-12 w-3/4 text-center text-white transform hover:scale-105 transition">
         <h1 class="text-4xl font-bold mb-4">Welcome to FarmFresh!</h1>
@@ -62,143 +68,216 @@
 <script>
 /* -------------------- Utilities -------------------- */
 function safeParse(json, fallback) { try { return JSON.parse(json); } catch { return fallback; } }
+
 function getUser() {
-  const user = safeParse(localStorage.getItem("userProfile"), {});
-  if (!Array.isArray(user.addresses)) {
-    user.addresses = [];
-    if (user.address) user.addresses.push(user.address);
-  }
-  return user;
+  return safeParse(localStorage.getItem("userProfile"), {});
 }
-function saveUser(user) { localStorage.setItem("userProfile", JSON.stringify(user)); }
+
+function saveUser(user) { 
+  localStorage.setItem("userProfile", JSON.stringify(user)); 
+}
+
 function setAvatarFromName(name) {
   const url = `https://ui-avatars.com/api/?name=${encodeURIComponent(name||"G")}&background=random&color=fff&bold=true`;
-  const img = document.getElementById("profilePic"); if(img) img.src=url;
+  const img = document.getElementById("profilePic"); 
+  if(img) img.src = url;
 }
 
 /* -------------------- Initial Load -------------------- */
-document.addEventListener("DOMContentLoaded", () => {
-  const user = getUser();
-  if (!user.name && !user.email) { alert("No profile found! Please signup."); window.location.href="signup.html"; return; }
+document.addEventListener("DOMContentLoaded", async () => {
+  const token = localStorage.getItem('token');
+  
+  if (!token) {
+    alert("Please login first!");
+    window.location.href = "login.html";
+    return;
+  }
 
-  document.getElementById("profileName").textContent = user.name||"Guest";
-  document.getElementById("profileEmail").textContent = user.email||"No email";
-  document.getElementById("profilePhone").textContent = user.phone||"📞 Not provided";
-  document.getElementById("profileAddress").textContent = user.address||"🏠 Address not provided";
-  setAvatarFromName(user.name);
+  // Fetch fresh profile data from backend
+  try {
+    const response = await fetch('http://localhost:5000/api/profile', {
+      headers: { 'Authorization': token }
+    });
+    
+    const data = await response.json();
+    
+    if (data.success && data.user) {
+      // Update localStorage with fresh data
+      saveUser(data.user);
+      
+      // Update UI
+      document.getElementById("profileName").textContent = data.user.name || "Guest";
+      document.getElementById("profileEmail").textContent = data.user.email || "No email";
+      document.getElementById("profilePhone").textContent = data.user.phone || "📞 Not provided";
+      document.getElementById("profileAddress").textContent = data.user.address || "🏠 Address not provided";
+      setAvatarFromName(data.user.name);
+    } else {
+      throw new Error('Failed to fetch profile');
+    }
+  } catch (err) {
+    console.error('Error loading profile:', err);
+    alert('Error loading profile. Please login again.');
+    localStorage.clear();
+    window.location.href = "login.html";
+    return;
+  }
 
   document.querySelectorAll(".option-btn").forEach(btn=>{
     btn.addEventListener("click",()=>{ renderTab(btn.getAttribute("data-content")); });
   });
+
+  const backBtn = document.getElementById("backBtn");
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      window.location.href = "webpage.html";
+    });
+  }
 });
 
 /* -------------------- Logout -------------------- */
 document.getElementById("logoutBtn").addEventListener("click",()=>{
-  localStorage.removeItem("userProfile");
-  localStorage.removeItem("token");
+  localStorage.clear();
+  sessionStorage.clear();
   window.location.href="web.html";
 });
 
 /* -------------------- Tabs -------------------- */
 const contentArea = document.getElementById("contentArea");
+
 function renderTab(key){
   if(key==="address") renderAddressTab();
   else if(key==="editProfile") renderEditProfileTab();
   else if(key==="history") renderHistoryTab();
   else if(key==="help") renderHelpTab();
-  else contentArea.innerHTML="<p>No content available</p>";
 }
 
 /* ---------- Address Tab ---------- */
 function renderAddressTab(){
-  const user=getUser();
-  const addresses=user.addresses||[];
+  const user = getUser();
+  const address = user.address || '';
+  
   contentArea.innerHTML=`
     <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-2xl">
-      <h2 class="text-3xl font-bold mb-6">Address</h2>
+      <h2 class="text-3xl font-bold mb-6">Delivery Address</h2>
       <div class="mb-6">
-        <h3 class="font-semibold mb-2">Saved Addresses</h3>
-        ${addresses.length?`<ul id="addressList" class="space-y-2">
-          ${addresses.map((addr,i)=>`
-            <li class="flex items-start justify-between p-3 border rounded-lg">
-              <div>
-                <p class="font-medium">${addr}</p>
-                ${user.address===addr?`<span class="text-green-600 text-sm">Current</span>`:`<span class="text-gray-400 text-sm">Saved</span>`}
-              </div>
-              ${user.address===addr?"":`<button class="make-current px-3 py-1 text-sm bg-blue-500 text-white rounded" data-index="${i}">Make Current</button>`}
-            </li>`).join("")}
-        </ul>`:`<p class="text-gray-500">No addresses saved yet.</p>`}
+        <h3 class="font-semibold mb-2">Current Address</h3>
+        <p class="text-gray-600 p-4 border rounded-lg">${address || 'No address set'}</p>
       </div>
       <div class="mt-4">
-        <h3 class="font-semibold mb-2">Add New Address</h3>
-        <textarea id="newAddress" class="w-full border rounded-lg p-3 mb-3" placeholder="Type full address"></textarea>
-        <button id="addAddressBtn" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">Add New Address</button>
+        <h3 class="font-semibold mb-2">Update Address</h3>
+        <textarea id="newAddress" class="w-full border rounded-lg p-3 mb-3" placeholder="Enter your full delivery address">${address}</textarea>
+        <button id="updateAddressBtn" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600">Update Address</button>
       </div>
     </div>
   `;
-  document.getElementById("addAddressBtn").addEventListener("click",()=>{
-    const val=(document.getElementById("newAddress").value||"").trim();
-    if(!val) return alert("Please enter an address.");
-    const u=getUser(); u.addresses.push(val); u.address=val; saveUser(u);
-    document.getElementById("profileAddress").textContent=u.address;
-    alert("Address added and set as current."); renderAddressTab();
-  });
-  document.querySelectorAll(".make-current").forEach(btn=>{
-    btn.addEventListener("click",e=>{
-      const idx=Number(e.currentTarget.getAttribute("data-index")); const u=getUser();
-      u.address=u.addresses[idx]; saveUser(u); document.getElementById("profileAddress").textContent=u.address; renderAddressTab();
-    });
+  
+  document.getElementById("updateAddressBtn").addEventListener("click", async () => {
+    const newAddress = document.getElementById("newAddress").value.trim();
+    if(!newAddress) return alert("Please enter an address.");
+    
+    const token = localStorage.getItem('token');
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body: JSON.stringify({ address: newAddress })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        saveUser(data.user);
+        document.getElementById("profileAddress").textContent = data.user.address;
+        alert("✅ Address updated successfully!");
+        renderAddressTab();
+      } else {
+        alert(data.message || 'Failed to update address');
+      }
+    } catch (err) {
+      console.error('Error updating address:', err);
+      alert('Error updating address. Please try again.');
+    }
   });
 }
 
 /* ---------- Edit Profile Tab ---------- */
 function renderEditProfileTab(){
-  const user=getUser();
+  const user = getUser();
+  
   contentArea.innerHTML=`
     <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-2xl">
       <h2 class="text-3xl font-bold mb-4">Edit Profile</h2>
-      <form id="editProfileForm" class="space-y-4">
-        <input type="text" id="editName" class="w-full p-2 border rounded" placeholder="Name" value="${user.name||""}" disabled />
-        <input type="email" id="editEmail" class="w-full p-2 border rounded" placeholder="Email" value="${user.email||""}" disabled />
-        <input type="text" id="editPhone" class="w-full p-2 border rounded" placeholder="Phone" value="${user.phone||""}" disabled />
-        <input type="text" id="editAddress" class="w-full p-2 border rounded" placeholder="Address" value="${user.address||""}" disabled />
-        <div class="flex gap-2">
-          <button type="button" id="enableEdit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Edit</button>
-          <button type="submit" id="saveEdit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" disabled>Save</button>
+      <div class="space-y-4">
+        <div>
+          <label class="block font-semibold mb-2">Name</label>
+          <input type="text" id="editName" class="w-full p-3 border rounded-lg" value="${user.name||""}" />
         </div>
-      </form>
+        <div>
+          <label class="block font-semibold mb-2">Email</label>
+          <input type="email" id="editEmail" class="w-full p-3 border rounded-lg bg-gray-100" value="${user.email||""}" disabled />
+          <p class="text-sm text-gray-500 mt-1">Email cannot be changed</p>
+        </div>
+        <div>
+          <label class="block font-semibold mb-2">Phone</label>
+          <input type="text" id="editPhone" class="w-full p-3 border rounded-lg" value="${user.phone||""}" />
+        </div>
+        <div>
+          <label class="block font-semibold mb-2">Address</label>
+          <textarea id="editAddress" class="w-full p-3 border rounded-lg" rows="3">${user.address||""}</textarea>
+        </div>
+        <button id="saveProfile" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 font-bold">
+          Save Changes
+        </button>
+      </div>
     </div>
   `;
-  const form=document.getElementById("editProfileForm");
-  const nameInput=document.getElementById("editName");
-  const emailInput=document.getElementById("editEmail");
-  const phoneInput=document.getElementById("editPhone");
-  const addressInput=document.getElementById("editAddress");
-  const enableBtn=document.getElementById("enableEdit");
-  const saveBtn=document.getElementById("saveEdit");
-
-  enableBtn.addEventListener("click",()=>{ [nameInput,emailInput,phoneInput,addressInput].forEach(el=>el.disabled=false); saveBtn.disabled=false; });
-  form.addEventListener("submit",(e)=>{
-    e.preventDefault();
-    const u=getUser();
-    u.name=nameInput.value.trim(); u.email=emailInput.value.trim();
-    u.phone=phoneInput.value.trim(); u.address=addressInput.value.trim();
-    if(!Array.isArray(u.addresses)) u.addresses=[];
-    if(u.address&&!u.addresses.includes(u.address)) u.addresses.push(u.address);
-    saveUser(u);
-    document.getElementById("profileName").textContent=u.name||"Guest";
-    document.getElementById("profileEmail").textContent=u.email||"No email";
-    document.getElementById("profilePhone").textContent=u.phone||"📞 Not provided";
-    document.getElementById("profileAddress").textContent=u.address||"🏠 Address not provided";
-    setAvatarFromName(u.name);
-    alert("Profile updated!");
-    [nameInput,emailInput,phoneInput,addressInput].forEach(el=>el.disabled=true); saveBtn.disabled=true;
+  
+  document.getElementById("saveProfile").addEventListener("click", async () => {
+    const name = document.getElementById("editName").value.trim();
+    const phone = document.getElementById("editPhone").value.trim();
+    const address = document.getElementById("editAddress").value.trim();
+    
+    if (!name) return alert("Name is required");
+    
+    const token = localStorage.getItem('token');
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token
+        },
+        body: JSON.stringify({ name, phone, address })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        saveUser(data.user);
+        document.getElementById("profileName").textContent = data.user.name;
+        document.getElementById("profilePhone").textContent = data.user.phone || "📞 Not provided";
+        document.getElementById("profileAddress").textContent = data.user.address || "🏠 Address not provided";
+        setAvatarFromName(data.user.name);
+        alert("✅ Profile updated successfully!");
+      } else {
+        alert(data.message || 'Failed to update profile');
+      }
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      alert('Error updating profile. Please try again.');
+    }
   });
 }
 
-/* ---------- History Tab (MongoDB) ---------- */
+/* ---------- History Tab ---------- */
 async function renderHistoryTab(){
   const token = localStorage.getItem("token");
+  
   if (!token) {
     contentArea.innerHTML = `
       <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-2xl text-center">
@@ -253,7 +332,7 @@ async function renderHistoryTab(){
     `).join("");
   } catch (err) {
     console.error(err);
-    wrap.innerHTML = `<p class="text-red-500">❌ Error loading history.</p>`;
+    wrap.innerHTML = `<p class="text-red-500">❌ Error loading history. Please check if backend is running.</p>`;
   }
 }
 
@@ -263,7 +342,11 @@ function renderHelpTab(){
     <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-2xl">
       <h2 class="text-3xl font-bold mb-4">Help & Support</h2>
       <div class="border rounded-lg p-4 h-64 flex flex-col">
-        <div class="flex-1 overflow-y-auto mb-4" id="chatMessages"></div>
+        <div class="flex-1 overflow-y-auto mb-4" id="chatMessages">
+          <div class="text-left mb-2">
+            <span class="bg-gray-200 px-3 py-1 rounded-lg inline-block">Hello! How can we help you today?</span>
+          </div>
+        </div>
         <div class="flex space-x-2">
           <input id="chatInput" type="text" placeholder="Type your message..." class="flex-1 border rounded-lg px-3 py-2" />
           <button id="chatSend" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Send</button>
@@ -271,34 +354,31 @@ function renderHelpTab(){
       </div>
     </div>
   `;
-  const input=document.getElementById("chatInput");
-  const messages=document.getElementById("chatMessages");
+  
+  const input = document.getElementById("chatInput");
+  const messages = document.getElementById("chatMessages");
+  
   document.getElementById("chatSend").addEventListener("click",()=>{
-    const msg=(input.value||"").trim(); if(!msg) return;
+    const msg = (input.value||"").trim(); 
+    if(!msg) return;
+    
     messages.innerHTML+=`<div class="text-right mb-2"><span class="bg-blue-500 text-white px-3 py-1 rounded-lg inline-block">${msg}</span></div>`;
     input.value="";
+    
     setTimeout(()=>{
-      messages.innerHTML+=`<div class="text-left mb-2"><span class="bg-gray-200 px-3 py-1 rounded-lg inline-block">Support will reply soon...</span></div>`;
-      messages.scrollTop=messages.scrollHeight;
+      messages.innerHTML+=`<div class="text-left mb-2"><span class="bg-gray-200 px-3 py-1 rounded-lg inline-block">Thank you for your message! Our support team will get back to you shortly.</span></div>`;
+      messages.scrollTop = messages.scrollHeight;
     },600);
-    messages.scrollTop=messages.scrollHeight;
+    
+    messages.scrollTop = messages.scrollHeight;
   });
-}
-fetch("http://localhost:5000/api/auth/login", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ email, password })
-})
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      localStorage.setItem("token", data.token);  // ✅ Save JWT
-      window.location.href = "profile.html";      // redirect
-    } else {
-      alert(data.message);
+  
+  input.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      document.getElementById("chatSend").click();
     }
   });
-
+}
 </script>
 </body>
 </html>
