@@ -4,55 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>FarmFresh - Cart & Checkout</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f9f9f9;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
+        :root {
+            --primary-green: #2d6a4f;
+            --secondary-green: #52b788;
+            --accent-orange: #e76f51;
+            --cream: #fefae0;
+            --light-sage: #d8f3dc;
+            --dark-text: #1b4332;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--cream);
+            color: var(--dark-text);
+        }
+
+        /* Navbar */
         .navbar {
-            background: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            padding: 16px 24px;
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+            padding: 1.2rem 2rem;
+            box-shadow: 0 4px 20px rgba(45, 106, 79, 0.3);
         }
 
         .back-button {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            background-color: #4CAF50;
-            color: white;
+            gap: 0.8rem;
+            padding: 0.8rem 1.8rem;
+            background: white;
+            color: var(--primary-green);
             border: none;
-            border-radius: 6px;
+            border-radius: 50px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
+            font-weight: 700;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            font-family: 'Quicksand', sans-serif;
         }
 
         .back-button:hover {
-            background-color: #388E3C;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
         }
 
+        /* Page Layout */
         .page-wrapper {
             display: flex;
             gap: 2rem;
             max-width: 1400px;
             margin: 2rem auto;
-            padding: 0 1rem;
+            padding: 0 2rem;
         }
 
+        /* Map Section */
         .map-section {
             flex: 1;
             display: none;
-            min-height: 600px;
         }
 
         .map-section.active {
@@ -60,56 +81,75 @@
         }
 
         #map {
-            height: 600px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            height: 500px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            border: 4px solid var(--secondary-green);
         }
 
         .status-card {
             background: white;
-            padding: 16px;
-            border-radius: 8px;
-            margin-top: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            font-weight: 600;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
         .status-badge {
             display: inline-block;
-            padding: 8px 16px;
-            background-color: #FFC107;
-            color: #333;
-            border-radius: 20px;
-            font-weight: bold;
-            margin-right: 16px;
+            padding: 0.7rem 1.5rem;
+            background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+            color: white;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-right: 1rem;
+            box-shadow: 0 4px 12px rgba(255, 165, 0, 0.4);
         }
 
+        /* Cart Container */
         .cart-container {
             flex: 1;
             min-width: 300px;
         }
 
+        .cart-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--primary-green);
+            margin-bottom: 2rem;
+        }
+
+        /* Cart Items */
         .cart-items {
             margin-bottom: 2rem;
         }
 
         .cart-item {
             display: flex;
-            gap: 1rem;
-            padding: 1rem;
+            gap: 1.2rem;
+            padding: 1.2rem;
             background: white;
-            border-radius: 8px;
+            border-radius: 15px;
             margin-bottom: 1rem;
-            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
             align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .cart-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
         }
 
         .cart-item img {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             object-fit: cover;
-            border-radius: 6px;
+            border-radius: 12px;
+            border: 3px solid var(--light-sage);
         }
 
         .cart-item-details {
@@ -117,243 +157,290 @@
         }
 
         .cart-item-details h4 {
-            font-weight: 600;
-            font-size: 1rem;
-            margin-bottom: 0.25rem;
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--primary-green);
+            margin-bottom: 0.3rem;
         }
 
         .cart-item-details p {
             color: #666;
-            font-size: 0.9rem;
-            margin: 0.25rem 0;
+            font-size: 0.95rem;
+            margin: 0.2rem 0;
         }
 
         .cart-item-price {
-            color: #4CAF50;
-            font-weight: 700;
-            font-size: 1rem;
+            color: var(--secondary-green);
+            font-weight: 800;
+            font-size: 1.1rem;
         }
 
         .quantity-controls {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.7rem;
             margin-left: 1rem;
         }
 
         .quantity-controls button {
-            background-color: #4CAF50;
+            background: var(--secondary-green);
             border: none;
             color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 4px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
+            font-size: 1.1rem;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
         }
 
         .quantity-controls button:hover {
-            background-color: #388E3C;
+            background: var(--primary-green);
+            transform: scale(1.1);
         }
 
         .quantity-number {
-            min-width: 30px;
+            min-width: 35px;
             text-align: center;
-            font-weight: bold;
+            font-weight: 700;
+            font-size: 1.1rem;
         }
 
         .remove-btn {
-            background-color: #f44336;
+            background: #ff6b6b;
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
 
         .remove-btn:hover {
-            background-color: #d32f2f;
+            background: #ee5a52;
+            transform: scale(1.05);
         }
 
+        /* Cart Summary */
         .cart-summary {
             background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1rem;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+            border: 3px solid var(--light-sage);
+        }
+
+        .cart-summary h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            color: var(--primary-green);
         }
 
         .summary-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 1.05rem;
         }
 
         .summary-value {
-            color: #4CAF50;
+            color: var(--secondary-green);
+            font-weight: 700;
         }
 
         .summary-total {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-top: 1rem;
-            border-top: 2px solid #4CAF50;
-            padding-top: 1rem;
-            color: #2E7D32;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-top: 1.5rem;
+            border-top: 3px solid var(--secondary-green);
+            padding-top: 1.5rem;
+            color: var(--primary-green);
         }
 
         .button-group {
             display: flex;
             gap: 1rem;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
 
         .btn {
             flex: 1;
-            padding: 12px;
+            padding: 1rem;
             border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.05rem;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            font-family: 'Quicksand', sans-serif;
         }
 
         .btn-primary {
-            background-color: #4CAF50;
+            background: linear-gradient(135deg, var(--secondary-green) 0%, var(--primary-green) 100%);
             color: white;
+            box-shadow: 0 6px 20px rgba(82, 183, 136, 0.4);
         }
 
         .btn-primary:hover:not(:disabled) {
-            background-color: #388E3C;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(82, 183, 136, 0.5);
         }
 
         .btn-primary:disabled {
-            background-color: #ccc;
+            background: #ccc;
             cursor: not-allowed;
+            box-shadow: none;
         }
 
         .btn-secondary {
-            background-color: #f44336;
+            background: #ff6b6b;
             color: white;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
         }
 
         .btn-secondary:hover {
-            background-color: #d32f2f;
+            background: #ee5a52;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
         }
 
+        /* Empty Cart */
         .empty-cart {
             text-align: center;
-            padding: 3rem;
+            padding: 4rem 2rem;
             background: white;
-            border-radius: 8px;
-            color: #666;
+            border-radius: 20px;
+            color: #999;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
         }
 
         .empty-cart i {
-            font-size: 3rem;
-            color: #ccc;
-            margin-bottom: 1rem;
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-cart p {
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
         }
 
         /* Payment Modal */
-        #payment-modal {
+        .payment-modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.7);
             z-index: 1000;
             padding: 2rem;
-        }
-
-        #payment-modal.active {
-            display: flex;
             align-items: center;
             justify-content: center;
         }
 
+        .payment-modal.active {
+            display: flex;
+        }
+
         .payment-modal-content {
             background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            max-width: 500px;
+            border-radius: 25px;
+            padding: 2.5rem;
+            max-width: 550px;
             width: 100%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+            animation: modalSlideIn 0.4s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .payment-header {
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .payment-header h2 {
-            color: #4CAF50;
-            font-size: 1.5rem;
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-green);
+            font-size: 2rem;
+            font-weight: 900;
             margin-bottom: 0.5rem;
         }
 
         .payment-amount {
-            background: #e8f5e8;
-            padding: 1rem;
-            border-radius: 8px;
+            background: linear-gradient(135deg, var(--light-sage) 0%, #b7e4c7 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
             text-align: center;
-            margin-bottom: 1.5rem;
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #2E7D32;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-green);
         }
 
         .payment-methods {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .payment-method {
             display: flex;
             align-items: center;
-            padding: 0.75rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            margin-bottom: 0.75rem;
+            padding: 1rem;
+            border: 3px solid #e0e0e0;
+            border-radius: 15px;
+            margin-bottom: 1rem;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
 
         .payment-method:hover {
-            border-color: #4CAF50;
-            background: #f8f9f8;
+            border-color: var(--secondary-green);
+            background: var(--light-sage);
+            transform: translateX(5px);
         }
 
         .payment-method.selected {
-            border-color: #4CAF50;
-            background: #e8f5e8;
+            border-color: var(--secondary-green);
+            background: var(--light-sage);
+            box-shadow: 0 4px 15px rgba(82, 183, 136, 0.3);
         }
 
         .payment-method input {
-            margin-right: 1rem;
+            margin-right: 1.2rem;
+            width: 20px;
+            height: 20px;
             cursor: pointer;
-        }
-
-        .payment-method-info {
-            flex-grow: 1;
         }
 
         .payment-method-info h4 {
             margin: 0;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 1.1rem;
         }
 
         .payment-method-info p {
             margin: 0;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: #666;
         }
 
@@ -362,78 +449,215 @@
             gap: 1rem;
         }
 
-        .modal-buttons button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .modal-buttons .btn-primary {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .modal-buttons .btn-primary:hover {
-            background-color: #388E3C;
-        }
-
-        .modal-buttons .btn-secondary {
-            background-color: #f5f5f5;
-            color: #333;
-        }
-
-        .modal-buttons .btn-secondary:hover {
-            background-color: #e0e0e0;
-        }
-
-        /* Order Success */
+        /* Order Success - Beautiful Design */
         .order-success {
             display: none;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%);
+            border-radius: 30px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
             text-align: center;
-            padding: 3rem;
-            background: white;
-            border-radius: 8px;
+            animation: successSlideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 4px solid var(--secondary-green);
         }
 
         .order-success.active {
             display: block;
         }
 
-        .order-success i {
-            font-size: 4rem;
-            color: #4CAF50;
-            margin-bottom: 1rem;
+        @keyframes successSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .success-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, var(--secondary-green) 0%, var(--primary-green) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: iconPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 40px rgba(82, 183, 136, 0.5);
+        }
+
+        @keyframes iconPop {
+            0% {
+                transform: scale(0) rotate(-180deg);
+            }
+            50% {
+                transform: scale(1.2) rotate(10deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .success-icon i {
+            font-size: 4.5rem;
+            color: white;
+        }
+
+        .order-success h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-green);
+            font-size: 2.8rem;
+            font-weight: 900;
+            margin-bottom: 0.8rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            color: #2d6a4f;
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .delivery-timer {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+            color: #856404;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 1.5rem 0;
+            box-shadow: 0 6px 20px rgba(255, 230, 156, 0.5);
+            border: 3px solid #ffc107;
+        }
+
+        .order-info-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            border: 3px solid var(--light-sage);
+        }
+
+        .order-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 0;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .order-info-row:last-child {
+            border-bottom: none;
+        }
+
+        .order-info-label {
+            color: #666;
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        .order-info-value {
+            color: var(--primary-green);
+            font-size: 1.2rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .driver-info {
-            background: #e8f5e9;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-top: 2rem;
             text-align: left;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            border: 3px solid var(--light-sage);
+        }
+
+        .driver-info h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-green);
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 900;
         }
 
         .driver-info p {
-            margin: 0.5rem 0;
+            margin: 1rem 0;
             color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.05rem;
+            font-weight: 600;
         }
 
+        .driver-info i {
+            color: var(--secondary-green);
+            width: 24px;
+            font-size: 1.2rem;
+        }
+
+        .driver-info a {
+            color: var(--secondary-green);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .driver-info a:hover {
+            text-decoration: underline;
+        }
+
+        .home-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: linear-gradient(135deg, var(--secondary-green) 0%, var(--primary-green) 100%);
+            color: white;
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            border: none;
+            cursor: pointer;
+            margin-top: 2.5rem;
+            box-shadow: 0 8px 25px rgba(82, 183, 136, 0.4);
+            transition: all 0.4s ease;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .home-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(82, 183, 136, 0.5);
+        }
+
+        /* Toast */
         .toast {
             position: fixed;
-            top: 20px;
+            top: 100px;
             right: 20px;
-            background-color: #4CAF50;
+            background: var(--secondary-green);
             color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            padding: 1.2rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
             display: none;
             z-index: 2000;
-            animation: slideIn 0.3s ease-in-out;
+            animation: slideIn 0.4s ease;
+            font-weight: 600;
+            font-size: 1.05rem;
         }
 
         .toast.show {
@@ -441,7 +665,7 @@
         }
 
         .toast.error {
-            background-color: #f44336;
+            background: #ff6b6b;
         }
 
         @keyframes slideIn {
@@ -455,6 +679,7 @@
             }
         }
 
+        /* Responsive */
         @media (max-width: 1024px) {
             .page-wrapper {
                 flex-direction: column;
@@ -464,37 +689,35 @@
 </head>
 
 <body>
-    <!-- NAVBAR -->
+    <!-- Navbar -->
     <div class="navbar">
         <button class="back-button" onclick="goBack()">
             <i class="fas fa-arrow-left"></i>
-            Back
+            Back to Home
         </button>
     </div>
 
-    <!-- MAIN CONTENT -->
+    <!-- Main Content -->
     <div class="page-wrapper">
-        <!-- MAP SECTION (Hidden until checkout) -->
+        <!-- Map Section (Hidden until order confirmed) -->
         <div class="map-section" id="mapSection">
             <div id="map"></div>
             <div class="status-card">
-                <span class="status-badge">Out for Delivery</span>
-                <strong>ETA: <span id="eta">25 mins</span></strong>
+                <span class="status-badge">🚚 Out for Delivery</span>
+                <strong style="font-size: 1.2rem;">ETA: <span id="eta">25 mins</span></strong>
             </div>
         </div>
 
-        <!-- CART SECTION -->
+        <!-- Cart Container -->
         <div class="cart-container">
-            <h1 class="text-3xl font-bold mb-6 text-green-700">Your Cart</h1>
+            <h1 class="cart-title">Your Cart</h1>
 
-            <!-- CART ITEMS -->
-            <div class="cart-items" id="cartItems">
-                <!-- Items will be loaded here -->
-            </div>
+            <!-- Cart Items -->
+            <div class="cart-items" id="cartItems"></div>
 
-            <!-- CART SUMMARY -->
+            <!-- Cart Summary -->
             <div class="cart-summary" id="cartSummary">
-                <h3 class="text-xl font-semibold mb-4">Order Summary</h3>
+                <h3>Order Summary</h3>
                 <div class="summary-row">
                     <span>Subtotal:</span>
                     <span class="summary-value" id="subtotal">₹0.00</span>
@@ -522,27 +745,45 @@
                 </div>
             </div>
 
-            <!-- ORDER SUCCESS MESSAGE -->
+            <!-- Order Success -->
             <div class="order-success" id="orderSuccess">
-                <i class="fas fa-check-circle"></i>
-                <h2 class="text-2xl font-bold text-green-700 mb-2">Order Confirmed!</h2>
-                <p class="text-gray-600 mb-4">Your delivery is on the way</p>
-                <div class="summary-row">
-                    <span>Estimated Delivery:</span>
-                    <span class="summary-value" id="deliveryEta">25 mins</span>
+                <div class="success-icon">
+                    <i class="fas fa-check"></i>
                 </div>
+                <h2>Order Confirmed!</h2>
+                <p class="subtitle">🎉 Your fresh products are on the way</p>
+                
+                <div class="delivery-timer" id="deliveryTimer">
+                    <i class="fas fa-clock"></i>
+                    <span id="deliveryTimerValue">25:00</span>
+                </div>
+
+                <div class="order-info-card">
+                    <div class="order-info-row">
+                        <span class="order-info-label">Order Status</span>
+                        <span class="order-info-value">
+                            <i class="fas fa-truck"></i> Out for Delivery
+                        </span>
+                    </div>
+                    <div class="order-info-row">
+                        <span class="order-info-label">Estimated Arrival</span>
+                        <span class="order-info-value" id="deliveryEta">25 mins</span>
+                    </div>
+                </div>
+
                 <div class="driver-info" id="driverInfo">
-                    <!-- Driver details will be loaded here -->
+                    <h3><i class="fas fa-user-circle"></i> Delivery Partner</h3>
                 </div>
-                <button class="btn btn-primary" onclick="goBack()" style="margin-top: 1rem;">
+
+                <button class="home-button" onclick="goBack()">
                     <i class="fas fa-home"></i> Back to Home
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- PAYMENT MODAL -->
-    <div id="payment-modal">
+    <!-- Payment Modal -->
+    <div class="payment-modal" id="payment-modal">
         <div class="payment-modal-content">
             <div class="payment-header">
                 <h2>🔒 Secure Payment</h2>
@@ -554,7 +795,7 @@
             </div>
 
             <div class="payment-methods">
-                <label class="payment-method" data-method="upi">
+                <label class="payment-method">
                     <input type="radio" name="payment" value="upi">
                     <div class="payment-method-info">
                         <h4>📱 UPI Payment</h4>
@@ -562,7 +803,7 @@
                     </div>
                 </label>
 
-                <label class="payment-method" data-method="card">
+                <label class="payment-method">
                     <input type="radio" name="payment" value="card">
                     <div class="payment-method-info">
                         <h4>💳 Credit/Debit Card</h4>
@@ -570,7 +811,7 @@
                     </div>
                 </label>
 
-                <label class="payment-method" data-method="cod">
+                <label class="payment-method">
                     <input type="radio" name="payment" value="cod">
                     <div class="payment-method-info">
                         <h4>💵 Cash on Delivery</h4>
@@ -586,11 +827,11 @@
         </div>
     </div>
 
-    <!-- TOAST NOTIFICATION -->
+    <!-- Toast -->
     <div id="toast" class="toast"></div>
 
     <script>
-        // ==================== CART MANAGEMENT ====================
+        // Cart Management
         class CartManager {
             constructor() {
                 this.loadCart();
@@ -648,11 +889,11 @@
             }
         }
 
-        // ==================== UI MANAGEMENT ====================
         const cartManager = new CartManager();
         let map = null;
         let driverMarker = null;
         let routeLine = null;
+        let deliveryTimerInterval = null;
 
         function renderCart() {
             const container = document.getElementById('cartItems');
@@ -663,7 +904,7 @@
                     <div class="empty-cart">
                         <i class="fas fa-shopping-cart"></i>
                         <p>Your cart is empty</p>
-                        <p style="font-size: 0.9rem; color: #999;">Add some delicious products!</p>
+                        <p style="font-size: 1rem; color: #aaa;">Add some fresh products!</p>
                     </div>
                 `;
                 summary.style.display = 'none';
@@ -723,7 +964,6 @@
             showToast('Item removed from cart');
         }
 
-        // ==================== PAYMENT ====================
         function showPaymentModal() {
             if (cartManager.isEmpty()) {
                 showToast('Your cart is empty!', 'error');
@@ -751,13 +991,13 @@
             }, 2000);
         }
 
-        // ==================== DELIVERY TRACKING ====================
         function startDelivery() {
             const mapSection = document.getElementById('mapSection');
             const cartItems = document.getElementById('cartItems');
             const cartSummary = document.getElementById('cartSummary');
             const orderSuccess = document.getElementById('orderSuccess');
 
+            // Hide cart, show order confirmation and map
             cartItems.style.display = 'none';
             cartSummary.style.display = 'none';
             mapSection.classList.add('active');
@@ -771,12 +1011,39 @@
                 }).addTo(map);
             }
 
-            // Assign driver
             const driver = assignDriver();
             updateDriverInfo(driver);
 
-            // Simulate delivery
+            // Start countdown timer WHEN ORDER IS CONFIRMED
+            startDeliveryTimer(25);
+
+            // Clear cart after order confirmation
+            cartManager.clearCart();
+
             simulateDelivery();
+        }
+
+        function startDeliveryTimer(minutes) {
+            let totalSeconds = minutes * 60;
+            const timerElement = document.getElementById('deliveryTimerValue');
+            
+            if (deliveryTimerInterval) {
+                clearInterval(deliveryTimerInterval);
+            }
+
+            deliveryTimerInterval = setInterval(() => {
+                totalSeconds--;
+                
+                const mins = Math.floor(totalSeconds / 60);
+                const secs = totalSeconds % 60;
+                
+                timerElement.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+                
+                if (totalSeconds <= 0) {
+                    clearInterval(deliveryTimerInterval);
+                    timerElement.textContent = '🎉 Arriving Now!';
+                }
+            }, 1000);
         }
 
         function assignDriver() {
@@ -791,9 +1058,10 @@
         function updateDriverInfo(driver) {
             const driverInfo = document.getElementById('driverInfo');
             driverInfo.innerHTML = `
-                <p><strong>Driver:</strong> ${driver.name}</p>
-                <p><strong>Vehicle:</strong> ${driver.vehicle}</p>
-                <p><strong>Phone:</strong> <a href="tel:${driver.phone}" style="color: #4CAF50;">${driver.phone}</a></p>
+                <h3><i class="fas fa-user-circle"></i> Delivery Partner</h3>
+                <p><i class="fas fa-user"></i><strong>Name:</strong> ${driver.name}</p>
+                <p><i class="fas fa-car"></i><strong>Vehicle:</strong> ${driver.vehicle}</p>
+                <p><i class="fas fa-phone"></i><strong>Contact:</strong> <a href="tel:${driver.phone}">${driver.phone}</a></p>
             `;
         }
 
@@ -853,14 +1121,15 @@
         }
 
         function completeDelivery() {
-            cartManager.clearCart();
-            showToast('🎉 Order Delivered! Thank you for your order!');
+            if (deliveryTimerInterval) {
+                clearInterval(deliveryTimerInterval);
+            }
+            showToast('🎉 Order Delivered! Thank you!');
             setTimeout(() => {
                 goBack();
             }, 5000);
         }
 
-        // ==================== UTILITIES ====================
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -874,10 +1143,13 @@
         }
 
         function goBack() {
+            if (deliveryTimerInterval) {
+                clearInterval(deliveryTimerInterval);
+            }
             window.location.href = 'webpage.html';
         }
 
-        // ==================== EVENT LISTENERS ====================
+        // Event Listeners
         document.getElementById('checkoutBtn')?.addEventListener('click', showPaymentModal);
         document.getElementById('payNowBtn')?.addEventListener('click', processPayment);
         document.getElementById('cancelPaymentBtn')?.addEventListener('click', hidePaymentModal);
@@ -888,7 +1160,6 @@
             }
         });
 
-        // Payment method selection
         document.querySelectorAll('.payment-method').forEach(method => {
             method.addEventListener('click', function() {
                 document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
@@ -897,11 +1168,16 @@
             });
         });
 
-        // ==================== INITIALIZE ====================
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             renderCart();
         });
+
+        window.addEventListener('beforeunload', () => {
+            if (deliveryTimerInterval) {
+                clearInterval(deliveryTimerInterval);
+            }
+        });
     </script>
 </body>
-
 </html>

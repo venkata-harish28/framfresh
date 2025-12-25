@@ -1,112 +1,686 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FarmFresh - Marketplace for Farmers</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
-            --primary: #4caf50;
-            --secondary: #8bc34a;
-            --light: #f1f8e9;
-            --dark: #2e7d32;
+            --primary-green: #2d6a4f;
+            --secondary-green: #52b788;
+            --accent-orange: #e76f51;
+            --cream: #fefae0;
+            --earth-brown: #8b5a3c;
+            --light-sage: #d8f3dc;
+            --dark-text: #1b4332;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f9f9f9;
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--cream);
+            color: var(--dark-text);
+            line-height: 1.6;
         }
 
-        .hero-gradient {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .product-card {
-            transition: all 0.3s ease;
-        }
-
-        .category-chip {
-            transition: all 0.2s ease;
-        }
-
-        .category-chip:hover {
-            background-color: var(--dark);
-            color: white;
-        }
-
-        .animated-bg {
-            animation: gradientBG 15s ease infinite;
-            background-size: 400% 400%;
-        }
-
-        @keyframes gradientBG {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+            padding: 1.2rem 0;
+            box-shadow: 0 4px 20px rgba(45, 106, 79, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .nav-container {
-            max-width: 7xl;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 1rem;
+            padding: 0 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 70px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-section img {
+            height: 45px;
+            filter: brightness(0) invert(1);
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-text span {
+            color: var(--accent-orange);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-orange);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .cart-icon {
+            position: relative;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.1);
         }
 
         .cart-count {
             position: absolute;
             top: -8px;
             right: -8px;
-            background-color: #ff5252;
+            background: var(--accent-orange);
             color: white;
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
+            width: 22px;
+            height: 22px;
+            display: none;
             align-items: center;
             justify-content: center;
             font-size: 0.75rem;
             font-weight: bold;
+            box-shadow: 0 2px 8px rgba(231, 111, 81, 0.4);
         }
 
+        .profile-icon {
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .nav-btn {
+            padding: 0.7rem 1.8rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .btn-login {
+            background: white;
+            color: var(--primary-green);
+        }
+
+        .btn-signup {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .btn-logout {
+            background: #e63946;
+            color: white;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(45, 106, 79, 0.95) 0%, rgba(82, 183, 136, 0.95) 100%),
+                        url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920') center/cover;
+            padding: 6rem 2rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grain" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"><rect width="100" height="100" fill="transparent"/><g opacity="0.15"><circle cx="10" cy="10" r="1" fill="white"/><circle cx="40" cy="30" r="1" fill="white"/><circle cx="70" cy="50" r="1" fill="white"/><circle cx="20" cy="70" r="1" fill="white"/><circle cx="60" cy="85" r="1" fill="white"/></g></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+        }
+
+        .hero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-family: 'Quicksand', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary-green);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 3px solid white;
+        }
+
+        .hero-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            transform: rotate(2deg);
+            transition: transform 0.5s ease;
+        }
+
+        .hero-image img:hover {
+            transform: rotate(0deg) scale(1.02);
+        }
+
+        /* Categories */
+        .categories {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .categories-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 2rem;
+        }
+
+        .category-card {
+            background: var(--light-sage);
+            padding: 2rem 1.5rem;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            color: var(--dark-text);
+            border: 3px solid transparent;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px) rotate(-2deg);
+            background: var(--secondary-green);
+            color: white;
+            border-color: var(--primary-green);
+            box-shadow: 0 15px 40px rgba(82, 183, 136, 0.4);
+        }
+
+        .category-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .category-card:hover .category-icon {
+            transform: scale(1.2) rotate(10deg);
+        }
+
+        .category-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        /* Products */
+        .products {
+            padding: 5rem 2rem;
+            background: var(--cream);
+        }
+
+        .products-header {
+            max-width: 1400px;
+            margin: 0 auto 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .products-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary-green);
+        }
+
+        .view-all-btn {
+            padding: 0.8rem 2rem;
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .view-all-btn:hover {
+            background: var(--secondary-green);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(82, 183, 136, 0.4);
+        }
+
+        .products-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            position: relative;
+            overflow: hidden;
+            height: 220px;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent-orange);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.8rem;
+        }
+
+        .product-info h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--secondary-green);
+        }
+
+        .product-description {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-rating {
+            color: #ffa500;
+            font-size: 0.9rem;
+        }
+
+        .add-to-cart {
+            padding: 0.6rem 1.5rem;
+            background: var(--secondary-green);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart:hover {
+            background: var(--primary-green);
+            transform: scale(1.05);
+        }
+
+        /* Farmers */
+        .farmers {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .farmers-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+
+        .farmer-card {
+            text-align: center;
+            padding: 2rem;
+            background: var(--light-sage);
+            border-radius: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .farmer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .farmer-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            object-fit: cover;
+            border: 5px solid var(--secondary-green);
+            box-shadow: 0 8px 24px rgba(82, 183, 136, 0.3);
+        }
+
+        .farmer-card h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .farmer-card p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            color: var(--secondary-green);
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--primary-green);
+            transform: scale(1.2);
+        }
+
+        /* Newsletter */
+        .newsletter {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .newsletter h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .newsletter p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .newsletter-form {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .newsletter-btn {
+            padding: 1rem 2.5rem;
+            background: var(--accent-orange);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(231, 111, 81, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            background: #1b4332;
+            color: white;
+            padding: 3rem 2rem 1.5rem;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--accent-orange);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.7rem;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent-orange);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        /* Toast Notification */
         .toast {
             position: fixed;
-            top: 80px;
+            top: 100px;
             right: 20px;
-            background-color: #4CAF50;
+            background: var(--secondary-green);
             color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
             display: none;
             z-index: 1000;
-            animation: slideIn 0.3s ease-in-out;
+            animation: slideInRight 0.4s ease;
         }
 
         .toast.show {
             display: block;
         }
 
-        @keyframes slideIn {
+        @keyframes slideInRight {
             from {
                 transform: translateX(400px);
                 opacity: 0;
@@ -116,387 +690,348 @@
                 opacity: 1;
             }
         }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-container {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .products-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Hidden classes */
+        .logged-in-only {
+            display: none;
+        }
+
+        .logged-out-only {
+            display: flex;
+        }
     </style>
 </head>
 
 <body>
-    <!-- Navigation Bar -->
-    <nav class="bg-white shadow-lg">
+    <!-- Navigation -->
+    <nav>
         <div class="nav-container">
-            <!-- Logo -->
-            <div class="flex items-center space-x-4">
-                <img src="https://placehold.co/50x50" alt="FarmFresh logo" class="h-10" />
-                <span class="text-2xl font-bold text-gray-800">
-                    Farm<span class="text-green-600">Fresh</span>
-                </span>
+            <div class="logo-section">
+                <img src="https://placehold.co/50x50" alt="FarmFresh logo" />
+                <div class="logo-text">Farm<span>Fresh</span></div>
             </div>
 
-            <!-- Navigation Links -->
-            <div class="hidden md:flex items-center space-x-8">
-                <a href="#" class="text-gray-800 hover:text-green-600 font-medium">Home</a>
-                <a href="store.html" class="text-gray-800 hover:text-green-600 font-medium">Marketplace</a>
-                <a href="#farmers" class="text-gray-800 hover:text-green-600 font-medium">Farmers</a>
-                <a href="#about" class="text-gray-800 hover:text-green-600 font-medium">About</a>
-                <a href="#contact" class="text-gray-800 hover:text-green-600 font-medium">Contact</a>
-            </div>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="store.html">Marketplace</a></li>
+                <li><a href="#farmers">Farmers</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
 
-            <!-- Right Side Buttons -->
-            <div class="flex items-center space-x-4">
-                <!-- Cart -->
-                <a href="cart.html" class="relative text-green-600 hover:text-green-700">
-                    <i class="fas fa-shopping-cart text-2xl"></i>
-                    <span id="cartCount" class="cart-count" style="display: none;">0</span>
+            <div class="nav-actions">
+                <!-- Logged In Elements -->
+                <a href="cart.html" class="logged-in-only">
+                    <div class="cart-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cartCount" class="cart-count">0</span>
+                    </div>
                 </a>
 
-                <!-- Profile -->
-                <a href="profile.html" class="text-green-600 hover:text-green-700">
-                    <i class="fas fa-user-circle text-2xl"></i>
+                <a href="profile.html" class="logged-in-only">
+                    <div class="profile-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
                 </a>
 
-                <!-- Login/Signup -->
-                <div class="flex items-center space-x-2">
+                <button class="nav-btn btn-logout logged-in-only" id="logoutBtn">
+                    Logout
+                </button>
+
+                <!-- Logged Out Elements -->
+                <div class="logged-out-only" style="display: flex; gap: 1rem;">
                     <a href="login.html">
-                        <button class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition">
-                            Login
-                        </button>
+                        <button class="nav-btn btn-login">Login</button>
                     </a>
                     <a href="signup.html">
-                        <button class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition">
-                            Signup
-                        </button>
+                        <button class="nav-btn btn-signup">Signup</button>
                     </a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- TOAST -->
+    <!-- Toast -->
     <div id="toast" class="toast">
         <i class="fas fa-check-circle"></i> <span id="toastMessage"></span>
     </div>
 
     <!-- Hero Section -->
-    <section class="hero-gradient text-white py-20">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center">
-            <div class="md:w-1/2 mb-10 md:mb-0">
-                <h1 class="text-4xl md:text-5xl font-bold mb-6">Fresh From the Fields — Straight to Your Plate</h1>
-                <p class="text-xl mb-8">Connect with local farmers to buy fresh produce or sell your farm products directly to consumers.</p>
-                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                    <a href="product.html">
-                        <button class="px-6 py-3 bg-white text-green-700 font-bold rounded-lg hover:bg-gray-100 transition">
-                            Sell Products <i class="fas fa-seedling ml-2"></i>
-                        </button>
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Fresh From the Fields — Straight to Your Plate</h1>
+                <p>Connect with local farmers to buy fresh produce or sell your farm products directly to consumers.</p>
+                <div class="hero-buttons">
+                    <a href="product.html" class="hero-btn btn-primary">
+                        Sell Products <i class="fas fa-seedling"></i>
                     </a>
-
-                    <a href="store.html">
-                        <button class="px-6 py-3 bg-transparent border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-green-700 transition">
-                            Browse Marketplace <i class="fas fa-shopping-basket ml-2"></i>
-                        </button>
+                    <a href="store.html" class="hero-btn btn-secondary">
+                        Browse Marketplace <i class="fas fa-shopping-basket"></i>
                     </a>
                 </div>
             </div>
-
-            <div class="md:w-1/2">
-                <img src="https://media.istockphoto.com/id/2163456407/photo/fresh-vegetables-and-fruits-for-sale-in-asian-farmer-market-stall.jpg?s=612x612&w=0&k=20&c=LNl7GM00YQPHNzCZlKTG9-M6v8zEG9Fg0tSWM9mIxGY=" alt="Happy farmer holding basket of fresh vegetables in golden hour sunlight with farm field background" class="rounded-lg shadow-xl">
+            <div class="hero-image">
+                <img src="https://media.istockphoto.com/id/2163456407/photo/fresh-vegetables-and-fruits-for-sale-in-asian-farmer-market-stall.jpg?s=612x612&w=0&k=20&c=LNl7GM00YQPHNzCZlKTG9-M6v8zEG9Fg0tSWM9mIxGY=" 
+                     alt="Fresh vegetables and fruits">
             </div>
         </div>
     </section>
 
-    <!-- Marketplace Categories -->
-    <section id="marketplace" class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Marketplace Categories</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                <a href="veg.html">
-                    <div class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md transition">
-                        <div class="w-16 h-16 mb-2 flex items-center justify-center">
-                            <i class="fas fa-carrot text-3xl text-orange-500"></i>
-                        </div>
-                        <span class="font-medium text-center">Vegetables</span>
-                    </div>
-                </a>
-
-                <a href="fruit.html">
-                    <div class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md transition">
-                        <div class="w-16 h-16 mb-2 flex items-center justify-center">
-                            <i class="fas fa-apple-alt text-3xl text-red-500"></i>
-                        </div>
-                        <span class="font-medium text-center">Fruits</span>
-                    </div>
-                </a>
-
-                <a href="dairy.html">
-                    <div class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md transition">
-                        <div class="w-16 h-16 mb-2 flex items-center justify-center">
-                            <i class="fas fa-egg text-3xl text-yellow-600"></i>
-                        </div>
-                        <span class="font-medium text-center">Dairy</span>
-                    </div>
-                </a>
-
-                <a href="grain.html">
-                    <div class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md transition">
-                        <div class="w-16 h-16 mb-2 flex items-center justify-center">
-                            <i class="fas fa-wheat-awn text-3xl text-amber-800"></i>
-                        </div>
-                        <span class="font-medium text-center">Grains</span>
-                    </div>
-                </a>
-
-                <a href="poultry.html">
-                    <div class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md transition">
-                        <div class="w-16 h-16 mb-2 flex items-center justify-center">
-                            <i class="fas fa-drumstick-bite text-3xl text-red-600"></i>
-                        </div>
-                        <span class="font-medium text-center">Poultry</span>
-                    </div>
-                </a>
-
-                <a href="honey.html">
-                    <div class="category-chip cursor-pointer p-4 bg-gray-100 rounded-lg flex flex-col items-center hover:shadow-md transition">
-                        <div class="w-16 h-16 mb-2 flex items-center justify-center">
-                            <i class="fas fa-droplet text-3xl text-yellow-600"></i>
-                        </div>
-                        <span class="font-medium text-center">Honey</span>
-                    </div>
-                </a>
-            </div>
+    <!-- Categories -->
+    <section class="categories">
+        <div class="section-header">
+            <h2>Marketplace Categories</h2>
+        </div>
+        <div class="categories-grid">
+            <a href="veg.html" class="category-card">
+                <div class="category-icon">🥕</div>
+                <h3>Vegetables</h3>
+            </a>
+            <a href="fruit.html" class="category-card">
+                <div class="category-icon">🍎</div>
+                <h3>Fruits</h3>
+            </a>
+            <a href="diary.html" class="category-card">
+                <div class="category-icon">🥛</div>
+                <h3>Dairy</h3>
+            </a>
+            <a href="grain.html" class="category-card">
+                <div class="category-icon">🌾</div>
+                <h3>Grains</h3>
+            </a>
+            <a href="poultry.html" class="category-card">
+                <div class="category-icon">🍗</div>
+                <h3>Poultry</h3>
+            </a>
+            <a href="honey.html" class="category-card">
+                <div class="category-icon">🍯</div>
+                <h3>Honey</h3>
+            </a>
         </div>
     </section>
 
     <!-- Featured Products -->
-    <section class="py-16 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex justify-between items-center mb-12">
-                <h2 class="text-3xl font-bold text-gray-800">Featured Products</h2>
-                <a href="store.html">
-                    <button class="text-green-600 font-medium hover:underline">View All</button>
-                </a>
+    <section class="products">
+        <div class="products-header">
+            <h2>Featured Products</h2>
+            <a href="store.html" class="view-all-btn">View All</a>
+        </div>
+        <div class="products-grid">
+            <!-- Product 1 -->
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="https://cdn.grofers.com/app/images/products/sliding_image/421699a.jpg" alt="Fresh Tomatoes">
+                    <span class="product-badge">Organic</span>
+                </div>
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3>Fresh Tomatoes</h3>
+                        <span class="product-price">₹40/KG</span>
+                    </div>
+                    <p class="product-description">Juicy, vine-ripened tomatoes grown organically.</p>
+                    <div class="product-footer">
+                        <div class="product-rating">
+                            ⭐⭐⭐⭐⭐ (24)
+                        </div>
+                        <button class="add-to-cart" onclick="addFeaturedProduct(1, 'Fresh Tomatoes', 40, 'KG', 'https://cdn.grofers.com/app/images/products/sliding_image/421699a.jpg')">
+                            Add <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                <!-- Product Card 1 -->
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-                    <div class="relative">
-                        <img src="https://cdn.grofers.com/app/images/products/sliding_image/421699a.jpg" alt="Fresh organic tomatoes on vine ripened under Mediterranean sun" class="w-full h-48 object-cover">
-                        <span class="absolute top-4 right-4 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Organic</span>
+            <!-- Product 2 -->
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6HHRdKjPSE3ZDgnSSnivwRbdw7Tk48txofg&s" alt="Raw Honey">
+                    <span class="product-badge">Local</span>
+                </div>
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3>Raw Honey</h3>
+                        <span class="product-price">₹500/KG</span>
                     </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="font-bold text-lg">Fresh Tomatoes</h3>
-                            <span class="font-bold text-green-600">₹40/KG</span>
+                    <p class="product-description">Pure, unfiltered honey from local beekeepers.</p>
+                    <div class="product-footer">
+                        <div class="product-rating">
+                            ⭐⭐⭐⭐ (18)
                         </div>
-                        <p class="text-gray-600 text-sm mb-4">Juicy, vine-ripened tomatoes grown organically.</p>
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center text-yellow-400">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                                <span class="text-gray-600 text-sm ml-1">(24)</span>
-                            </div>
-                            <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition" onclick="addFeaturedProduct('Fresh Tomatoes', 40, 'https://cdn.grofers.com/app/images/products/sliding_image/421699a.jpg')">Add <i class="fas fa-plus ml-1"></i></button>
-                        </div>
+                        <button class="add-to-cart" onclick="addFeaturedProduct(501, 'Raw Honey', 500, 'KG', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6HHRdKjPSE3ZDgnSSnivwRbdw7Tk48txofg&s')">
+                            Add <i class="fas fa-plus"></i>
+                        </button>
                     </div>
                 </div>
+            </div>
 
-                <!-- Product Card 2 -->
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-                    <div class="relative">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6HHRdKjPSE3ZDgnSSnivwRbdw7Tk48txofg&s" alt="Golden honey jars from local beekeepers with honeycomb background" class="w-full h-48 object-cover">
-                        <span class="absolute top-4 right-4 bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full">Local</span>
+            <!-- Product 3 -->
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="https://www.fleshkart.com/uploads/product/1740828471-desi-eggs.jpg" alt="Farm Eggs">
+                    <span class="product-badge">Free-range</span>
+                </div>
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3>Farm Eggs</h3>
+                        <span class="product-price">₹70/DOZEN</span>
                     </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="font-bold text-lg">Raw Honey</h3>
-                            <span class="font-bold text-green-600">₹500/KG</span>
+                    <p class="product-description">Pasture-raised eggs from happy chickens.</p>
+                    <div class="product-footer">
+                        <div class="product-rating">
+                            ⭐⭐⭐⭐⭐ (32)
                         </div>
-                        <p class="text-gray-600 text-sm mb-4">Pure, unfiltered honey from local beekeepers.</p>
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center text-yellow-400">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
-                                <span class="text-gray-600 text-sm ml-1">(18)</span>
-                            </div>
-                            <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition" onclick="addFeaturedProduct('Raw Honey', 500, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6HHRdKjPSE3ZDgnSSnivwRbdw7Tk48txofg&s')">Add <i class="fas fa-plus ml-1"></i></button>
-                        </div>
+                        <button class="add-to-cart" onclick="addFeaturedProduct(600, 'Farm Eggs', 70, 'DOZEN', 'https://www.fleshkart.com/uploads/product/1740828471-desi-eggs.jpg')">
+                            Add <i class="fas fa-plus"></i>
+                        </button>
                     </div>
                 </div>
+            </div>
 
-                <!-- Product Card 3 -->
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-                    <div class="relative">
-                        <img src="https://www.fleshkart.com/uploads/product/1740828471-desi-eggs.jpg" alt="Brown free-range chicken eggs in rustic wooden crate with hay" class="w-full h-48 object-cover">
-                        <span class="absolute top-4 right-4 bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Free-range</span>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="font-bold text-lg">Farm Eggs</h3>
-                            <span class="font-bold text-green-600">₹70/DOZEN</span>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-4">Pasture-raised eggs from happy chickens.</p>
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center text-yellow-400">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <span class="text-gray-600 text-sm ml-1">(32)</span>
-                            </div>
-                            <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition" onclick="addFeaturedProduct('Farm Eggs', 70, 'https://www.fleshkart.com/uploads/product/1740828471-desi-eggs.jpg')">Add <i class="fas fa-plus ml-1"></i></button>
-                        </div>
-                    </div>
+            <!-- Product 4 -->
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="https://nurserylive.com/cdn/shop/products/nurserylive-seeds-carrot-mohan-chantenay-nantes-vegetable-seeds-16968688959628.jpg?v=1634203415" alt="Organic Carrot">
+                    <span class="product-badge">Organic</span>
                 </div>
-
-                <!-- Product Card 4 -->
-                <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
-                    <div class="relative">
-                        <img src="https://nurserylive.com/cdn/shop/products/nurserylive-seeds-carrot-mohan-chantenay-nantes-vegetable-seeds-16968688959628.jpg?v=1634203415" alt="Freshly harvested organic carrots with green tops still attached" class="w-full h-48 object-cover">
-                        <span class="absolute top-4 right-4 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Organic</span>
+                <div class="product-info">
+                    <div class="product-header">
+                        <h3>Organic Carrot</h3>
+                        <span class="product-price">₹70/KG</span>
                     </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="font-bold text-lg">Organic Carrot</h3>
-                            <span class="font-bold text-green-600">₹70/KG</span>
+                    <p class="product-description">Sweet, crunchy carrots grown without pesticides.</p>
+                    <div class="product-footer">
+                        <div class="product-rating">
+                            ⭐⭐⭐⭐⭐ (21)
                         </div>
-                        <p class="text-gray-600 text-sm mb-4">Sweet, crunchy carrots grown without pesticides.</p>
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center text-yellow-400">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                                <span class="text-gray-600 text-sm ml-1">(21)</span>
-                            </div>
-                            <button class="bg-green-600 text-white px-3 py-1 rounded-full hover:bg-green-700 transition" onclick="addFeaturedProduct('Organic Carrot', 70, 'https://nurserylive.com/cdn/shop/products/nurserylive-seeds-carrot-mohan-chantenay-nantes-vegetable-seeds-16968688959628.jpg?v=1634203415')">Add <i class="fas fa-plus ml-1"></i></button>
-                        </div>
+                        <button class="add-to-cart" onclick="addFeaturedProduct(3, 'Organic Carrot', 70, 'KG', 'https://nurserylive.com/cdn/shop/products/nurserylive-seeds-carrot-mohan-chantenay-nantes-vegetable-seeds-16968688959628.jpg?v=1634203415')">
+                            Add <i class="fas fa-plus"></i>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Farmer Spotlight -->
-    <section id="farmers" class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Meet Our Farmers</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Farmer Card 1 -->
-                <div class="flex flex-col items-center text-center">
-                    <img src="https://www.shutterstock.com/image-photo/indian-farmer-standing-plant-his-260nw-2293422615.jpg" alt="Middle-aged female farmer with warm smile wearing straw hat surrounded by sunflowers" class="w-32 h-32 rounded-full object-cover mb-4">
-                    <h3 class="text-xl font-bold mb-2">Ravi</h3>
-                    <p class="text-gray-600 mb-3">Specializes in organic vegetables and heritage tomatoes</p>
-                    <div class="flex justify-center space-x-4 text-green-600">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fas fa-envelope"></i></a>
-                    </div>
+    <!-- Farmers -->
+    <section class="farmers" id="farmers">
+        <div class="section-header">
+            <h2>Meet Our Farmers</h2>
+        </div>
+        <div class="farmers-grid">
+            <div class="farmer-card">
+                <img src="https://www.shutterstock.com/image-photo/indian-farmer-standing-plant-his-260nw-2293422615.jpg" 
+                     alt="Ravi" class="farmer-image">
+                <h3>Ravi</h3>
+                <p>Specializes in organic vegetables and heritage tomatoes</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fas fa-envelope"></i></a>
                 </div>
+            </div>
 
-                <!-- Farmer Card 2 -->
-                <div class="flex flex-col items-center text-center">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQR9Yl2R-Xv9rgHJFTbsDzYsJrFeUU0PObURw&s" alt="Elderly male farmer with weathered face tending to beehives at golden hour" class="w-32 h-32 rounded-full object-cover mb-4">
-                    <h3 class="text-xl font-bold mb-2">Lakshmi</h3>
-                    <p class="text-gray-600 mb-3">Local honey producer with 30 years experience</p>
-                    <div class="flex justify-center space-x-4 text-green-600">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fas fa-envelope"></i></a>
-                    </div>
+            <div class="farmer-card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQR9Yl2R-Xv9rgHJFTbsDzYsJrFeUU0PObURw&s" 
+                     alt="Lakshmi" class="farmer-image">
+                <h3>Lakshmi</h3>
+                <p>Local honey producer with 30 years experience</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fas fa-envelope"></i></a>
                 </div>
+            </div>
 
-                <!-- Farmer Card 3 -->
-                <div class="flex flex-col items-center text-center">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB8PwDWi6J8dGDIyk4V4ySzgx1PGv-LOr_2Q&s" alt="Young couple standing in apple orchard holding baskets of fresh picked apples" class="w-32 h-32 rounded-full object-cover mb-4">
-                    <h3 class="text-xl font-bold mb-2">Koteswara Rao</h3>
-                    <p class="text-gray-600 mb-3">Three generations growing orchard fruits</p>
-                    <div class="flex justify-center space-x-4 text-green-600">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fas fa-envelope"></i></a>
-                    </div>
+            <div class="farmer-card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB8PwDWi6J8dGDIyk4V4ySzgx1PGv-LOr_2Q&s" 
+                     alt="Koteswara Rao" class="farmer-image">
+                <h3>Koteswara Rao</h3>
+                <p>Three generations growing orchard fruits</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fas fa-envelope"></i></a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Newsletter Signup -->
-    <section class="py-16 bg-green-600 text-white">
-        <div class="max-w-3xl mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold mb-4">Stay Updated With FarmFresh</h2>
-            <p class="mb-8">Get weekly updates on seasonal produce, farmer spotlights, and special offers.</p>
-            <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                <input type="email" placeholder="Your email address" class="flex-grow px-4 py-3 rounded-lg text-gray-800 focus:outline-none">
-                <button class="px-6 py-3 bg-yellow-500 text-gray-800 font-bold rounded-lg hover:bg-yellow-400 transition">
-                    Subscribe <i class="fas fa-paper-plane ml-2"></i>
-                </button>
-            </div>
+    <!-- Newsletter -->
+    <section class="newsletter">
+        <h2>Stay Updated With FarmFresh</h2>
+        <p>Get weekly updates on seasonal produce, farmer spotlights, and special offers.</p>
+        <div class="newsletter-form">
+            <input type="email" placeholder="Your email address" class="newsletter-input">
+            <button class="newsletter-btn">
+                Subscribe <i class="fas fa-paper-plane"></i>
+            </button>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white pt-12 pb-6">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                <div>
-                    <div class="flex items-center space-x-2 mb-4">
-                        <img src="https://placehold.co/30x30" alt="FarmFresh logo icon - simplified leaf design" class="h-8">
-                        <span class="text-xl font-bold">FarmFresh</span>
-                    </div>
-                    <p class="text-gray-400">Connecting farmers directly with consumers since 2023.</p>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-lg mb-4">Quick Links</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Home</a></li>
-                        <li><a href="#marketplace" class="text-gray-400 hover:text-white transition">Marketplace</a></li>
-                        <li><a href="#farmers" class="text-gray-400 hover:text-white transition">For Farmers</a></li>
-                        <li><a href="#about" class="text-gray-400 hover:text-white transition">About Us</a></li>
-                        <li><a href="#contact" class="text-gray-400 hover:text-white transition">Contact</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-lg mb-4">Categories</h4>
-                    <ul class="space-y-2">
-                        <li><a href="veg.html" class="text-gray-400 hover:text-white transition">Vegetables</a></li>
-                        <li><a href="fruit.html" class="text-gray-400 hover:text-white transition">Fruits</a></li>
-                        <li><a href="dairy.html" class="text-gray-400 hover:text-white transition">Dairy</a></li>
-                        <li><a href="grain.html" class="text-gray-400 hover:text-white transition">Grains</a></li>
-                        <li><a href="poultry.html" class="text-gray-400 hover:text-white transition">Poultry</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-lg mb-4">Contact</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li class="flex items-center"><i class="fas fa-map-marker-alt mr-2"></i> 123 Farm Rd, Agritown</li>
-                        <li class="flex items-center"><i class="fas fa-phone-alt mr-2"></i> (555) 123-4567</li>
-                        <li class="flex items-center"><i class="fas fa-envelope mr-2"></i> hello@farmfresh.example</li>
-                    </ul>
-                    <div class="flex space-x-4 mt-4 text-xl">
-                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>FarmFresh</h4>
+                <p>Connecting farmers directly with consumers since 2023.</p>
             </div>
-
-            <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-500 text-sm mb-4 md:mb-0">© 2024 FarmFresh. All rights reserved.</p>
-                <div class="flex space-x-6">
-                    <a href="#" class="text-gray-500 hover:text-white text-sm transition">Privacy Policy</a>
-                    <a href="#" class="text-gray-500 hover:text-white text-sm transition">Terms of Service</a>
-                    <a href="#" class="text-gray-500 hover:text-white text-sm transition">FAQ</a>
-                </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="store.html">Marketplace</a></li>
+                    <li><a href="#farmers">For Farmers</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="veg.html">Vegetables</a></li>
+                    <li><a href="fruit.html">Fruits</a></li>
+                    <li><a href="dairy.html">Dairy</a></li>
+                    <li><a href="grain.html">Grains</a></li>
+                    <li><a href="poultry.html">Poultry</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>📍 123 Farm Rd, Agritown</p>
+                <p>📞 (555) 123-4567</p>
+                <p>✉️ hello@farmfresh.example</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 FarmFresh. All rights reserved.</p>
+            <div>
+                <a href="#">Privacy Policy</a> • 
+                <a href="#">Terms of Service</a> • 
+                <a href="#">FAQ</a>
             </div>
         </div>
     </footer>
@@ -523,7 +1058,7 @@
             }
 
             addToCart(product) {
-                const existingItem = this.cart.find(item => item.name === product.name);
+                const existingItem = this.cart.find(item => item.id === product.id);
                 
                 if (existingItem) {
                     existingItem.quantity += 1;
@@ -549,14 +1084,31 @@
 
         const cartManager = new CartManager();
 
+        // ==================== LOGIN STATE MANAGEMENT ====================
+        function updateNavBar() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const loggedInElements = document.querySelectorAll('.logged-in-only');
+            const loggedOutElements = document.querySelectorAll('.logged-out-only');
+
+            if (isLoggedIn) {
+                loggedInElements.forEach(el => {
+                    el.style.display = el.tagName === 'BUTTON' ? 'block' : 'flex';
+                });
+                loggedOutElements.forEach(el => el.style.display = 'none');
+            } else {
+                loggedInElements.forEach(el => el.style.display = 'none');
+                loggedOutElements.forEach(el => el.style.display = 'flex');
+            }
+        }
+
         // ==================== EVENT HANDLERS ====================
-        function addFeaturedProduct(name, price, image) {
+        function addFeaturedProduct(id, name, price, unit, image) {
             const product = {
+                id: id,
                 name: name,
                 price: price,
-                unit: 'KG',
-                image: image,
-                quantity: 1
+                unit: unit,
+                image: image
             };
             
             cartManager.addToCart(product);
@@ -575,11 +1127,27 @@
             }, 3000);
         }
 
+        // Logout handler
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                if (confirm('Are you sure you want to logout?')) {
+                    localStorage.removeItem('isLoggedIn');
+                    localStorage.removeItem('userEmail');
+                    sessionStorage.removeItem('cart');
+                    showToast('Logged out successfully!');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                }
+            });
+        }
+
         // ==================== INITIALIZE ====================
         document.addEventListener('DOMContentLoaded', () => {
+            updateNavBar();
             cartManager.updateCartCount();
         });
     </script>
 </body>
-
 </html>
