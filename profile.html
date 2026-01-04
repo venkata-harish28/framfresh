@@ -4,381 +4,949 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Profile - FarmFresh</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary-green: #2d6a4f;
+      --secondary-green: #52b788;
+      --accent-orange: #e76f51;
+      --cream: #fefae0;
+      --light-sage: #d8f3dc;
+      --dark-text: #1b4332;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background-color: #f8f9fa;
+      color: var(--dark-text);
+    }
+
+    /* Navigation Bar */
+    .top-nav {
+      background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+      padding: 1.2rem 2rem;
+      box-shadow: 0 4px 20px rgba(45, 106, 79, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.8rem 1.8rem;
+      background: white;
+      color: var(--primary-green);
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 1.05rem;
+      transition: all 0.3s ease;
+      font-family: 'Quicksand', sans-serif;
+      text-decoration: none;
+    }
+
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-header-nav {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
+
+    /* Main Container */
+    .container {
+      display: flex;
+      max-width: 1400px;
+      margin: 2rem auto;
+      gap: 2rem;
+      padding: 0 2rem;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 300px;
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      height: fit-content;
+      position: sticky;
+      top: 2rem;
+    }
+
+    .profile-section {
+      text-align: center;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid #f0f0f0;
+      margin-bottom: 2rem;
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin: 0 auto 1rem;
+      border: 4px solid var(--secondary-green);
+      box-shadow: 0 4px 15px rgba(82, 183, 136, 0.3);
+    }
+
+    .profile-name {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary-green);
+      margin-bottom: 0.5rem;
+    }
+
+    .profile-email {
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    .menu-list {
+      list-style: none;
+    }
+
+    .menu-item {
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-weight: 600;
+      color: var(--dark-text);
+    }
+
+    .menu-item i {
+      font-size: 1.2rem;
+      width: 24px;
+      color: var(--secondary-green);
+    }
+
+    .menu-item:hover {
+      background: var(--light-sage);
+      transform: translateX(5px);
+    }
+
+    .menu-item.active {
+      background: linear-gradient(135deg, var(--light-sage) 0%, #b7e4c7 100%);
+      font-weight: 800;
+      color: var(--primary-green);
+    }
+
+    .logout-btn {
+      width: 100%;
+      padding: 1rem;
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+    }
+
+    .logout-btn:hover {
+      background: #ee5a52;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      background: white;
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      min-height: 600px;
+    }
+
+    .content-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: var(--primary-green);
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* Orders Section */
+    .orders-container {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .order-card {
+      background: white;
+      border: 2px solid #f0f0f0;
+      border-radius: 15px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .order-card:hover {
+      border-color: var(--secondary-green);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #f5f5f5;
+    }
+
+    .order-id {
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--primary-green);
+    }
+
+    .order-date {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .order-status-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: inline-block;
+    }
+
+    .status-confirmed {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-delivered {
+      background: #cce5ff;
+      color: #004085;
+    }
+
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .order-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .order-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.8rem;
+      background: #f8f9fa;
+      border-radius: 10px;
+    }
+
+    .order-item-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 2px solid var(--light-sage);
+    }
+
+    .order-item-info h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary-green);
+      margin-bottom: 0.3rem;
+    }
+
+    .order-item-info p {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .order-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 2px solid #f5f5f5;
+    }
+
+    .order-total {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--secondary-green);
+    }
+
+    .order-items-count {
+      color: #666;
+      font-size: 0.95rem;
+    }
+
+    .reorder-btn {
+      padding: 0.7rem 1.5rem;
+      background: var(--secondary-green);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .reorder-btn:hover {
+      background: var(--primary-green);
+      transform: scale(1.05);
+    }
+
+    /* Edit Profile Form */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--dark-text);
+      font-size: 1.05rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: 'Quicksand', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--secondary-green);
+      box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.1);
+    }
+
+    .form-group input:disabled {
+      background: #f5f5f5;
+      cursor: not-allowed;
+    }
+
+    .save-btn {
+      padding: 1rem 2.5rem;
+      background: linear-gradient(135deg, var(--secondary-green) 0%, var(--primary-green) 100%);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(82, 183, 136, 0.4);
+    }
+
+    .save-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(82, 183, 136, 0.5);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #999;
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      color: #ddd;
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: #666;
+    }
+
+    .empty-state p {
+      font-size: 1.1rem;
+    }
+
+    /* Help Section */
+    .help-container {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .help-card {
+      padding: 1.5rem;
+      background: var(--light-sage);
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .help-card:hover {
+      background: var(--secondary-green);
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(82, 183, 136, 0.3);
+    }
+
+    .help-card h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 100px;
+      right: 20px;
+      background: var(--secondary-green);
+      color: white;
+      padding: 1.2rem 2rem;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+      display: none;
+      z-index: 2000;
+      animation: slideIn 0.4s ease;
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    .toast.error {
+      background: #ff6b6b;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    /* Loading State */
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--secondary-green);
+    }
+
+    .loading i {
+      font-size: 3rem;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        position: relative;
+      }
+
+      .order-items {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
-<body class="bg-gray-100 font-sans">
-<div class="flex h-screen">
-  <!-- Left Sidebar -->
-  <div class="w-1/4 bg-white shadow-lg p-6 flex flex-col">
-    <!-- Profile Header -->
-    <div class="text-center mb-6">
-      <img id="profilePic" src="https://via.placeholder.com/100" class="w-24 h-24 mx-auto rounded-full border-4 border-blue-500" alt="Profile" />
-      <h2 id="profileName" class="text-2xl font-bold mt-2">Guest</h2>
-      <p id="profileEmail" class="text-gray-500">No email</p>
-      <p id="profilePhone" class="text-gray-500">📞 Not provided</p>
-      <p id="profileAddress" class="text-gray-500">🏠 Address not provided</p>
-    </div>
 
-    <!-- Logout -->
-    <button id="logoutBtn" class="flex items-center space-x-2 bg-red-500 text-white px-4 py-2 rounded-full shadow hover:bg-red-600 transition mb-6 justify-center">
-      <i class="fa-solid fa-right-from-bracket"></i>
-      <span>Logout</span>
-    </button>
-
-    <!-- Menu Options -->
-    <div class="space-y-3 mt-2 flex-1">
-      <button class="option-btn flex items-center space-x-3 p-3 rounded-xl w-full text-left hover:bg-indigo-100 transition" data-content="address">
-        <i class="fa-solid fa-location-dot text-indigo-500 text-xl"></i>
-        <span>Address</span>
-      </button>
-      <button class="option-btn flex items-center space-x-3 p-3 rounded-xl w-full text-left hover:bg-gray-200 transition" data-content="editProfile">
-        <i class="fa-solid fa-pen-to-square text-gray-600 text-xl"></i>
-        <span>Edit Profile</span>
-      </button>
-      <button class="option-btn flex items-center space-x-3 p-3 rounded-xl w-full text-left hover:bg-green-100 transition" data-content="history">
-        <i class="fa-solid fa-clock-rotate-left text-green-500 text-xl"></i>
-        <span>History</span>
-      </button>
-      <button class="option-btn flex items-center space-x-3 p-3 rounded-xl w-full text-left hover:bg-yellow-100 transition" data-content="help">
-        <i class="fa-solid fa-circle-info text-yellow-500 text-xl"></i>
-        <span>Help</span>
-      </button>
+<body>
+  <!-- Top Navigation -->
+  <div class="top-nav">
+    <a href="webpage.html" class="back-button">
+      <i class="fas fa-arrow-left"></i>
+      Back to Home
+    </a>
+    <div class="profile-header-nav">
+      <i class="fas fa-user-circle"></i> My Profile
     </div>
   </div>
 
-  <!-- Right Content Area -->
-  <div class="flex-1 p-8 bg-gray-50 overflow-auto">
-    <div class="flex items-center justify-between mb-4">
-      <button id="backBtn" class="flex items-center space-x-2 text-gray-700 bg-white px-4 py-2 rounded shadow hover:bg-gray-100 transition">
-        <i class="fa-solid fa-arrow-left"></i>
-        <span>Back</span>
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="profile-section">
+        <img id="profileAvatar" src="https://via.placeholder.com/100" alt="Profile" class="profile-avatar">
+        <div class="profile-name" id="profileName">Guest User</div>
+        <div class="profile-email" id="profileEmail">guest@example.com</div>
+      </div>
+
+      <ul class="menu-list">
+        <li class="menu-item active" data-tab="orders">
+          <i class="fas fa-shopping-bag"></i>
+          <span>My Orders</span>
+        </li>
+        <li class="menu-item" data-tab="profile">
+          <i class="fas fa-user-edit"></i>
+          <span>Edit Profile</span>
+        </li>
+        <li class="menu-item" data-tab="address">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>Address</span>
+        </li>
+        <li class="menu-item" data-tab="help">
+          <i class="fas fa-question-circle"></i>
+          <span>Help & Support</span>
+        </li>
+      </ul>
+
+      <button class="logout-btn" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i>
+        Logout
       </button>
     </div>
-    <div id="contentArea" class="h-full flex items-center justify-center">
-      <div class="bg-gradient-to-r from-green-400 to-blue-500 shadow-2xl rounded-3xl p-12 w-3/4 text-center text-white transform hover:scale-105 transition">
-        <h1 class="text-4xl font-bold mb-4">Welcome to FarmFresh!</h1>
-        <p class="text-lg">Your one-stop solution for fresh groceries delivered to your doorstep.</p>
-        <i class="fa-solid fa-leaf text-6xl mt-6"></i>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div id="contentArea">
+        <!-- Content will be loaded here -->
       </div>
     </div>
   </div>
-</div>
 
-<script>
-/* -------------------- Utilities -------------------- */
-function safeParse(json, fallback) { try { return JSON.parse(json); } catch { return fallback; } }
+  <script>
+    const API_URL = 'http://localhost:5000';
+    let currentUser = null;
 
-function getUser() {
-  return safeParse(localStorage.getItem("userProfile"), {});
-}
-
-function saveUser(user) { 
-  localStorage.setItem("userProfile", JSON.stringify(user)); 
-}
-
-function setAvatarFromName(name) {
-  const url = `https://ui-avatars.com/api/?name=${encodeURIComponent(name||"G")}&background=random&color=fff&bold=true`;
-  const img = document.getElementById("profilePic"); 
-  if(img) img.src = url;
-}
-
-/* -------------------- Initial Load -------------------- */
-document.addEventListener("DOMContentLoaded", async () => {
-  const token = localStorage.getItem('token');
-  
-  if (!token) {
-    alert("Please login first!");
-    window.location.href = "login.html";
-    return;
-  }
-
-  // Fetch fresh profile data from backend
-  try {
-    const response = await fetch('http://localhost:5000/api/profile', {
-      headers: { 'Authorization': token }
-    });
-    
-    const data = await response.json();
-    
-    if (data.success && data.user) {
-      // Update localStorage with fresh data
-      saveUser(data.user);
-      
-      // Update UI
-      document.getElementById("profileName").textContent = data.user.name || "Guest";
-      document.getElementById("profileEmail").textContent = data.user.email || "No email";
-      document.getElementById("profilePhone").textContent = data.user.phone || "📞 Not provided";
-      document.getElementById("profileAddress").textContent = data.user.address || "🏠 Address not provided";
-      setAvatarFromName(data.user.name);
-    } else {
-      throw new Error('Failed to fetch profile');
+    // Utility Functions
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.remove('error');
+      if (type === 'error') toast.classList.add('error');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
     }
-  } catch (err) {
-    console.error('Error loading profile:', err);
-    alert('Error loading profile. Please login again.');
-    localStorage.clear();
-    window.location.href = "login.html";
-    return;
-  }
 
-  document.querySelectorAll(".option-btn").forEach(btn=>{
-    btn.addEventListener("click",()=>{ renderTab(btn.getAttribute("data-content")); });
-  });
+    function setAvatarFromName(name) {
+      const url = `https://ui-avatars.com/api/?name=${encodeURIComponent(name||"G")}&background=52b788&color=fff&bold=true&size=100`;
+      document.getElementById('profileAvatar').src = url;
+    }
 
-  const backBtn = document.getElementById("backBtn");
-  if (backBtn) {
-    backBtn.addEventListener("click", () => {
-      window.location.href = "webpage.html";
-    });
-  }
-});
-
-/* -------------------- Logout -------------------- */
-document.getElementById("logoutBtn").addEventListener("click",()=>{
-  localStorage.clear();
-  sessionStorage.clear();
-  window.location.href="web.html";
-});
-
-/* -------------------- Tabs -------------------- */
-const contentArea = document.getElementById("contentArea");
-
-function renderTab(key){
-  if(key==="address") renderAddressTab();
-  else if(key==="editProfile") renderEditProfileTab();
-  else if(key==="history") renderHistoryTab();
-  else if(key==="help") renderHelpTab();
-}
-
-/* ---------- Address Tab ---------- */
-function renderAddressTab(){
-  const user = getUser();
-  const address = user.address || '';
-  
-  contentArea.innerHTML=`
-    <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-2xl">
-      <h2 class="text-3xl font-bold mb-6">Delivery Address</h2>
-      <div class="mb-6">
-        <h3 class="font-semibold mb-2">Current Address</h3>
-        <p class="text-gray-600 p-4 border rounded-lg">${address || 'No address set'}</p>
-      </div>
-      <div class="mt-4">
-        <h3 class="font-semibold mb-2">Update Address</h3>
-        <textarea id="newAddress" class="w-full border rounded-lg p-3 mb-3" placeholder="Enter your full delivery address">${address}</textarea>
-        <button id="updateAddressBtn" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600">Update Address</button>
-      </div>
-    </div>
-  `;
-  
-  document.getElementById("updateAddressBtn").addEventListener("click", async () => {
-    const newAddress = document.getElementById("newAddress").value.trim();
-    if(!newAddress) return alert("Please enter an address.");
-    
-    const token = localStorage.getItem('token');
-    
-    try {
-      const response = await fetch('http://localhost:5000/api/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token
-        },
-        body: JSON.stringify({ address: newAddress })
-      });
+    // Load Profile
+    async function loadProfile() {
+      const token = localStorage.getItem('token');
       
-      const data = await response.json();
-      
-      if (data.success) {
-        saveUser(data.user);
-        document.getElementById("profileAddress").textContent = data.user.address;
-        alert("✅ Address updated successfully!");
-        renderAddressTab();
-      } else {
-        alert(data.message || 'Failed to update address');
+      if (!token) {
+        showToast('Please login first!', 'error');
+        setTimeout(() => window.location.href = 'login.html', 2000);
+        return;
       }
-    } catch (err) {
-      console.error('Error updating address:', err);
-      alert('Error updating address. Please try again.');
-    }
-  });
-}
 
-/* ---------- Edit Profile Tab ---------- */
-function renderEditProfileTab(){
-  const user = getUser();
-  
-  contentArea.innerHTML=`
-    <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-2xl">
-      <h2 class="text-3xl font-bold mb-4">Edit Profile</h2>
-      <div class="space-y-4">
-        <div>
-          <label class="block font-semibold mb-2">Name</label>
-          <input type="text" id="editName" class="w-full p-3 border rounded-lg" value="${user.name||""}" />
-        </div>
-        <div>
-          <label class="block font-semibold mb-2">Email</label>
-          <input type="email" id="editEmail" class="w-full p-3 border rounded-lg bg-gray-100" value="${user.email||""}" disabled />
-          <p class="text-sm text-gray-500 mt-1">Email cannot be changed</p>
-        </div>
-        <div>
-          <label class="block font-semibold mb-2">Phone</label>
-          <input type="text" id="editPhone" class="w-full p-3 border rounded-lg" value="${user.phone||""}" />
-        </div>
-        <div>
-          <label class="block font-semibold mb-2">Address</label>
-          <textarea id="editAddress" class="w-full p-3 border rounded-lg" rows="3">${user.address||""}</textarea>
-        </div>
-        <button id="saveProfile" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 font-bold">
-          Save Changes
-        </button>
-      </div>
-    </div>
-  `;
-  
-  document.getElementById("saveProfile").addEventListener("click", async () => {
-    const name = document.getElementById("editName").value.trim();
-    const phone = document.getElementById("editPhone").value.trim();
-    const address = document.getElementById("editAddress").value.trim();
-    
-    if (!name) return alert("Name is required");
-    
-    const token = localStorage.getItem('token');
-    
-    try {
-      const response = await fetch('http://localhost:5000/api/profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token
-        },
-        body: JSON.stringify({ name, phone, address })
-      });
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        saveUser(data.user);
-        document.getElementById("profileName").textContent = data.user.name;
-        document.getElementById("profilePhone").textContent = data.user.phone || "📞 Not provided";
-        document.getElementById("profileAddress").textContent = data.user.address || "🏠 Address not provided";
-        setAvatarFromName(data.user.name);
-        alert("✅ Profile updated successfully!");
-      } else {
-        alert(data.message || 'Failed to update profile');
+      try {
+        const response = await fetch(`${API_URL}/api/profile`, {
+          headers: { 'Authorization': token }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success && data.user) {
+          currentUser = data.user;
+          document.getElementById('profileName').textContent = data.user.name || 'Guest';
+          document.getElementById('profileEmail').textContent = data.user.email || 'No email';
+          setAvatarFromName(data.user.name);
+          
+          // Load default tab
+          loadOrders();
+        } else {
+          throw new Error('Failed to fetch profile');
+        }
+      } catch (err) {
+        console.error('Error loading profile:', err);
+        showToast('Error loading profile. Please login again.', 'error');
+        localStorage.clear();
+        setTimeout(() => window.location.href = 'login.html', 2000);
       }
-    } catch (err) {
-      console.error('Error updating profile:', err);
-      alert('Error updating profile. Please try again.');
-    }
-  });
-}
-
-/* ---------- History Tab ---------- */
-async function renderHistoryTab(){
-  const token = localStorage.getItem("token");
-  
-  if (!token) {
-    contentArea.innerHTML = `
-      <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-2xl text-center">
-        <p class="text-red-500">⚠️ Please log in to see your history.</p>
-      </div>`;
-    return;
-  }
-
-  contentArea.innerHTML = `
-    <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-4xl">
-      <h2 class="text-3xl font-bold mb-6">Purchase History</h2>
-      <div id="ordersWrap" class="space-y-6"><p class="text-gray-500">Loading...</p></div>
-    </div>`;
-
-  const wrap = document.getElementById("ordersWrap");
-
-  try {
-    const res = await fetch("http://localhost:5000/api/orders", {
-      headers: { "Authorization": token }
-    });
-    const result = await res.json();
-
-    if (!result.success || !Array.isArray(result.orders) || result.orders.length === 0) {
-      wrap.innerHTML = `<p class="text-gray-500">No purchase history yet.</p>`;
-      return;
     }
 
-    wrap.innerHTML = result.orders.map((order, idx) => `
-      <div class="border rounded-2xl p-6 shadow">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-          <h3 class="font-bold text-xl">Order #${result.orders.length - idx}</h3>
-          <div class="text-sm text-gray-600">${new Date(order.createdAt).toLocaleString()}</div>
+    // Load Orders
+    async function loadOrders() {
+      const contentArea = document.getElementById('contentArea');
+      contentArea.innerHTML = `
+        <h2 class="content-title">
+          <i class="fas fa-shopping-bag"></i>
+          My Orders
+        </h2>
+        <div class="loading">
+          <i class="fas fa-spinner"></i>
+          <p>Loading your orders...</p>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          ${order.items.map(it => `
-            <div class="flex items-center space-x-4 p-3 border rounded-lg">
-              <img src="${it.image || 'https://via.placeholder.com/80'}" class="w-16 h-16 object-cover rounded-lg" alt="${it.name}" />
-              <div>
-                <p class="font-semibold">${it.name}</p>
-                <p class="text-gray-500">₹${Number(it.price).toFixed(2)} × ${Number(it.quantity)}</p>
+      `;
+
+      const token = localStorage.getItem('token');
+
+      try {
+        const response = await fetch(`${API_URL}/api/orders`, {
+          headers: { 'Authorization': token }
+        });
+        
+        const data = await response.json();
+
+        if (data.success && data.orders && data.orders.length > 0) {
+          const ordersHTML = data.orders.map((order, index) => `
+            <div class="order-card">
+              <div class="order-header">
+                <div>
+                  <div class="order-id">Order #${data.orders.length - index}</div>
+                  <div class="order-date">${new Date(order.createdAt).toLocaleDateString('en-IN', { 
+                    day: 'numeric', 
+                    month: 'long', 
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}</div>
+                </div>
+                <span class="order-status-badge status-${order.status}">
+                  ${order.status === 'confirmed' ? '✓ Confirmed' : 
+                    order.status === 'delivered' ? '✓ Delivered' : 
+                    '⏱ Pending'}
+                </span>
+              </div>
+              
+              <div class="order-items">
+                ${order.items.slice(0, 3).map(item => `
+                  <div class="order-item">
+                    <img src="${item.image || 'https://via.placeholder.com/60'}" alt="${item.name}" class="order-item-image">
+                    <div class="order-item-info">
+                      <h4>${item.name}</h4>
+                      <p>₹${item.price} × ${item.quantity}</p>
+                    </div>
+                  </div>
+                `).join('')}
+                ${order.items.length > 3 ? `
+                  <div class="order-item" style="justify-content: center; background: var(--light-sage); font-weight: 700; color: var(--primary-green);">
+                    +${order.items.length - 3} more items
+                  </div>
+                ` : ''}
+              </div>
+              
+              <div class="order-footer">
+                <div>
+                  <div class="order-items-count">${order.items.length} item(s)</div>
+                  <div class="order-total">Total: ₹${Number(order.total).toFixed(2)}</div>
+                </div>
+                <button class="reorder-btn" onclick="reorderItems(${JSON.stringify(order.items).replace(/"/g, '&quot;')})">
+                  <i class="fas fa-redo"></i> Reorder
+                </button>
               </div>
             </div>
-          `).join("")}
-        </div>
-        <div class="mt-4 flex items-center justify-between">
-          <div class="text-gray-600 text-sm">${order.items.length} item(s)</div>
-          <div class="text-right">
-            <p class="font-semibold text-lg">Total: ₹${Number(order.total).toFixed(2)}</p>
-          </div>
-        </div>
-      </div>
-    `).join("");
-  } catch (err) {
-    console.error(err);
-    wrap.innerHTML = `<p class="text-red-500">❌ Error loading history. Please check if backend is running.</p>`;
-  }
-}
+          `).join('');
 
-/* ---------- Help Tab ---------- */
-function renderHelpTab(){
-  contentArea.innerHTML=`
-    <div class="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-2xl">
-      <h2 class="text-3xl font-bold mb-4">Help & Support</h2>
-      <div class="border rounded-lg p-4 h-64 flex flex-col">
-        <div class="flex-1 overflow-y-auto mb-4" id="chatMessages">
-          <div class="text-left mb-2">
-            <span class="bg-gray-200 px-3 py-1 rounded-lg inline-block">Hello! How can we help you today?</span>
+          contentArea.innerHTML = `
+            <h2 class="content-title">
+              <i class="fas fa-shopping-bag"></i>
+              My Orders
+            </h2>
+            <div class="orders-container">
+              ${ordersHTML}
+            </div>
+          `;
+        } else {
+          contentArea.innerHTML = `
+            <h2 class="content-title">
+              <i class="fas fa-shopping-bag"></i>
+              My Orders
+            </h2>
+            <div class="empty-state">
+              <i class="fas fa-shopping-cart"></i>
+              <h3>No orders yet</h3>
+              <p>Start shopping for fresh farm products!</p>
+            </div>
+          `;
+        }
+      } catch (err) {
+        console.error('Error loading orders:', err);
+        contentArea.innerHTML = `
+          <h2 class="content-title">
+            <i class="fas fa-shopping-bag"></i>
+            My Orders
+          </h2>
+          <div class="empty-state">
+            <i class="fas fa-exclamation-circle"></i>
+            <h3>Error loading orders</h3>
+            <p>Please try again later</p>
+          </div>
+        `;
+      }
+    }
+
+    // Reorder Items
+    function reorderItems(items) {
+      try {
+        const cart = items.map(item => ({
+          id: item.id || Math.random(),
+          name: item.name,
+          price: item.price,
+          unit: 'KG',
+          quantity: item.quantity,
+          image: item.image
+        }));
+        
+        sessionStorage.setItem('cart', JSON.stringify(cart));
+        showToast('Items added to cart!');
+        setTimeout(() => window.location.href = 'cart.html', 1500);
+      } catch (err) {
+        console.error('Reorder error:', err);
+        showToast('Error adding items to cart', 'error');
+      }
+    }
+
+    // Load Edit Profile
+    function loadEditProfile() {
+      const contentArea = document.getElementById('contentArea');
+      
+      contentArea.innerHTML = `
+        <h2 class="content-title">
+          <i class="fas fa-user-edit"></i>
+          Edit Profile
+        </h2>
+        <form id="editProfileForm">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" id="editName" value="${currentUser.name || ''}" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="editEmail" value="${currentUser.email || ''}" disabled>
+            <small style="color: #666; margin-top: 0.5rem; display: block;">Email cannot be changed</small>
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" id="editPhone" value="${currentUser.phone || ''}" pattern="[0-9]{10}" placeholder="10-digit phone number">
+          </div>
+          <div class="form-group">
+            <label>Address</label>
+            <textarea id="editAddress" rows="4" placeholder="Enter your full delivery address">${currentUser.address || ''}</textarea>
+          </div>
+          <button type="submit" class="save-btn">
+            <i class="fas fa-save"></i> Save Changes
+          </button>
+        </form>
+      `;
+
+      document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const name = document.getElementById('editName').value.trim();
+        const phone = document.getElementById('editPhone').value.trim();
+        const address = document.getElementById('editAddress').value.trim();
+
+        if (!name) {
+          showToast('Name is required', 'error');
+          return;
+        }
+
+        const token = localStorage.getItem('token');
+
+        try {
+          const response = await fetch(`${API_URL}/api/profile`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': token
+            },
+            body: JSON.stringify({ name, phone, address })
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            currentUser = data.user;
+            document.getElementById('profileName').textContent = data.user.name;
+            setAvatarFromName(data.user.name);
+            showToast('✅ Profile updated successfully!');
+          } else {
+            showToast(data.message || 'Failed to update profile', 'error');
+          }
+        } catch (err) {
+          console.error('Error updating profile:', err);
+          showToast('Error updating profile. Please try again.', 'error');
+        }
+      });
+    }
+
+    // Load Address
+    function loadAddress() {
+      const contentArea = document.getElementById('contentArea');
+      
+      contentArea.innerHTML = `
+        <h2 class="content-title">
+          <i class="fas fa-map-marker-alt"></i>
+          Delivery Address
+        </h2>
+        <div class="form-group">
+          <label>Current Address</label>
+          <div style="padding: 1.5rem; background: #f8f9fa; border-radius: 12px; margin-bottom: 1.5rem;">
+            ${currentUser.address || 'No address set'}
           </div>
         </div>
-        <div class="flex space-x-2">
-          <input id="chatInput" type="text" placeholder="Type your message..." class="flex-1 border rounded-lg px-3 py-2" />
-          <button id="chatSend" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Send</button>
+        <div class="form-group">
+          <label>Update Address</label>
+          <textarea id="newAddress" rows="4" placeholder="Enter your full delivery address">${currentUser.address || ''}</textarea>
         </div>
-      </div>
-    </div>
-  `;
-  
-  const input = document.getElementById("chatInput");
-  const messages = document.getElementById("chatMessages");
-  
-  document.getElementById("chatSend").addEventListener("click",()=>{
-    const msg = (input.value||"").trim(); 
-    if(!msg) return;
-    
-    messages.innerHTML+=`<div class="text-right mb-2"><span class="bg-blue-500 text-white px-3 py-1 rounded-lg inline-block">${msg}</span></div>`;
-    input.value="";
-    
-    setTimeout(()=>{
-      messages.innerHTML+=`<div class="text-left mb-2"><span class="bg-gray-200 px-3 py-1 rounded-lg inline-block">Thank you for your message! Our support team will get back to you shortly.</span></div>`;
-      messages.scrollTop = messages.scrollHeight;
-    },600);
-    
-    messages.scrollTop = messages.scrollHeight;
-  });
-  
-  input.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      document.getElementById("chatSend").click();
+        <button class="save-btn" onclick="updateAddress()">
+          <i class="fas fa-save"></i> Update Address
+        </button>
+      `;
     }
-  });
-}
-</script>
+
+    async function updateAddress() {
+      const newAddress = document.getElementById('newAddress').value.trim();
+      
+      if (!newAddress) {
+        showToast('Please enter an address', 'error');
+        return;
+      }
+
+      const token = localStorage.getItem('token');
+
+      try {
+        const response = await fetch(`${API_URL}/api/profile`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+          },
+          body: JSON.stringify({ address: newAddress })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          currentUser = data.user;
+          showToast('✅ Address updated successfully!');
+          loadAddress();
+        } else {
+          showToast(data.message || 'Failed to update address', 'error');
+        }
+      } catch (err) {
+        console.error('Error updating address:', err);
+        showToast('Error updating address. Please try again.', 'error');
+      }
+    }
+
+    // Load Help
+    function loadHelp() {
+      const contentArea = document.getElementById('contentArea');
+      
+      contentArea.innerHTML = `
+        <h2 class="content-title">
+          <i class="fas fa-question-circle"></i>
+          Help & Support
+        </h2>
+        <div class="help-container">
+          <div class="help-card">
+            <h3><i class="fas fa-phone"></i> Contact Us</h3>
+            <p>Call us at: <strong>1800-123-4567</strong></p>
+            <p>Email: <strong>support@farmfresh.com</strong></p>
+          </div>
+          <div class="help-card">
+            <h3><i class="fas fa-question"></i> FAQs</h3>
+            <p>Find answers to commonly asked questions</p>
+          </div>
+          <div class="help-card">
+            <h3><i class="fas fa-comment"></i> Live Chat</h3>
+            <p>Chat with our support team</p>
+          </div>
+          <div class="help-card">
+            <h3><i class="fas fa-info-circle"></i> About FarmFresh</h3>
+            <p>Learn more about our mission and values</p>
+          </div>
+        </div>
+      `;
+    }
+
+    // Tab Navigation
+    document.querySelectorAll('.menu-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+        
+        const tab = this.getAttribute('data-tab');
+        
+        if (tab === 'orders') loadOrders();
+        else if (tab === 'profile') loadEditProfile();
+        else if (tab === 'address') loadAddress();
+        else if (tab === 'help') loadHelp();
+      });
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      if (confirm('Are you sure you want to logout?')) {
+        localStorage.clear();
+        sessionStorage.clear();
+        showToast('Logged out successfully!');
+        setTimeout(() => window.location.href = 'webpage.html', 1500);
+      }
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProfile();
+    });
+  </script>
 </body>
 </html>

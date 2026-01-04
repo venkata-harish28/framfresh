@@ -2,120 +2,562 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Sell Your Vegetables</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sell Your Fresh Vegetables | Farm Direct</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Custom animations */
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    .animate-slide-in {
+      animation: slideInUp 0.5s ease-out;
+    }
+
+    .animate-pulse-slow {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    /* Image preview styles */
+    .image-preview {
+      transition: all 0.3s ease;
+    }
+
+    .image-preview:hover {
+      transform: scale(1.02);
+    }
+
+    /* Custom file input */
+    .file-input-wrapper {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .file-input-wrapper input[type=file] {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+
+    /* Success checkmark animation */
+    @keyframes checkmark {
+      0% {
+        stroke-dashoffset: 100;
+      }
+      100% {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    .checkmark {
+      stroke-dasharray: 100;
+      stroke-dashoffset: 100;
+      animation: checkmark 0.6s ease-out forwards;
+    }
+
+    /* Loading spinner */
+    .spinner {
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 3px solid white;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 
-<body class="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-green-100 via-green-200 to-green-300">
-  <div class="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
-    <h1 class="text-2xl font-bold text-center text-green-700 mb-6">
-      Sell Your Vegetables Online
+<body class="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 py-8 px-4">
+  
+  <!-- Header -->
+  <header class="max-w-4xl mx-auto mb-8 text-center animate-slide-in">
+    <div class="inline-flex items-center justify-center w-16 h-16 bg-green-600 rounded-2xl mb-4 shadow-lg">
+      <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+      </svg>
+    </div>
+    <h1 class="text-4xl font-bold text-gray-900 mb-2">
+      Sell Your Fresh Vegetables
     </h1>
-    
-    <form id="productForm" class="space-y-4">
+    <p class="text-lg text-gray-600">
+      Connect directly with buyers and grow your farm business
+    </p>
+  </header>
+
+  <!-- Main Form Container -->
+  <div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-3xl shadow-xl overflow-hidden animate-slide-in" style="animation-delay: 0.1s">
       
-      <div>
-        <label for="vegetableName" class="block text-sm font-medium text-gray-700">Vegetable Name</label>
-        <input type="text" id="vegetableName" name="vegetableName" required
-               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-400">
-      </div>
-
-      <div>
-        <label for="price" class="block text-sm font-medium text-gray-700">Price (per unit)</label>
-        <input type="number" id="price" name="price" required
-               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-400">
-      </div>
-
-      <div>
-        <label for="quantity" class="block text-sm font-medium text-gray-700">Available Quantity</label>
-        <div class="flex gap-2">
-          <input type="number" id="quantity" name="quantity" required
-                 class="w-1/2 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-400">
-          <select id="unit" name="unit" required
-                  class="w-1/2 border border-gray-300 rounded-lg p-2 bg-white focus:outline-none focus:ring-2 focus:ring-green-400">
-            <option value="kg">KG</option>
-            <option value="litre">Litres</option>
-            <option value="dozen">Dozen</option>
-            <option value="other">Other</option>
-          </select>
+      <!-- Progress Steps -->
+      <div class="bg-gradient-to-r from-green-600 to-emerald-600 px-8 py-6">
+        <div class="flex items-center justify-between max-w-2xl mx-auto">
+          <div class="flex items-center">
+            <div class="flex items-center justify-center w-10 h-10 bg-white rounded-full text-green-600 font-bold">
+              1
+            </div>
+            <span class="ml-3 text-white font-medium hidden sm:inline">Product Info</span>
+          </div>
+          <div class="flex-1 h-1 bg-white/30 mx-4"></div>
+          <div class="flex items-center">
+            <div class="flex items-center justify-center w-10 h-10 bg-white/20 rounded-full text-white font-bold">
+              2
+            </div>
+            <span class="ml-3 text-white/70 font-medium hidden sm:inline">Details</span>
+          </div>
+          <div class="flex-1 h-1 bg-white/30 mx-4"></div>
+          <div class="flex items-center">
+            <div class="flex items-center justify-center w-10 h-10 bg-white/20 rounded-full text-white font-bold">
+              3
+            </div>
+            <span class="ml-3 text-white/70 font-medium hidden sm:inline">Submit</span>
+          </div>
         </div>
       </div>
 
-      <div>
-        <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
-        <select id="category" name="category" required
-                class="mt-1 w-full border border-gray-300 rounded-lg p-2 bg-white focus:outline-none focus:ring-2 focus:ring-green-400">
-          <option value="">Select a category</option>
-          <option value="leafy">Leafy Green</option>
-          <option value="root">Root Vegetable</option>
-          <option value="gourd">Gourd & Fruit</option>
-          <option value="other">Other</option>
-        </select>
-      </div>
+      <!-- Form Content -->
+      <div class="p-8 md:p-12">
+        <form id="productForm" class="space-y-6">
+          
+          <!-- Product Name -->
+          <div class="animate-slide-in" style="animation-delay: 0.2s">
+            <label for="vegetableName" class="block text-sm font-semibold text-gray-900 mb-2">
+              Vegetable Name *
+            </label>
+            <input 
+              type="text" 
+              id="vegetableName" 
+              name="vegetableName" 
+              required
+              placeholder="e.g., Fresh Tomatoes, Organic Spinach"
+              class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition">
+            <p class="mt-1 text-xs text-gray-500">Enter the name of your vegetable product</p>
+          </div>
 
-      <div>
-        <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-        <textarea id="description" name="description" rows="3"
-                  class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-                  placeholder="Add a short description (optional)"></textarea>
-      </div>
+          <!-- Price and Quantity Row -->
+          <div class="grid md:grid-cols-2 gap-6 animate-slide-in" style="animation-delay: 0.3s">
+            
+            <!-- Price -->
+            <div>
+              <label for="price" class="block text-sm font-semibold text-gray-900 mb-2">
+                Price per Unit *
+              </label>
+              <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium">₹</span>
+                <input 
+                  type="number" 
+                  id="price" 
+                  name="price" 
+                  required
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                  class="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition">
+              </div>
+              <p class="mt-1 text-xs text-gray-500">Set your selling price</p>
+            </div>
 
-      <div>
-        <label for="image" class="block text-sm font-medium text-gray-700">Upload Vegetable Photo</label>
-        <input type="file" id="image" name="image" accept="image/*" required
-               class="mt-1 w-full text-gray-700">
-      </div>
+            <!-- Quantity -->
+            <div>
+              <label for="quantity" class="block text-sm font-semibold text-gray-900 mb-2">
+                Available Quantity *
+              </label>
+              <div class="flex gap-3">
+                <input 
+                  type="number" 
+                  id="quantity" 
+                  name="quantity" 
+                  required
+                  min="1"
+                  placeholder="10"
+                  class="flex-1 border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition">
+                <select 
+                  id="unit" 
+                  name="unit" 
+                  required
+                  class="border-2 border-gray-200 rounded-xl px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition">
+                  <option value="kg">KG</option>
+                  <option value="grams">Grams</option>
+                  <option value="litre">Litres</option>
+                  <option value="dozen">Dozen</option>
+                  <option value="pieces">Pieces</option>
+                  <option value="bags">Bags</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <p class="mt-1 text-xs text-gray-500">How much do you have available?</p>
+            </div>
+          </div>
 
-      <div>
-        <label for="farmerContact" class="block text-sm font-medium text-gray-700">Your Contact (Email or Phone)</label>
-        <input type="text" id="farmerContact" name="farmerContact" required
-               class="mt-1 w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-               placeholder="Email or Phone">
-      </div>
+          <!-- Category and Freshness -->
+          <div class="grid md:grid-cols-2 gap-6 animate-slide-in" style="animation-delay: 0.4s">
+            
+            <!-- Category -->
+            <div>
+              <label for="category" class="block text-sm font-semibold text-gray-900 mb-2">
+                Category *
+              </label>
+              <select 
+                id="category" 
+                name="category" 
+                required
+                class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition">
+                <option value="">Select a category</option>
+                <option value="leafy">🥬 Leafy Greens</option>
+                <option value="root">🥕 Root Vegetables</option>
+                <option value="gourd">🥒 Gourds & Fruits</option>
+                <option value="herbs">🌿 Herbs & Spices</option>
+                <option value="exotic">🌶️ Exotic Vegetables</option>
+                <option value="organic">🌱 Organic Produce</option>
+                <option value="other">📦 Other</option>
+              </select>
+            </div>
 
-      <div class="pt-4">
-        <button type="submit"
-                class="w-full bg-green-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition">
-          Submit Product
-        </button>
+            <!-- Freshness -->
+            <div>
+              <label for="freshness" class="block text-sm font-semibold text-gray-900 mb-2">
+                Harvest Time
+              </label>
+              <select 
+                id="freshness" 
+                name="freshness"
+                class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition">
+                <option value="today">🌅 Harvested Today</option>
+                <option value="yesterday">📅 Harvested Yesterday</option>
+                <option value="this-week">📆 This Week</option>
+                <option value="stored">📦 From Storage</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="animate-slide-in" style="animation-delay: 0.5s">
+            <label for="description" class="block text-sm font-semibold text-gray-900 mb-2">
+              Product Description
+            </label>
+            <textarea 
+              id="description" 
+              name="description" 
+              rows="4"
+              placeholder="Describe your product quality, farming methods, special features..."
+              class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition resize-none"></textarea>
+            <div class="flex justify-between mt-1">
+              <p class="text-xs text-gray-500">Help buyers understand your product better</p>
+              <span id="charCount" class="text-xs text-gray-400">0/500</span>
+            </div>
+          </div>
+
+          <!-- Image Upload -->
+          <div class="animate-slide-in" style="animation-delay: 0.6s">
+            <label class="block text-sm font-semibold text-gray-900 mb-2">
+              Product Photos * (Max 5 images)
+            </label>
+            
+            <div class="file-input-wrapper">
+              <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-green-500 transition cursor-pointer bg-gray-50 hover:bg-green-50">
+                <input 
+                  type="file" 
+                  id="image" 
+                  name="image" 
+                  accept="image/*" 
+                  multiple
+                  required>
+                <div class="flex flex-col items-center">
+                  <svg class="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                  <p class="text-sm font-medium text-gray-700 mb-1">Click to upload or drag and drop</p>
+                  <p class="text-xs text-gray-500">PNG, JPG, JPEG up to 5MB each</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Image Preview -->
+            <div id="imagePreview" class="mt-4 grid grid-cols-2 md:grid-cols-5 gap-3"></div>
+          </div>
+
+          <!-- Contact Information -->
+          <div class="grid md:grid-cols-2 gap-6 animate-slide-in" style="animation-delay: 0.7s">
+            
+            <!-- Contact -->
+            <div>
+              <label for="farmerContact" class="block text-sm font-semibold text-gray-900 mb-2">
+                Contact Number *
+              </label>
+              <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">📱</span>
+                <input 
+                  type="tel" 
+                  id="farmerContact" 
+                  name="farmerContact" 
+                  required
+                  placeholder="+91 98765 43210"
+                  pattern="[0-9+\s-]+"
+                  class="w-full border-2 border-gray-200 rounded-xl pl-12 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition">
+              </div>
+            </div>
+
+            <!-- Location -->
+            <div>
+              <label for="location" class="block text-sm font-semibold text-gray-900 mb-2">
+                Farm Location *
+              </label>
+              <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">📍</span>
+                <input 
+                  type="text" 
+                  id="location" 
+                  name="location" 
+                  required
+                  placeholder="City, District, State"
+                  class="w-full border-2 border-gray-200 rounded-xl pl-12 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition">
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Options -->
+          <div class="bg-gray-50 rounded-xl p-6 animate-slide-in" style="animation-delay: 0.8s">
+            <h3 class="text-sm font-semibold text-gray-900 mb-4">Additional Information</h3>
+            <div class="space-y-3">
+              <label class="flex items-center space-x-3 cursor-pointer">
+                <input type="checkbox" id="organicCertified" name="organicCertified" class="w-5 h-5 rounded border-gray-300 text-green-600 focus:ring-green-500">
+                <span class="text-sm text-gray-700">🌿 Organic Certified</span>
+              </label>
+              <label class="flex items-center space-x-3 cursor-pointer">
+                <input type="checkbox" id="homeDelivery" name="homeDelivery" class="w-5 h-5 rounded border-gray-300 text-green-600 focus:ring-green-500">
+                <span class="text-sm text-gray-700">🚚 Home Delivery Available</span>
+              </label>
+              <label class="flex items-center space-x-3 cursor-pointer">
+                <input type="checkbox" id="bulkOrders" name="bulkOrders" class="w-5 h-5 rounded border-gray-300 text-green-600 focus:ring-green-500">
+                <span class="text-sm text-gray-700">📦 Accept Bulk Orders</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-4 animate-slide-in" style="animation-delay: 0.9s">
+            <button 
+              type="submit"
+              id="submitBtn"
+              class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold py-4 px-6 rounded-xl hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-4 focus:ring-green-300 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center space-x-2">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+              <span>Submit Product for Review</span>
+            </button>
+            <p class="text-center text-xs text-gray-500 mt-3">
+              Your product will be reviewed within 24 hours
+            </p>
+          </div>
+
+        </form>
       </div>
-    </form>
+    </div>
+
+    <!-- Features Section -->
+    <div class="mt-12 grid md:grid-cols-3 gap-6 animate-slide-in" style="animation-delay: 1s">
+      <div class="bg-white rounded-2xl p-6 shadow-lg text-center">
+        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <h3 class="font-bold text-gray-900 mb-2">Fair Prices</h3>
+        <p class="text-sm text-gray-600">Set your own prices and earn more</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-lg text-center">
+        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
+        </div>
+        <h3 class="font-bold text-gray-900 mb-2">Direct to Customer</h3>
+        <p class="text-sm text-gray-600">Connect with buyers instantly</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-lg text-center">
+        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <h3 class="font-bold text-gray-900 mb-2">Secure & Safe</h3>
+        <p class="text-sm text-gray-600">Your information is protected</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-3xl p-8 max-w-md w-full text-center animate-slide-in shadow-2xl">
+      <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <svg class="w-12 h-12 text-green-600 checkmark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <h2 class="text-2xl font-bold text-gray-900 mb-3">Product Submitted!</h2>
+      <p class="text-gray-600 mb-6">
+        Your product has been submitted successfully. Our team will review it within 24 hours.
+      </p>
+      <button 
+        onclick="window.location.href='index.html'"
+        class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold py-3 px-6 rounded-xl hover:from-green-700 hover:to-emerald-700 transition">
+        Back to Home
+      </button>
+    </div>
   </div>
 
   <script>
-    document.getElementById("productForm").addEventListener("submit", function(e) {
-      e.preventDefault();
+    // Character counter for description
+    const description = document.getElementById('description');
+    const charCount = document.getElementById('charCount');
+    
+    description.addEventListener('input', function() {
+      const length = this.value.length;
+      charCount.textContent = `${length}/500`;
+      if (length > 500) {
+        this.value = this.value.substring(0, 500);
+        charCount.textContent = '500/500';
+      }
+    });
 
-      const name = document.getElementById("vegetableName").value;
-      const price = document.getElementById("price").value;
-      const unit = document.getElementById("unit").value;
-      const quantity = document.getElementById("quantity").value;
-      const category = document.getElementById("category").value;
-      const description = document.getElementById("description").value;
-      const contact = document.getElementById("farmerContact").value;
-      const imageInput = document.getElementById("image");
+    // Image preview
+    const imageInput = document.getElementById('image');
+    const imagePreview = document.getElementById('imagePreview');
+    let selectedImages = [];
 
-      if (imageInput.files.length === 0) {
-        alert("Please upload an image");
+    imageInput.addEventListener('change', function(e) {
+      const files = Array.from(e.target.files);
+      
+      if (files.length > 5) {
+        alert('Maximum 5 images allowed');
+        this.value = '';
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const imageData = event.target.result;
+      imagePreview.innerHTML = '';
+      selectedImages = [];
 
-        const product = { name, price, unit, quantity, category, description, image: imageData, contact };
+      files.forEach((file, index) => {
+        if (file.size > 5 * 1024 * 1024) {
+          alert(`${file.name} is too large. Maximum size is 5MB`);
+          return;
+        }
 
-        let pendingProducts = JSON.parse(localStorage.getItem("pendingProducts")) || [];
-        pendingProducts.push(product);
-        localStorage.setItem("pendingProducts", JSON.stringify(pendingProducts));
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          selectedImages.push(event.target.result);
+          
+          const div = document.createElement('div');
+          div.className = 'relative group';
+          div.innerHTML = `
+            <img src="${event.target.result}" class="w-full h-24 object-cover rounded-lg border-2 border-gray-200 image-preview">
+            <button type="button" onclick="removeImage(${index})" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+            ${index === 0 ? '<span class="absolute bottom-1 left-1 bg-green-600 text-white text-xs px-2 py-0.5 rounded">Main</span>' : ''}
+          `;
+          imagePreview.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
 
-        alert("✅ Product submitted successfully! Admin will review it.");
-        window.location.href = "index.html";
+    function removeImage(index) {
+      selectedImages.splice(index, 1);
+      imagePreview.children[index].remove();
+    }
+
+    // Form submission
+    const productForm = document.getElementById('productForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const successModal = document.getElementById('successModal');
+
+    productForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Show loading state
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `
+        <div class="spinner"></div>
+        <span>Submitting...</span>
+      `;
+
+      // Collect form data
+      const formData = {
+        name: document.getElementById('vegetableName').value,
+        price: document.getElementById('price').value,
+        quantity: document.getElementById('quantity').value,
+        unit: document.getElementById('unit').value,
+        category: document.getElementById('category').value,
+        freshness: document.getElementById('freshness').value,
+        description: document.getElementById('description').value,
+        contact: document.getElementById('farmerContact').value,
+        location: document.getElementById('location').value,
+        organicCertified: document.getElementById('organicCertified').checked,
+        homeDelivery: document.getElementById('homeDelivery').checked,
+        bulkOrders: document.getElementById('bulkOrders').checked,
+        images: selectedImages,
+        submittedAt: new Date().toISOString(),
+        status: 'pending'
       };
 
-      reader.readAsDataURL(imageInput.files[0]);
+      // Save to localStorage
+      setTimeout(() => {
+        let pendingProducts = JSON.parse(localStorage.getItem('pendingProducts')) || [];
+        pendingProducts.push(formData);
+        localStorage.setItem('pendingProducts', JSON.stringify(pendingProducts));
+
+        // Show success modal
+        successModal.classList.remove('hidden');
+
+        // Reset button
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+          <span>Submit Product for Review</span>
+        `;
+      }, 1500);
     });
+
+    // Prevent form resubmission on page refresh
+    if (window.history.replaceState) {
+      window.history.replaceState(null, null, window.location.href);
+    }
   </script>
 </body>
 </html>

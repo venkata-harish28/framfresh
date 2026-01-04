@@ -449,198 +449,384 @@
             gap: 1rem;
         }
 
-        /* Order Success - Beautiful Design */
+        /* New Modern Order Success Design */
         .order-success {
             display: none;
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%);
-            border-radius: 30px;
-            padding: 3rem 2.5rem;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            animation: successSlideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 4px solid var(--secondary-green);
+            max-width: 900px;
+            margin: 0 auto;
+            max-height: calc(100vh - 150px);
+            overflow-y: auto;
+            padding-right: 0.5rem;
         }
 
         .order-success.active {
             display: block;
+            animation: fadeInUp 0.6s ease;
         }
 
-        @keyframes successSlideUp {
+        .order-success::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .order-success::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .order-success::-webkit-scrollbar-thumb {
+            background: var(--secondary-green);
+            border-radius: 10px;
+        }
+
+        .order-success::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-green);
+        }
+
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(50px) scale(0.9);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: translateY(0);
             }
         }
 
-        .success-icon {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 2rem;
-            background: linear-gradient(135deg, var(--secondary-green) 0%, var(--primary-green) 100%);
+        /* Success Header Card */
+        .success-header-card {
+            background: linear-gradient(135deg, #00C853 0%, #64DD17 100%);
+            border-radius: 25px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            color: white;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 40px rgba(0, 200, 83, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .success-header-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 3s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.3; }
+        }
+
+        .success-icon-large {
+            width: 80px;
+            height: 80px;
+            background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: iconPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 40px rgba(82, 183, 136, 0.5);
+            margin: 0 auto 1rem;
+            animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
-        @keyframes iconPop {
-            0% {
-                transform: scale(0) rotate(-180deg);
-            }
-            50% {
-                transform: scale(1.2) rotate(10deg);
-            }
-            100% {
-                transform: scale(1) rotate(0deg);
-            }
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
 
-        .success-icon i {
-            font-size: 4.5rem;
-            color: white;
+        .success-icon-large i {
+            font-size: 2.5rem;
+            color: #00C853;
         }
 
-        .order-success h2 {
+        .success-header-card h2 {
             font-family: 'Playfair Display', serif;
-            color: var(--primary-green);
-            font-size: 2.8rem;
+            font-size: 1.8rem;
             font-weight: 900;
-            margin-bottom: 0.8rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
         }
 
-        .subtitle {
-            color: #2d6a4f;
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            font-weight: 600;
+        .success-header-card p {
+            font-size: 1rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
         }
 
-        .delivery-timer {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
-            color: #856404;
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin: 1.5rem 0;
-            box-shadow: 0 6px 20px rgba(255, 230, 156, 0.5);
-            border: 3px solid #ffc107;
-        }
-
-        .order-info-card {
+        /* Order Details Card */
+        .order-details-card {
             background: white;
             border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            border: 3px solid var(--light-sage);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
-        .order-info-row {
+        .order-details-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 1.2rem 0;
-            border-bottom: 2px solid #f0f0f0;
+            gap: 0.8rem;
         }
 
-        .order-info-row:last-child {
+        .order-items-list {
+            margin-bottom: 1.5rem;
+        }
+
+        .order-item-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 2px solid #f5f5f5;
+        }
+
+        .order-item-row:last-child {
             border-bottom: none;
         }
 
-        .order-info-label {
-            color: #666;
-            font-size: 1.05rem;
-            font-weight: 600;
+        .order-item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid var(--light-sage);
         }
 
-        .order-info-value {
+        .order-item-info {
+            flex: 1;
+        }
+
+        .order-item-info h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
             color: var(--primary-green);
+            margin-bottom: 0.3rem;
+        }
+
+        .order-item-info p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .order-item-price {
             font-size: 1.2rem;
             font-weight: 800;
+            color: var(--secondary-green);
+        }
+
+        /* Tracking Card */
+        .tracking-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .tracking-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .delivery-status {
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .status-text {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status-icon-animated {
+            width: 45px;
+            height: 45px;
+            background: #FF9800;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: rotate 2s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .status-icon-animated i {
+            font-size: 1.3rem;
+            color: white;
+        }
+
+        .status-details h4 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #E65100;
+            margin-bottom: 0.3rem;
+        }
+
+        .status-details p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .eta-badge {
+            background: #FF9800;
+            color: white;
+            padding: 0.7rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        /* Driver Card */
+        .driver-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .driver-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .driver-profile {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.2rem;
+            background: var(--light-sage);
+            border-radius: 15px;
+        }
+
+        .driver-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary-green) 0%, var(--primary-green) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            font-weight: 800;
+            box-shadow: 0 4px 15px rgba(82, 183, 136, 0.3);
+        }
+
+        .driver-info-details {
+            flex: 1;
+        }
+
+        .driver-info-details h4 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .driver-contact-info {
+            display: flex;
+            flex-direction: column;
             gap: 0.5rem;
         }
 
-        .driver-info {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            margin-top: 2rem;
-            text-align: left;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            border: 3px solid var(--light-sage);
-        }
-
-        .driver-info h3 {
-            font-family: 'Playfair Display', serif;
-            color: var(--primary-green);
-            font-size: 1.6rem;
-            margin-bottom: 1.5rem;
+        .driver-contact-info p {
             display: flex;
             align-items: center;
             gap: 0.8rem;
-            font-weight: 900;
+            color: #666;
+            font-size: 0.95rem;
         }
 
-        .driver-info p {
-            margin: 1rem 0;
-            color: #333;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            font-size: 1.05rem;
-            font-weight: 600;
-        }
-
-        .driver-info i {
+        .driver-contact-info i {
             color: var(--secondary-green);
-            width: 24px;
-            font-size: 1.2rem;
+            width: 20px;
         }
 
-        .driver-info a {
+        .driver-contact-info a {
             color: var(--secondary-green);
-            text-decoration: none;
             font-weight: 700;
+            text-decoration: none;
         }
 
-        .driver-info a:hover {
+        .driver-contact-info a:hover {
             text-decoration: underline;
         }
 
-        .home-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            background: linear-gradient(135deg, var(--secondary-green) 0%, var(--primary-green) 100%);
-            color: white;
-            padding: 1.2rem 3rem;
-            border-radius: 50px;
-            font-weight: 800;
-            font-size: 1.2rem;
-            border: none;
-            cursor: pointer;
-            margin-top: 2.5rem;
-            box-shadow: 0 8px 25px rgba(82, 183, 136, 0.4);
-            transition: all 0.4s ease;
-            font-family: 'Quicksand', sans-serif;
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
         }
 
-        .home-button:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 35px rgba(82, 183, 136, 0.5);
+        .action-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Quicksand', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+
+        .action-btn-primary {
+            background: linear-gradient(135deg, var(--secondary-green) 0%, var(--primary-green) 100%);
+            color: white;
+            box-shadow: 0 6px 20px rgba(82, 183, 136, 0.4);
+        }
+
+        .action-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(82, 183, 136, 0.5);
+        }
+
+        .action-btn-secondary {
+            background: white;
+            color: var(--primary-green);
+            border: 3px solid var(--primary-green);
+        }
+
+        .action-btn-secondary:hover {
+            background: var(--primary-green);
+            color: white;
+            transform: translateY(-3px);
         }
 
         /* Toast */
@@ -683,6 +869,76 @@
         @media (max-width: 1024px) {
             .page-wrapper {
                 flex-direction: column;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .driver-profile {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .success-header-card h2 {
+                font-size: 1.5rem;
+            }
+            
+            .success-header-card p {
+                font-size: 0.95rem;
+            }
+            
+            .order-details-card h3,
+            .tracking-card h3,
+            .driver-card h3 {
+                font-size: 1.3rem;
+            }
+            
+            .delivery-status {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .eta-badge {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .page-wrapper {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            .order-success {
+                max-height: calc(100vh - 120px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .success-icon-large {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .success-icon-large i {
+                font-size: 2rem;
+            }
+            
+            .success-header-card {
+                padding: 1.5rem 1rem;
+            }
+            
+            .order-details-card,
+            .tracking-card,
+            .driver-card {
+                padding: 1rem;
+            }
+            
+            .action-btn {
+                font-size: 0.95rem;
+                padding: 0.9rem;
             }
         }
     </style>
@@ -745,39 +1001,59 @@
                 </div>
             </div>
 
-            <!-- Order Success -->
+            <!-- New Modern Order Success Design -->
             <div class="order-success" id="orderSuccess">
-                <div class="success-icon">
-                    <i class="fas fa-check"></i>
-                </div>
-                <h2>Order Confirmed!</h2>
-                <p class="subtitle">🎉 Your fresh products are on the way</p>
-                
-                <div class="delivery-timer" id="deliveryTimer">
-                    <i class="fas fa-clock"></i>
-                    <span id="deliveryTimerValue">25:00</span>
+                <!-- Success Header -->
+                <div class="success-header-card">
+                    <div class="success-icon-large">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h2>Order Placed Successfully!</h2>
+                    <p>🎉 Your fresh farm products are on the way</p>
                 </div>
 
-                <div class="order-info-card">
-                    <div class="order-info-row">
-                        <span class="order-info-label">Order Status</span>
-                        <span class="order-info-value">
-                            <i class="fas fa-truck"></i> Out for Delivery
-                        </span>
-                    </div>
-                    <div class="order-info-row">
-                        <span class="order-info-label">Estimated Arrival</span>
-                        <span class="order-info-value" id="deliveryEta">25 mins</span>
+                <!-- Order Details -->
+                <div class="order-details-card">
+                    <h3><i class="fas fa-receipt"></i> Order Details</h3>
+                    <div class="order-items-list" id="orderItemsList"></div>
+                    <div class="summary-row" style="padding-top: 1rem; border-top: 2px solid #f5f5f5;">
+                        <span style="font-size: 1.3rem; font-weight: 800; color: var(--primary-green);">Total Paid:</span>
+                        <span style="font-size: 1.5rem; font-weight: 900; color: var(--secondary-green);" id="orderTotal">₹0.00</span>
                     </div>
                 </div>
 
-                <div class="driver-info" id="driverInfo">
+                <!-- Tracking -->
+                <div class="tracking-card">
+                    <h3><i class="fas fa-truck"></i> Live Tracking</h3>
+                    <div class="delivery-status">
+                        <div class="status-text">
+                            <div class="status-icon-animated">
+                                <i class="fas fa-shipping-fast"></i>
+                            </div>
+                            <div class="status-details">
+                                <h4>Out for Delivery</h4>
+                                <p>Your order is on the way</p>
+                            </div>
+                        </div>
+                        <div class="eta-badge" id="etaBadge">25 mins</div>
+                    </div>
+                </div>
+
+                <!-- Driver Info -->
+                <div class="driver-card">
                     <h3><i class="fas fa-user-circle"></i> Delivery Partner</h3>
+                    <div class="driver-profile" id="driverProfile"></div>
                 </div>
 
-                <button class="home-button" onclick="goBack()">
-                    <i class="fas fa-home"></i> Back to Home
-                </button>
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="action-btn action-btn-primary" onclick="goBack()">
+                        <i class="fas fa-home"></i> Back to Home
+                    </button>
+                    <button class="action-btn action-btn-secondary" onclick="window.location.href='profile.html'">
+                        <i class="fas fa-history"></i> View Orders
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -831,6 +1107,9 @@
     <div id="toast" class="toast"></div>
 
     <script>
+        // Backend API URL
+        const API_URL = 'http://localhost:5000';
+
         // Cart Management
         class CartManager {
             constructor() {
@@ -893,7 +1172,7 @@
         let map = null;
         let driverMarker = null;
         let routeLine = null;
-        let deliveryTimerInterval = null;
+        let currentOrder = null;
 
         function renderCart() {
             const container = document.getElementById('cartItems');
@@ -977,18 +1256,60 @@
             document.getElementById('payment-modal').classList.remove('active');
         }
 
-        function processPayment() {
+        async function processPayment() {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                showToast('Please login to place order', 'error');
+                setTimeout(() => window.location.href = 'login.html', 2000);
+                return;
+            }
+
+            const selectedPayment = document.querySelector('input[name="payment"]:checked');
+            if (!selectedPayment) {
+                showToast('Please select a payment method', 'error');
+                return;
+            }
+
             const payBtn = document.getElementById('payNowBtn');
             payBtn.disabled = true;
             payBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
 
-            setTimeout(() => {
-                hidePaymentModal();
-                startDelivery();
+            const { total } = cartManager.getTotal();
+            const cartItems = cartManager.getCart();
+
+            try {
+                const response = await fetch(`${API_URL}/api/orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token
+                    },
+                    body: JSON.stringify({
+                        items: cartItems,
+                        total: total,
+                        deliveryAddress: 'User Address', // Get from user profile
+                        paymentMethod: selectedPayment.value
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentOrder = data.order;
+                    hidePaymentModal();
+                    startDelivery();
+                    showToast('✅ Order placed successfully!');
+                } else {
+                    throw new Error(data.message || 'Failed to place order');
+                }
+            } catch (error) {
+                console.error('Order error:', error);
+                showToast(error.message || 'Failed to place order', 'error');
+            } finally {
                 payBtn.disabled = false;
                 payBtn.textContent = 'Proceed to Pay';
-                showToast('✅ Order placed successfully!');
-            }, 2000);
+            }
         }
 
         function startDelivery() {
@@ -1003,6 +1324,23 @@
             mapSection.classList.add('active');
             orderSuccess.classList.add('active');
 
+            // Display order items
+            const orderItemsList = document.getElementById('orderItemsList');
+            const items = cartManager.getCart();
+            orderItemsList.innerHTML = items.map(item => `
+                <div class="order-item-row">
+                    <img src="${item.image}" alt="${item.name}" class="order-item-image">
+                    <div class="order-item-info">
+                        <h4>${item.name}</h4>
+                        <p>Qty: ${item.quantity} × ₹${item.price}</p>
+                    </div>
+                    <div class="order-item-price">₹${(item.price * item.quantity).toFixed(2)}</div>
+                </div>
+            `).join('');
+
+            const { total } = cartManager.getTotal();
+            document.getElementById('orderTotal').textContent = `₹${total.toFixed(2)}`;
+
             // Initialize map
             if (!map) {
                 map = L.map('map').setView([16.5439, 81.5212], 13);
@@ -1014,36 +1352,10 @@
             const driver = assignDriver();
             updateDriverInfo(driver);
 
-            // Start countdown timer WHEN ORDER IS CONFIRMED
-            startDeliveryTimer(25);
-
             // Clear cart after order confirmation
             cartManager.clearCart();
 
             simulateDelivery();
-        }
-
-        function startDeliveryTimer(minutes) {
-            let totalSeconds = minutes * 60;
-            const timerElement = document.getElementById('deliveryTimerValue');
-            
-            if (deliveryTimerInterval) {
-                clearInterval(deliveryTimerInterval);
-            }
-
-            deliveryTimerInterval = setInterval(() => {
-                totalSeconds--;
-                
-                const mins = Math.floor(totalSeconds / 60);
-                const secs = totalSeconds % 60;
-                
-                timerElement.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
-                
-                if (totalSeconds <= 0) {
-                    clearInterval(deliveryTimerInterval);
-                    timerElement.textContent = '🎉 Arriving Now!';
-                }
-            }, 1000);
         }
 
         function assignDriver() {
@@ -1056,12 +1368,18 @@
         }
 
         function updateDriverInfo(driver) {
-            const driverInfo = document.getElementById('driverInfo');
-            driverInfo.innerHTML = `
-                <h3><i class="fas fa-user-circle"></i> Delivery Partner</h3>
-                <p><i class="fas fa-user"></i><strong>Name:</strong> ${driver.name}</p>
-                <p><i class="fas fa-car"></i><strong>Vehicle:</strong> ${driver.vehicle}</p>
-                <p><i class="fas fa-phone"></i><strong>Contact:</strong> <a href="tel:${driver.phone}">${driver.phone}</a></p>
+            const driverProfile = document.getElementById('driverProfile');
+            const initials = driver.name.split(' ').map(n => n[0]).join('');
+            
+            driverProfile.innerHTML = `
+                <div class="driver-avatar">${initials}</div>
+                <div class="driver-info-details">
+                    <h4>${driver.name}</h4>
+                    <div class="driver-contact-info">
+                        <p><i class="fas fa-car"></i> ${driver.vehicle}</p>
+                        <p><i class="fas fa-phone"></i> <a href="tel:${driver.phone}">${driver.phone}</a></p>
+                    </div>
+                </div>
             `;
         }
 
@@ -1102,7 +1420,7 @@
                 let step = 0;
                 let eta = Math.ceil(routeCoords.length / 10);
                 document.getElementById('eta').textContent = eta + ' mins';
-                document.getElementById('deliveryEta').textContent = eta + ' mins';
+                document.getElementById('etaBadge').textContent = eta + ' mins';
 
                 const interval = setInterval(() => {
                     if (step >= routeCoords.length) {
@@ -1114,16 +1432,13 @@
                     driverMarker.setLatLng([coord.lat, coord.lng]);
                     eta = Math.max(0, eta - 1);
                     document.getElementById('eta').textContent = eta + ' mins';
-                    document.getElementById('deliveryEta').textContent = eta + ' mins';
+                    document.getElementById('etaBadge').textContent = eta + ' mins';
                     step++;
                 }, 200);
             });
         }
 
         function completeDelivery() {
-            if (deliveryTimerInterval) {
-                clearInterval(deliveryTimerInterval);
-            }
             showToast('🎉 Order Delivered! Thank you!');
             setTimeout(() => {
                 goBack();
@@ -1143,9 +1458,6 @@
         }
 
         function goBack() {
-            if (deliveryTimerInterval) {
-                clearInterval(deliveryTimerInterval);
-            }
             window.location.href = 'webpage.html';
         }
 
@@ -1171,12 +1483,6 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             renderCart();
-        });
-
-        window.addEventListener('beforeunload', () => {
-            if (deliveryTimerInterval) {
-                clearInterval(deliveryTimerInterval);
-            }
         });
     </script>
 </body>

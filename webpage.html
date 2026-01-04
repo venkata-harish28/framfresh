@@ -85,6 +85,7 @@
             font-size: 1.05rem;
             transition: all 0.3s ease;
             position: relative;
+            cursor: pointer;
         }
 
         .nav-links a::after {
@@ -691,6 +692,94 @@
             }
         }
 
+        /* Hidden classes */
+        .logged-in-only {
+            display: none;
+        }
+
+        .logged-out-only {
+            display: flex;
+        }
+
+        /* Login Required Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            color: var(--accent-orange);
+            margin-bottom: 1rem;
+        }
+
+        .modal-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .modal-content p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .modal-btn {
+            padding: 0.9rem 2.5rem;
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .modal-btn:hover {
+            background: var(--secondary-green);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(82, 183, 136, 0.4);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .nav-links {
@@ -714,15 +803,6 @@
                 gap: 1rem;
             }
         }
-
-        /* Hidden classes */
-        .logged-in-only {
-            display: none;
-        }
-
-        .logged-out-only {
-            display: flex;
-        }
     </style>
 </head>
 
@@ -737,7 +817,7 @@
 
             <ul class="nav-links">
                 <li><a href="#">Home</a></li>
-                <li><a href="store.html">Marketplace</a></li>
+                <li><a onclick="checkLoginAndRedirect('store.html', event)">Marketplace</a></li>
                 <li><a href="#farmers">Farmers</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="#contact">Contact</a></li>
@@ -775,6 +855,20 @@
         </div>
     </nav>
 
+    <!-- Login Required Modal -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h3>Login Required</h3>
+            <p>You need to login first to access this feature.</p>
+            <button class="modal-btn" onclick="redirectToLogin()">
+                OK - Go to Login
+            </button>
+        </div>
+    </div>
+
     <!-- Toast -->
     <div id="toast" class="toast">
         <i class="fas fa-check-circle"></i> <span id="toastMessage"></span>
@@ -787,10 +881,10 @@
                 <h1>Fresh From the Fields — Straight to Your Plate</h1>
                 <p>Connect with local farmers to buy fresh produce or sell your farm products directly to consumers.</p>
                 <div class="hero-buttons">
-                    <a href="product.html" class="hero-btn btn-primary">
+                    <a onclick="checkLoginAndRedirect('product.html', event)" class="hero-btn btn-primary">
                         Sell Products <i class="fas fa-seedling"></i>
                     </a>
-                    <a href="store.html" class="hero-btn btn-secondary">
+                    <a onclick="checkLoginAndRedirect('store.html', event)" class="hero-btn btn-secondary">
                         Browse Marketplace <i class="fas fa-shopping-basket"></i>
                     </a>
                 </div>
@@ -808,27 +902,27 @@
             <h2>Marketplace Categories</h2>
         </div>
         <div class="categories-grid">
-            <a href="veg.html" class="category-card">
+            <a onclick="checkLoginAndRedirect('veg.html', event)" class="category-card">
                 <div class="category-icon">🥕</div>
                 <h3>Vegetables</h3>
             </a>
-            <a href="fruit.html" class="category-card">
+            <a onclick="checkLoginAndRedirect('fruit.html', event)" class="category-card">
                 <div class="category-icon">🍎</div>
                 <h3>Fruits</h3>
             </a>
-            <a href="diary.html" class="category-card">
+            <a onclick="checkLoginAndRedirect('diary.html', event)" class="category-card">
                 <div class="category-icon">🥛</div>
                 <h3>Dairy</h3>
             </a>
-            <a href="grain.html" class="category-card">
+            <a onclick="checkLoginAndRedirect('grain.html', event)" class="category-card">
                 <div class="category-icon">🌾</div>
                 <h3>Grains</h3>
             </a>
-            <a href="poultry.html" class="category-card">
+            <a onclick="checkLoginAndRedirect('poultry.html', event)" class="category-card">
                 <div class="category-icon">🍗</div>
                 <h3>Poultry</h3>
             </a>
-            <a href="honey.html" class="category-card">
+            <a onclick="checkLoginAndRedirect('honey.html', event)" class="category-card">
                 <div class="category-icon">🍯</div>
                 <h3>Honey</h3>
             </a>
@@ -839,7 +933,7 @@
     <section class="products">
         <div class="products-header">
             <h2>Featured Products</h2>
-            <a href="store.html" class="view-all-btn">View All</a>
+            <a onclick="checkLoginAndRedirect('store.html', event)" class="view-all-btn">View All</a>
         </div>
         <div class="products-grid">
             <!-- Product 1 -->
@@ -1003,7 +1097,7 @@
                 <h4>Quick Links</h4>
                 <ul>
                     <li><a href="#">Home</a></li>
-                    <li><a href="store.html">Marketplace</a></li>
+                    <li><a onclick="checkLoginAndRedirect('store.html', event)">Marketplace</a></li>
                     <li><a href="#farmers">For Farmers</a></li>
                     <li><a href="#">About Us</a></li>
                     <li><a href="#">Contact</a></li>
@@ -1012,11 +1106,11 @@
             <div class="footer-section">
                 <h4>Categories</h4>
                 <ul>
-                    <li><a href="veg.html">Vegetables</a></li>
-                    <li><a href="fruit.html">Fruits</a></li>
-                    <li><a href="dairy.html">Dairy</a></li>
-                    <li><a href="grain.html">Grains</a></li>
-                    <li><a href="poultry.html">Poultry</a></li>
+                    <li><a onclick="checkLoginAndRedirect('veg.html', event)">Vegetables</a></li>
+                    <li><a onclick="checkLoginAndRedirect('fruit.html', event)">Fruits</a></li>
+                    <li><a onclick="checkLoginAndRedirect('dairy.html', event)">Dairy</a></li>
+                    <li><a onclick="checkLoginAndRedirect('grain.html', event)">Grains</a></li>
+                    <li><a onclick="checkLoginAndRedirect('poultry.html', event)">Poultry</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -1101,8 +1195,46 @@
             }
         }
 
+        // ==================== LOGIN CHECK AND REDIRECT ====================
+        function checkLoginAndRedirect(targetUrl, event) {
+            if (event) {
+                event.preventDefault();
+            }
+            
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (!isLoggedIn) {
+                showLoginModal();
+            } else {
+                window.location.href = targetUrl;
+            }
+        }
+
+        function showLoginModal() {
+            const modal = document.getElementById('loginModal');
+            modal.classList.add('show');
+        }
+
+        function redirectToLogin() {
+            window.location.href = 'login.html';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('loginModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('show');
+            }
+        });
+
         // ==================== EVENT HANDLERS ====================
         function addFeaturedProduct(id, name, price, unit, image) {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (!isLoggedIn) {
+                showLoginModal();
+                return;
+            }
+
             const product = {
                 id: id,
                 name: name,
