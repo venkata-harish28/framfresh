@@ -137,6 +137,22 @@
     .strength-weak { background-color: #ffebee; color: #d32f2f; }
     .strength-medium { background-color: #fff3e0; color: #f57c00; }
     .strength-strong { background-color: #e8f5e9; color: #388e3c; }
+
+    .role-info {
+      font-size: 12px;
+      color: #666;
+      margin-top: -10px;
+      margin-bottom: 15px;
+      padding: 8px;
+      background-color: #f5f5f5;
+      border-radius: 5px;
+      text-align: left;
+    }
+
+    .role-info i {
+      color: #2e7d32;
+      margin-right: 5px;
+    }
   </style>
 </head>
 <body>
@@ -170,6 +186,9 @@
         <option value="buyer">Buyer</option>
         <option value="farmer">Farmer</option>
       </select>
+      <div id="roleInfo" class="role-info" style="display: none;">
+        <i>ℹ️</i> <span id="roleInfoText"></span>
+      </div>
 
       <button type="submit" id="submitBtn">Sign Up</button>
       <a href="login.html" class="link">Already have an account? Login</a>
@@ -183,6 +202,21 @@
     const submitBtn = document.getElementById('submitBtn');
     const passwordInput = document.getElementById('password');
     const strengthDiv = document.getElementById('passwordStrength');
+    const roleSelect = document.getElementById('role');
+    const roleInfoDiv = document.getElementById('roleInfo');
+    const roleInfoText = document.getElementById('roleInfoText');
+
+    // Show role-specific info
+    roleSelect.addEventListener('change', (e) => {
+      const role = e.target.value;
+      if (role === 'farmer') {
+        roleInfoText.textContent = 'As a Farmer, you\'ll access the Market Prices Dashboard to list your products and track sales.';
+        roleInfoDiv.style.display = 'block';
+      } else {
+        roleInfoText.textContent = 'As a Buyer, you can browse products and purchase directly from farmers.';
+        roleInfoDiv.style.display = 'block';
+      }
+    });
 
     // Password strength checker
     passwordInput.addEventListener('input', (e) => {
@@ -245,7 +279,10 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Creating account...';
 
+      // Simulate account creation (since backend might not be available)
+      // In production, this would make a real API call
       try {
+        // Try to connect to backend if available
         const response = await fetch('http://localhost:5000/signup', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -255,14 +292,23 @@
         const data = await response.json();
 
         if (data.success) {
-          showSuccess('Account created successfully! Redirecting...');
-          
-          // Save token and user info
+          // Save user data from backend
+          localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('userEmail', email);
+          localStorage.setItem('userName', name);
+          localStorage.setItem('userRole', role);
           sessionStorage.setItem('token', data.token);
           sessionStorage.setItem('user', JSON.stringify(data.user));
 
+          showSuccess('Account created successfully! Redirecting...');
+          
           setTimeout(() => {
-            window.location.href = 'webpage.html';
+            // Redirect based on role
+            if (role === 'farmer') {
+              window.location.href = 'farmer-market.html';
+            } else {
+              window.location.href = 'webpage.html';
+            }
           }, 1500);
         } else {
           showError(data.message || 'Signup failed');
@@ -270,9 +316,50 @@
           submitBtn.textContent = 'Sign Up';
         }
       } catch (err) {
-        showError('Error: ' + err.message);
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Sign Up';
+        // Backend not available - use localStorage fallback
+        console.log('Backend not available, using localStorage');
+        
+        // Check if email already exists
+        const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+        const emailExists = existingUsers.some(user => user.email === email);
+        
+        if (emailExists) {
+          showError('Email already registered. Please login.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign Up';
+          return;
+        }
+
+        // Save new user
+        const newUser = {
+          name,
+          email,
+          phone,
+          address,
+          password,
+          role,
+          createdAt: new Date().toISOString()
+        };
+        
+        existingUsers.push(newUser);
+        localStorage.setItem('users', JSON.stringify(existingUsers));
+
+        // Set login status
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userName', name);
+        localStorage.setItem('userRole', role);
+
+        showSuccess('Account created successfully! Redirecting...');
+        
+        setTimeout(() => {
+          // Redirect based on role
+          if (role === 'farmer') {
+            window.location.href = 'farmer-market.html';
+          } else {
+            window.location.href = 'webpage.html';
+          }
+        }, 1500);
       }
     });
   </script>

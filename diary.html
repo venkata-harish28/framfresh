@@ -89,9 +89,100 @@
             font-weight: bold;
             margin-left: 8px;
         }
+
+        /* Login Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            color: #e76f51;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2d6a4f;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .modal-btn {
+            padding: 0.9rem 2.5rem;
+            background: #2d6a4f;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn:hover {
+            background: #52b788;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(82, 183, 136, 0.4);
+        }
     </style>
 </head>
 <body class="bg-gray-100">
+    <!-- Login Required Modal -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h3>Login Required</h3>
+            <p>You need to login first to add items to your cart.</p>
+            <button class="modal-btn" onclick="redirectToLogin()">
+                OK - Go to Login
+            </button>
+        </div>
+    </div>
+
     <!-- NAVBAR -->
     <div class="navbar">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
@@ -130,13 +221,51 @@
     </div>
 
     <script>
-        // ==================== PRODUCT DATA ====================
-        const products = [
-            { id: 201, name: 'Curd', price: 50, unit: 'KG', image: 'https://www.chezshuchi.com/images/homemade-dahi51.JPG', badge: 'Dairy', rating: 4.5, reviews: 22 },
-            { id: 202, name: 'Lassi', price: 50, unit: 'Liter', image: 'https://www.yummyfoodrecipes.com/resources/picture/org/Easy-Sweet-Lassi-Recipe.jpg', badge: 'Dairy', rating: 4.3, reviews: 22 },
-            { id: 203, name: 'Ghee', price: 1200, unit: 'L', image: 'https://m.media-amazon.com/images/I/51cAnoCvWkL._UF1000,1000_QL80_.jpg', badge: 'Dairy', rating: 4.4, reviews: 19 },
-            { id: 204, name: 'Paneer', price: 320, unit: 'KG', image: 'https://www.indianhealthyrecipes.com/wp-content/uploads/2024/05/how-to-make-paneer-recipe.jpg', badge: 'Dairy', rating: 4.5, reviews: 27 }
-        ];
+        // ==================== PRODUCT DATA BY CATEGORY ====================
+        const productsByCategory = {
+            'fruit': {
+                title: 'Fresh Fruits',
+                products: [
+                    { id: 101, name: 'Lychee', price: 90, unit: 'KG', image: 'https://www.allrecipes.com/thmb/f97jpLOG3lw2p2i0RIN_97qt1sc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/what-is-lychee-fruit-3x2-1-bb3f004f69804b4192a35481f80d1d48.jpg', badge: 'Fresh', rating: 4.5, reviews: 20 },
+                    { id: 102, name: 'Kiwi', price: 100, unit: 'KG', image: 'https://d3mvlb3hz2g78.cloudfront.net/wp-content/uploads/2012/10/thumb_720_450_Kiwi_shutterstock_84220885-1.jpg', badge: 'Fresh', rating: 4.2, reviews: 15 },
+                    { id: 103, name: 'Sapota', price: 60, unit: 'KG', image: 'https://roadmandi.com/wp-content/uploads/2024/05/sapota-01.jpg', badge: 'Seasonal', rating: 4.1, reviews: 14 },
+                    { id: 104, name: 'Alphonso Mango', price: 200, unit: 'KG', image: 'https://alphonsomango.in/cdn/shop/articles/img-1738571803380_91c02d8c-8a6e-4357-8120-c25ecd8ceb71.jpg?v=1741529236', badge: 'Seasonal', rating: 4.5, reviews: 45 }
+                ]
+            },
+            'dairy': {
+                title: 'Dairy Products',
+                products: [
+                    { id: 201, name: 'Curd', price: 50, unit: 'KG', image: 'https://www.chezshuchi.com/images/homemade-dahi51.JPG', badge: 'Dairy', rating: 4.5, reviews: 22 },
+                    { id: 202, name: 'Lassi', price: 50, unit: 'Liter', image: 'https://www.yummyfoodrecipes.com/resources/picture/org/Easy-Sweet-Lassi-Recipe.jpg', badge: 'Dairy', rating: 4.3, reviews: 22 },
+                    { id: 203, name: 'Ghee', price: 1200, unit: 'L', image: 'https://m.media-amazon.com/images/I/51cAnoCvWkL._UF1000,1000_QL80_.jpg', badge: 'Dairy', rating: 4.4, reviews: 19 },
+                    { id: 204, name: 'Paneer', price: 320, unit: 'KG', image: 'https://www.indianhealthyrecipes.com/wp-content/uploads/2024/05/how-to-make-paneer-recipe.jpg', badge: 'Dairy', rating: 4.5, reviews: 27 }
+                ]
+            },
+            'grain': {
+                title: 'Grains & Cereals',
+                products: [
+                    { id: 301, name: 'Basmati Rice', price: 80, unit: 'KG', image: 'https://img.cdnx.in/389805/basmati-rice-1723575831222.webp?width=600&format=webp', badge: 'Staple', rating: 4.4, reviews: 30 },
+                    { id: 302, name: 'Red Gram (Dal)', price: 40, unit: 'KG', image: 'https://outputs.kalgudi.com/data/p_images/1585665844458.jpeg', badge: 'Essential', rating: 4.2, reviews: 18 },
+                    { id: 303, name: 'Wheat', price: 70, unit: 'KG', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTq5vTEr98Q2mdcY0VwIsKHIdX7a06jeYXwrg&s', badge: 'Healthy', rating: 4.2, reviews: 12 },
+                    { id: 304, name: 'Maize (Corn)', price: 55, unit: 'KG', image: 'https://upload.wikimedia.org/wikipedia/commons/7/78/Ab_food_06.jpg', badge: 'Popular', rating: 4.4, reviews: 25 }
+                ]
+            },
+            'poultry': {
+                title: 'Poultry & Seafood',
+                products: [
+                    { id: 401, name: 'Rohu Fish', price: 350, unit: 'KG', image: 'https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=1080/app/images/products/sliding_image/477403a.jpg?ts=1700378954', badge: 'Fish', rating: 4.2, reviews: 14 },
+                    { id: 402, name: 'Chicken (Curry Cut)', price: 280, unit: 'KG', image: 'https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=360/da/cms-assets/cms/product/bdd6c9e1-1f97-4e70-8cb0-3b1bfc721057.png', badge: 'Meat', rating: 4.2, reviews: 12 },
+                    { id: 403, name: 'Mutton (Curry Cut)', price: 850, unit: 'KG', image: 'https://cdn.grofers.com/da/cms-assets/cms/product/e7e1fa7c-925b-4647-b364-65fb4c17b48a.jpg?ts=1740489253', badge: 'Meat', rating: 4.2, reviews: 8 },
+                    { id: 404, name: 'Prawns (Cleaned)', price: 700, unit: 'KG', image: 'https://cdn.grofers.com/cdn-cgi/image/f=auto,fit=scale-down,q=70,metadata=none,w=1080/app/assets/products/sliding_images/jpeg/5fc16c5b-d843-493c-a680-42f8883f5f91.jpg?ts=1740395068', badge: 'Seafood', rating: 4.3, reviews: 17 }
+                ]
+            },
+            'honey': {
+                title: 'Honey & Specialty',
+                products: [
+                    { id: 501, name: 'Pure Honey', price: 250, unit: '500g', image: 'https://www.news-medical.net/images/news/ImageForNews_753423_16891547829825380.jpg', badge: 'Natural', rating: 4.5, reviews: 34 }
+                ]
+            }
+        };
 
         // ==================== CART MANAGEMENT ====================
         class CartManager {
@@ -193,11 +322,48 @@
 
         const cartManager = new CartManager();
 
+        // ==================== LOGIN CHECK ====================
+        function isLoggedIn() {
+            return localStorage.getItem('isLoggedIn') === 'true';
+        }
+
+        function redirectToLogin() {
+            window.location.href = 'login.html';
+        }
+
+        function showLoginModal() {
+            const modal = document.getElementById('loginModal');
+            modal.classList.add('show');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('loginModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('show');
+            }
+        });
+
+        // ==================== GET CURRENT CATEGORY ====================
+        function getCurrentCategory() {
+            const fileName = window.location.pathname.split('/').pop().replace('.html', '');
+            return fileName;
+        }
+
         // ==================== RENDER PRODUCTS ====================
         function renderProducts() {
+            const category = getCurrentCategory();
+            const categoryData = productsByCategory[category];
+
+            if (!categoryData) {
+                document.getElementById('productsGrid').innerHTML = '<p class="col-span-full text-center">Category not found</p>';
+                return;
+            }
+
+            document.getElementById('pageTitle').textContent = categoryData.title;
+            document.getElementById('categoryTitle').textContent = categoryData.title;
+
             const grid = document.getElementById('productsGrid');
-            
-            grid.innerHTML = products.map(product => `
+            grid.innerHTML = categoryData.products.map(product => `
                 <div class="product-card bg-white rounded-xl overflow-hidden shadow-md">
                     <div class="relative">
                         <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover" />
@@ -212,7 +378,8 @@
                         </div>
                         <div class="flex justify-between items-center">
                             <div class="flex items-center text-yellow-400">
-                                ${generateStarRating(product.rating)}
+                                ${Array(Math.floor(product.rating)).fill('<i class="fas fa-star"></i>').join('')}
+                                ${product.rating % 1 !== 0 ? '<i class="fas fa-star-half-alt"></i>' : ''}
                                 <span class="text-gray-600 text-sm ml-1">(${product.reviews})</span>
                             </div>
                             <button 
@@ -227,25 +394,16 @@
             `).join('');
         }
 
-        function generateStarRating(rating) {
-            const fullStars = Math.floor(rating);
-            const hasHalfStar = rating % 1 !== 0;
-            let stars = '';
-            
-            for (let i = 0; i < fullStars; i++) {
-                stars += '<i class="fas fa-star"></i>';
-            }
-            
-            if (hasHalfStar) {
-                stars += '<i class="fas fa-star-half-alt"></i>';
-            }
-            
-            return stars;
-        }
-
         // ==================== EVENT HANDLERS ====================
         function handleAddToCart(productId) {
-            const product = products.find(p => p.id === productId);
+            // Check if user is logged in FIRST
+            if (!isLoggedIn()) {
+                showLoginModal();
+                return;
+            }
+
+            const category = getCurrentCategory();
+            const product = productsByCategory[category].products.find(p => p.id === productId);
             
             if (product) {
                 cartManager.addToCart(product);

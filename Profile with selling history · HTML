@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - FarmFresh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #2d6a4f 0%, #52b788 100%);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(45, 106, 79, 0.3);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Profile Container */
+        .profile-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2d6a4f, #52b788);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            flex-shrink: 0;
+        }
+
+        .profile-info h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1b4332;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-info p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            background: transparent;
+            color: #666;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: #2d6a4f;
+            color: white;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Selling History */
+        .history-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .history-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 1.5rem;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .history-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .product-thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .product-details h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1b4332;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-meta {
+            display: flex;
+            gap: 1.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status-sold {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: #1b4332;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-btn {
+            background: #2d6a4f;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            background: #52b788;
+            transform: translateY(-2px);
+        }
+
+        /* Stats */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #2d6a4f;
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .history-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo-text">FarmFresh Profile</div>
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+        </div>
+    </header>
+
+    <!-- Profile Container -->
+    <div class="profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="profile-info">
+                <h1 id="userName">Farmer Name</h1>
+                <p id="userEmail">farmer@example.com</p>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Active Listings</div>
+                <div class="stat-value" id="activeCount">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Sales</div>
+                <div class="stat-value" id="salesCount">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Revenue</div>
+                <div class="stat-value">₹<span id="revenueCount">0</span></div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('selling')">
+                <i class="fas fa-store"></i> My Listings
+            </button>
+            <button class="tab" onclick="switchTab('orders')">
+                <i class="fas fa-shopping-cart"></i> Orders
+            </button>
+            <button class="tab" onclick="switchTab('settings')">
+                <i class="fas fa-cog"></i> Settings
+            </button>
+        </div>
+
+        <!-- Selling History Tab -->
+        <div id="sellingTab" class="tab-content active">
+            <div id="sellingHistoryContainer">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Orders Tab -->
+        <div id="ordersTab" class="tab-content">
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <h3>No Orders Yet</h3>
+                <p>Your purchase orders will appear here</p>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settingsTab" class="tab-content">
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <h3>Account Settings</h3>
+                <p>Manage your account preferences</p>
+                <button class="cta-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== INITIALIZE ====================
+        function loadUserInfo() {
+            const userEmail = localStorage.getItem('userEmail');
+            if (!userEmail) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            document.getElementById('userEmail').textContent = userEmail;
+            document.getElementById('userName').textContent = userEmail.split('@')[0];
+        }
+
+        function loadSellingHistory() {
+            const userEmail = localStorage.getItem('userEmail');
+            const sellingHistory = JSON.parse(localStorage.getItem('sellingHistory')) || {};
+            const userHistory = sellingHistory[userEmail] || [];
+
+            const container = document.getElementById('sellingHistoryContainer');
+
+            if (userHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <h3>No Products Listed Yet</h3>
+                        <p>Start selling your farm products to see them here</p>
+                        <button class="cta-btn" onclick="window.location.href='farmer-market.html'">
+                            <i class="fas fa-plus-circle"></i> Browse Market Prices
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Calculate stats
+            const activeListings = userHistory.filter(h => h.status === 'active').length;
+            const totalSales = userHistory.filter(h => h.status === 'sold').length;
+            const totalRevenue = userHistory.reduce((sum, h) => {
+                return h.status === 'sold' ? sum + (h.listedPrice * 10) : sum;
+            }, 0);
+
+            document.getElementById('activeCount').textContent = activeListings;
+            document.getElementById('salesCount').textContent = totalSales;
+            document.getElementById('revenueCount').textContent = totalRevenue.toLocaleString();
+
+            // Render history cards
+            container.innerHTML = `
+                <div class="history-grid">
+                    ${userHistory.map(item => `
+                        <div class="history-card">
+                            <img src="${item.image}" alt="${item.productName}" class="product-thumb">
+                            <div class="product-details">
+                                <h3>${item.productName}</h3>
+                                <div class="product-meta">
+                                    <span><i class="fas fa-tag"></i> ₹${item.listedPrice}/${item.unit}</span>
+                                    <span><i class="fas fa-chart-line"></i> Profit: +${item.profit}%</span>
+                                    <span><i class="fas fa-calendar"></i> ${formatDate(item.listedDate)}</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="status-badge ${item.status === 'active' ? 'status-active' : 'status-sold'}">
+                                    ${item.status === 'active' ? 'Active' : 'Sold'}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 0) return 'Today';
+            if (diffDays === 1) return 'Yesterday';
+            if (diffDays < 7) return `${diffDays} days ago`;
+            return date.toLocaleDateString();
+        }
+
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.closest('.tab').classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (tabName === 'selling') {
+                document.getElementById('sellingTab').classList.add('active');
+            } else if (tabName === 'orders') {
+                document.getElementById('ordersTab').classList.add('active');
+            } else if (tabName === 'settings') {
+                document.getElementById('settingsTab').classList.add('active');
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userEmail');
+                window.location.href = 'login.html';
+            }
+        }
+
+        function goBack() {
+            window.location.href = 'webpage.html';
+        }
+
+        // ==================== PAGE LOAD ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserInfo();
+            loadSellingHistory();
+        });
+    </script>
+</body>
+</html>

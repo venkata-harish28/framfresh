@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Prices Dashboard - FarmFresh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #2d6a4f;
+            --secondary-green: #52b788;
+            --accent-orange: #e76f51;
+            --cream: #fefae0;
+            --dark-bg: #1a1a1a;
+            --card-bg: #ffffff;
+            --text-dark: #1b4332;
+            --text-light: #666;
+            --success-green: #40916c;
+            --warning-yellow: #f4a261;
+            --danger-red: #e63946;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(45, 106, 79, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-text {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2rem;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .sell-btn {
+            padding: 0.8rem 2rem;
+            background: var(--accent-orange);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(231, 111, 81, 0.3);
+        }
+
+        .sell-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(231, 111, 81, 0.4);
+        }
+
+        .profile-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-green);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Dashboard Container */
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            margin-bottom: 2rem;
+            animation: slideInDown 0.5s ease;
+        }
+
+        .dashboard-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--secondary-green);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon.trending { background: #e0f2fe; color: #0284c7; }
+        .stat-icon.products { background: #dcfce7; color: #16a34a; }
+        .stat-icon.sales { background: #fef3c7; color: #ca8a04; }
+        .stat-icon.profit { background: #dbeafe; color: #2563eb; }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-top: 0.5rem;
+        }
+
+        /* Market Prices Grid */
+        .market-section {
+            animation: fadeInUp 0.7s ease;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: var(--card-bg);
+            padding: 0.3rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-tab {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            background: transparent;
+            color: var(--text-light);
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-tab.active {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Market Price Card */
+        .price-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .price-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(82, 183, 136, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .price-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .price-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .product-info h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.3rem;
+        }
+
+        .product-category {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .trend-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .trend-badge.up {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .trend-badge.down {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .trend-badge.stable {
+            background: #fef3c7;
+            color: #ca8a04;
+        }
+
+        .price-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .price-detail {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price-label {
+            color: var(--text-light);
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+
+        .price-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-green);
+        }
+
+        .price-actions {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-sell {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .btn-sell:hover {
+            background: #2d6a4f;
+            transform: scale(1.02);
+        }
+
+        .btn-watch {
+            background: #f1f5f9;
+            color: var(--text-dark);
+        }
+
+        .btn-watch:hover {
+            background: #e2e8f0;
+        }
+
+        /* Confirmation Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 24px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: scaleIn 0.3s ease;
+            position: relative;
+        }
+
+        .modal-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #dcfce7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .modal-icon i {
+            font-size: 2.5rem;
+            color: #16a34a;
+        }
+
+        .modal-content h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content p {
+            color: var(--text-light);
+            text-align: center;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .product-summary {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+            padding-top: 0.8rem;
+            border-top: 2px solid #e2e8f0;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-confirm {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: var(--primary-green);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
+        }
+
+        .btn-cancel {
+            background: #f1f5f9;
+            color: var(--text-dark);
+        }
+
+        .btn-cancel:hover {
+            background: #e2e8f0;
+        }
+
+        /* Success Modal */
+        .success-modal .modal-icon {
+            background: #dcfce7;
+        }
+
+        .success-modal .modal-icon i {
+            color: #16a34a;
+        }
+
+        /* Animations */
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                padding: 1rem;
+            }
+
+            .dashboard-title {
+                font-size: 1.8rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .market-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-tabs {
+                flex-wrap: wrap;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 300px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid var(--primary-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="logo-text">FARMFRESH MARKET</div>
+            </div>
+            <div class="header-actions">
+                <button class="sell-btn" onclick="redirectToSellPage()">
+                    <i class="fas fa-plus-circle"></i>
+                    List Product
+                </button>
+                <a href="profile.html" class="profile-btn">
+                    <i class="fas fa-user"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard -->
+    <main class="dashboard">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Market Prices Today</h1>
+            <p class="dashboard-subtitle">Real-time agricultural commodity prices • Updated every hour</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon trending">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-label">Trending High</div>
+                <div class="stat-value">Tomatoes</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon products">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div class="stat-label">Best Price</div>
+                <div class="stat-value">₹320/KG</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon sales">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="stat-label">High Demand</div>
+                <div class="stat-value">Organic</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon profit">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="stat-label">Avg. Profit</div>
+                <div class="stat-value">+25%</div>
+            </div>
+        </div>
+
+        <!-- Market Prices Section -->
+        <section class="market-section">
+            <div class="section-header">
+                <h2 class="section-title">Current Market Prices</h2>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-category="all">All</button>
+                    <button class="filter-tab" data-category="vegetables">Vegetables</button>
+                    <button class="filter-tab" data-category="fruits">Fruits</button>
+                    <button class="filter-tab" data-category="grains">Grains</button>
+                    <button class="filter-tab" data-category="dairy">Dairy</button>
+                </div>
+            </div>
+
+            <div class="market-grid" id="marketGrid">
+                <!-- Market cards will be loaded here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-box"></i>
+            </div>
+            <h2>Confirm Product Listing</h2>
+            <p>You're about to list your product at the current market price. Review the details below:</p>
+            
+            <div class="product-summary">
+                <div class="summary-row">
+                    <span>Product:</span>
+                    <strong id="confirmProductName">-</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Market Price:</span>
+                    <strong id="confirmMarketPrice">-</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Your Price:</span>
+                    <strong id="confirmYourPrice">-</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Expected Profit:</span>
+                    <strong id="confirmProfit" style="color: var(--success-green);">-</strong>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn btn-cancel" onclick="closeConfirmModal()">Cancel</button>
+                <button class="modal-btn btn-confirm" onclick="confirmSale()">Confirm & List</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-content success-modal">
+            <div class="modal-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Product Listed Successfully!</h2>
+            <p>Your product has been added to your selling history and is now live on the marketplace.</p>
+            
+            <div class="product-summary">
+                <div class="summary-row">
+                    <span>Product:</span>
+                    <strong id="successProductName">-</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Listed Price:</span>
+                    <strong id="successPrice">-</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Status:</span>
+                    <strong style="color: var(--success-green);">Active</strong>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn btn-confirm" onclick="closeSuccessModal()">View My Listings</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== MARKET DATA ====================
+        const marketData = [
+            {
+                id: 1,
+                name: 'Tomatoes',
+                category: 'vegetables',
+                marketPrice: 45,
+                avgPrice: 40,
+                unit: 'KG',
+                trend: 'up',
+                trendPercent: 12.5,
+                demand: 'high',
+                image: 'https://cdn.grofers.com/app/images/products/sliding_image/421699a.jpg'
+            },
+            {
+                id: 2,
+                name: 'Potatoes',
+                category: 'vegetables',
+                marketPrice: 28,
+                avgPrice: 25,
+                unit: 'KG',
+                trend: 'up',
+                trendPercent: 12,
+                demand: 'medium',
+                image: 'https://www.oyedesi.co/wp-content/uploads/2021/09/Potato-3.png'
+            },
+            {
+                id: 3,
+                name: 'Carrots',
+                category: 'vegetables',
+                marketPrice: 75,
+                avgPrice: 70,
+                unit: 'KG',
+                trend: 'stable',
+                trendPercent: 7.1,
+                demand: 'medium',
+                image: 'https://nurserylive.com/cdn/shop/products/nurserylive-seeds-carrot-mohan-chantenay-nantes-vegetable-seeds-16968688959628.jpg?v=1634203415'
+            },
+            {
+                id: 4,
+                name: 'Onions',
+                category: 'vegetables',
+                marketPrice: 55,
+                avgPrice: 50,
+                unit: 'KG',
+                trend: 'up',
+                trendPercent: 10,
+                demand: 'high',
+                image: 'https://www.bbassets.com/media/uploads/p/l/40023472_6-fresho-onion-organically-grown.jpg'
+            },
+            {
+                id: 5,
+                name: 'Lychee',
+                category: 'fruits',
+                marketPrice: 95,
+                avgPrice: 90,
+                unit: 'KG',
+                trend: 'up',
+                trendPercent: 5.6,
+                demand: 'high',
+                image: 'https://www.allrecipes.com/thmb/f97jpLOG3lw2p2i0RIN_97qt1sc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/what-is-lychee-fruit-3x2-1-bb3f004f69804b4192a35481f80d1d48.jpg'
+            },
+            {
+                id: 6,
+                name: 'Mango',
+                category: 'fruits',
+                marketPrice: 210,
+                avgPrice: 200,
+                unit: 'KG',
+                trend: 'up',
+                trendPercent: 5,
+                demand: 'high',
+                image: 'https://alphonsomango.in/cdn/shop/articles/img-1738571803380_91c02d8c-8a6e-4357-8120-c25ecd8ceb71.jpg?v=1741529236'
+            },
+            {
+                id: 7,
+                name: 'Basmati Rice',
+                category: 'grains',
+                marketPrice: 85,
+                avgPrice: 80,
+                unit: 'KG',
+                trend: 'stable',
+                trendPercent: 6.25,
+                demand: 'medium',
+                image: 'https://img.cdnx.in/389805/basmati-rice-1723575831222.webp?width=600&format=webp'
+            },
+            {
+                id: 8,
+                name: 'Wheat',
+                category: 'grains',
+                marketPrice: 75,
+                avgPrice: 70,
+                unit: 'KG',
+                trend: 'up',
+                trendPercent: 7.1,
+                demand: 'medium',
+                image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTq5vTEr98Q2mdcY0VwIsKHIdX7a06jeYXwrg&s'
+            },
+            {
+                id: 9,
+                name: 'Paneer',
+                category: 'dairy',
+                marketPrice: 340,
+                avgPrice: 320,
+                unit: 'KG',
+                trend: 'up',
+                trendPercent: 6.25,
+                demand: 'high',
+                image: 'https://www.indianhealthyrecipes.com/wp-content/uploads/2024/05/how-to-make-paneer-recipe.jpg'
+            },
+            {
+                id: 10,
+                name: 'Ghee',
+                category: 'dairy',
+                marketPrice: 1250,
+                avgPrice: 1200,
+                unit: 'L',
+                trend: 'stable',
+                trendPercent: 4.2,
+                demand: 'medium',
+                image: 'https://m.media-amazon.com/images/I/51cAnoCvWkL._UF1000,1000_QL80_.jpg'
+            },
+            {
+                id: 11,
+                name: 'Okra',
+                category: 'vegetables',
+                marketPrice: 38,
+                avgPrice: 35,
+                unit: 'KG',
+                trend: 'up',
+                trendPercent: 8.6,
+                demand: 'medium',
+                image: 'https://www.bbassets.com/media/uploads/p/l/10000142-2_1-fresho-ladies-finger.jpg'
+            },
+            {
+                id: 12,
+                name: 'Brinjal',
+                category: 'vegetables',
+                marketPrice: 68,
+                avgPrice: 65,
+                unit: 'KG',
+                trend: 'stable',
+                trendPercent: 4.6,
+                demand: 'low',
+                image: 'https://organicmandya.com/cdn/shop/files/Brinjal.jpg?v=1721370805'
+            }
+        ];
+
+        let currentFilter = 'all';
+        let selectedProduct = null;
+
+        // ==================== RENDER FUNCTIONS ====================
+        function renderMarketCards(filter = 'all') {
+            const grid = document.getElementById('marketGrid');
+            const filteredData = filter === 'all' 
+                ? marketData 
+                : marketData.filter(item => item.category === filter);
+
+            grid.innerHTML = filteredData.map(product => `
+                <div class="price-card">
+                    <div class="price-card-header">
+                        <div class="product-info">
+                            <h3>${product.name}</h3>
+                            <div class="product-category">${product.category}</div>
+                        </div>
+                        <div class="trend-badge ${product.trend}">
+                            <i class="fas fa-arrow-${product.trend === 'up' ? 'up' : product.trend === 'down' ? 'down' : 'right'}"></i>
+                            ${product.trendPercent}%
+                        </div>
+                    </div>
+
+                    <div class="price-info">
+                        <div class="price-detail">
+                            <div class="price-label">Market Price</div>
+                            <div class="price-value">₹${product.marketPrice}</div>
+                        </div>
+                        <div class="price-detail">
+                            <div class="price-label">Avg. Price</div>
+                            <div class="price-value" style="color: var(--text-light); font-size: 1.2rem;">₹${product.avgPrice}</div>
+                        </div>
+                    </div>
+
+                    <div class="price-actions">
+                        <button class="action-btn btn-sell" onclick="initiateSale(${product.id})">
+                            <i class="fas fa-hand-holding-usd"></i>
+                            Sell Now
+                        </button>
+                        <button class="action-btn btn-watch">
+                            <i class="fas fa-eye"></i>
+                            Watch
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== FILTER TABS ====================
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                const category = this.dataset.category;
+                currentFilter = category;
+                renderMarketCards(category);
+            });
+        });
+
+        // ==================== SALE FLOW ====================
+        function initiateSale(productId) {
+            selectedProduct = marketData.find(p => p.id === productId);
+            
+            if (!selectedProduct) return;
+
+            // Calculate profit (assuming 10% markup)
+            const yourPrice = selectedProduct.marketPrice;
+            const profit = ((selectedProduct.marketPrice - selectedProduct.avgPrice) / selectedProduct.avgPrice * 100).toFixed(1);
+
+            // Update confirmation modal
+            document.getElementById('confirmProductName').textContent = selectedProduct.name;
+            document.getElementById('confirmMarketPrice').textContent = `₹${selectedProduct.marketPrice}/${selectedProduct.unit}`;
+            document.getElementById('confirmYourPrice').textContent = `₹${yourPrice}/${selectedProduct.unit}`;
+            document.getElementById('confirmProfit').textContent = `+${profit}%`;
+
+            // Show modal
+            document.getElementById('confirmModal').classList.add('show');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('show');
+            selectedProduct = null;
+        }
+
+        function confirmSale() {
+            if (!selectedProduct) return;
+
+            // Save to localStorage (selling history)
+            const userEmail = localStorage.getItem('userEmail');
+            if (!userEmail) {
+                alert('Please login to list products');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Get existing history
+            let sellingHistory = JSON.parse(localStorage.getItem('sellingHistory')) || {};
+            if (!sellingHistory[userEmail]) {
+                sellingHistory[userEmail] = [];
+            }
+
+            // Add new sale
+            const saleRecord = {
+                id: Date.now(),
+                productId: selectedProduct.id,
+                productName: selectedProduct.name,
+                category: selectedProduct.category,
+                listedPrice: selectedProduct.marketPrice,
+                unit: selectedProduct.unit,
+                marketPrice: selectedProduct.marketPrice,
+                avgPrice: selectedProduct.avgPrice,
+                profit: ((selectedProduct.marketPrice - selectedProduct.avgPrice) / selectedProduct.avgPrice * 100).toFixed(1),
+                status: 'active',
+                listedDate: new Date().toISOString(),
+                image: selectedProduct.image
+            };
+
+            sellingHistory[userEmail].push(saleRecord);
+            localStorage.setItem('sellingHistory', JSON.stringify(sellingHistory));
+
+            // Close confirm modal
+            closeConfirmModal();
+
+            // Show success modal
+            document.getElementById('successProductName').textContent = selectedProduct.name;
+            document.getElementById('successPrice').textContent = `₹${selectedProduct.marketPrice}/${selectedProduct.unit}`;
+            document.getElementById('successModal').classList.add('show');
+
+            // Reset selected product
+            selectedProduct = null;
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.remove('show');
+            // Redirect to profile to see listings
+            window.location.href = 'profile.html';
+        }
+
+        function redirectToSellPage() {
+            window.location.href = 'product.html';
+        }
+
+        // Close modals when clicking outside
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('show');
+                }
+            });
+        });
+
+        // ==================== CHECK LOGIN ====================
+        function checkLogin() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            if (!isLoggedIn) {
+                alert('Please login to access the market dashboard');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // ==================== INITIALIZE ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            checkLogin();
+            renderMarketCards();
+        });
+    </script>
+</body>
+</html>

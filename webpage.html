@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FarmFresh - Marketplace for Farmers</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap"
+        rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -183,7 +186,7 @@
         /* Hero Section */
         .hero {
             background: linear-gradient(135deg, rgba(45, 106, 79, 0.95) 0%, rgba(82, 183, 136, 0.95) 100%),
-                        url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920') center/cover;
+                url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1920') center/cover;
             padding: 6rem 2rem;
             color: white;
             position: relative;
@@ -686,6 +689,7 @@
                 transform: translateX(400px);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
@@ -735,6 +739,7 @@
                 transform: scale(0.9);
                 opacity: 0;
             }
+
             to {
                 transform: scale(1);
                 opacity: 1;
@@ -818,6 +823,7 @@
             <ul class="nav-links">
                 <li><a href="#">Home</a></li>
                 <li><a onclick="checkLoginAndRedirect('store.html', event)">Marketplace</a></li>
+                <li><a onclick="checkLoginAndRedirect('farmer-market.html', event)">Market Prices</a></li>
                 <li><a href="#farmers">Farmers</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="#contact">Contact</a></li>
@@ -884,14 +890,17 @@
                     <a onclick="checkLoginAndRedirect('product.html', event)" class="hero-btn btn-primary">
                         Sell Products <i class="fas fa-seedling"></i>
                     </a>
+                    <a onclick="checkLoginAndRedirect('farmer-market.html', event)" class="hero-btn btn-secondary">
+                        Market Prices <i class="fas fa-chart-line"></i>
+                    </a>
                     <a onclick="checkLoginAndRedirect('store.html', event)" class="hero-btn btn-secondary">
                         Browse Marketplace <i class="fas fa-shopping-basket"></i>
                     </a>
                 </div>
             </div>
             <div class="hero-image">
-                <img src="https://media.istockphoto.com/id/2163456407/photo/fresh-vegetables-and-fruits-for-sale-in-asian-farmer-market-stall.jpg?s=612x612&w=0&k=20&c=LNl7GM00YQPHNzCZlKTG9-M6v8zEG9Fg0tSWM9mIxGY=" 
-                     alt="Fresh vegetables and fruits">
+                <img src="https://media.istockphoto.com/id/2163456407/photo/fresh-vegetables-and-fruits-for-sale-in-asian-farmer-market-stall.jpg?s=612x612&w=0&k=20&c=LNl7GM00YQPHNzCZlKTG9-M6v8zEG9Fg0tSWM9mIxGY="
+                    alt="Fresh vegetables and fruits">
             </div>
         </div>
     </section>
@@ -929,6 +938,8 @@
         </div>
     </section>
 
+    
+
     <!-- Featured Products -->
     <section class="products">
         <div class="products-header">
@@ -939,7 +950,8 @@
             <!-- Product 1 -->
             <div class="product-card">
                 <div class="product-image">
-                    <img src="https://cdn.grofers.com/app/images/products/sliding_image/421699a.jpg" alt="Fresh Tomatoes">
+                    <img src="https://cdn.grofers.com/app/images/products/sliding_image/421699a.jpg"
+                        alt="Fresh Tomatoes">
                     <span class="product-badge">Organic</span>
                 </div>
                 <div class="product-info">
@@ -952,7 +964,8 @@
                         <div class="product-rating">
                             ⭐⭐⭐⭐⭐ (24)
                         </div>
-                        <button class="add-to-cart" onclick="addFeaturedProduct(1, 'Fresh Tomatoes', 40, 'KG', 'https://cdn.grofers.com/app/images/products/sliding_image/421699a.jpg')">
+                        <button class="add-to-cart"
+                            onclick="addFeaturedProduct(1, 'Fresh Tomatoes', 40, 'KG', 'https://cdn.grofers.com/app/images/products/sliding_image/421699a.jpg')">
                             Add <i class="fas fa-plus"></i>
                         </button>
                     </div>
@@ -962,7 +975,8 @@
             <!-- Product 2 -->
             <div class="product-card">
                 <div class="product-image">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6HHRdKjPSE3ZDgnSSnivwRbdw7Tk48txofg&s" alt="Raw Honey">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6HHRdKjPSE3ZDgnSSnivwRbdw7Tk48txofg&s"
+                        alt="Raw Honey">
                     <span class="product-badge">Local</span>
                 </div>
                 <div class="product-info">
@@ -975,7 +989,8 @@
                         <div class="product-rating">
                             ⭐⭐⭐⭐ (18)
                         </div>
-                        <button class="add-to-cart" onclick="addFeaturedProduct(501, 'Raw Honey', 500, 'KG', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6HHRdKjPSE3ZDgnSSnivwRbdw7Tk48txofg&s')">
+                        <button class="add-to-cart"
+                            onclick="addFeaturedProduct(501, 'Raw Honey', 500, 'KG', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6HHRdKjPSE3ZDgnSSnivwRbdw7Tk48txofg&s')">
                             Add <i class="fas fa-plus"></i>
                         </button>
                     </div>
@@ -998,7 +1013,8 @@
                         <div class="product-rating">
                             ⭐⭐⭐⭐⭐ (32)
                         </div>
-                        <button class="add-to-cart" onclick="addFeaturedProduct(600, 'Farm Eggs', 70, 'DOZEN', 'https://www.fleshkart.com/uploads/product/1740828471-desi-eggs.jpg')">
+                        <button class="add-to-cart"
+                            onclick="addFeaturedProduct(600, 'Farm Eggs', 70, 'DOZEN', 'https://www.fleshkart.com/uploads/product/1740828471-desi-eggs.jpg')">
                             Add <i class="fas fa-plus"></i>
                         </button>
                     </div>
@@ -1008,7 +1024,8 @@
             <!-- Product 4 -->
             <div class="product-card">
                 <div class="product-image">
-                    <img src="https://nurserylive.com/cdn/shop/products/nurserylive-seeds-carrot-mohan-chantenay-nantes-vegetable-seeds-16968688959628.jpg?v=1634203415" alt="Organic Carrot">
+                    <img src="https://nurserylive.com/cdn/shop/products/nurserylive-seeds-carrot-mohan-chantenay-nantes-vegetable-seeds-16968688959628.jpg?v=1634203415"
+                        alt="Organic Carrot">
                     <span class="product-badge">Organic</span>
                 </div>
                 <div class="product-info">
@@ -1021,7 +1038,8 @@
                         <div class="product-rating">
                             ⭐⭐⭐⭐⭐ (21)
                         </div>
-                        <button class="add-to-cart" onclick="addFeaturedProduct(3, 'Organic Carrot', 70, 'KG', 'https://nurserylive.com/cdn/shop/products/nurserylive-seeds-carrot-mohan-chantenay-nantes-vegetable-seeds-16968688959628.jpg?v=1634203415')">
+                        <button class="add-to-cart"
+                            onclick="addFeaturedProduct(3, 'Organic Carrot', 70, 'KG', 'https://nurserylive.com/cdn/shop/products/nurserylive-seeds-carrot-mohan-chantenay-nantes-vegetable-seeds-16968688959628.jpg?v=1634203415')">
                             Add <i class="fas fa-plus"></i>
                         </button>
                     </div>
@@ -1037,8 +1055,8 @@
         </div>
         <div class="farmers-grid">
             <div class="farmer-card">
-                <img src="https://www.shutterstock.com/image-photo/indian-farmer-standing-plant-his-260nw-2293422615.jpg" 
-                     alt="Ravi" class="farmer-image">
+                <img src="https://www.shutterstock.com/image-photo/indian-farmer-standing-plant-his-260nw-2293422615.jpg"
+                    alt="Ravi" class="farmer-image">
                 <h3>Ravi</h3>
                 <p>Specializes in organic vegetables and heritage tomatoes</p>
                 <div class="social-links">
@@ -1049,8 +1067,8 @@
             </div>
 
             <div class="farmer-card">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQR9Yl2R-Xv9rgHJFTbsDzYsJrFeUU0PObURw&s" 
-                     alt="Lakshmi" class="farmer-image">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQR9Yl2R-Xv9rgHJFTbsDzYsJrFeUU0PObURw&s"
+                    alt="Lakshmi" class="farmer-image">
                 <h3>Lakshmi</h3>
                 <p>Local honey producer with 30 years experience</p>
                 <div class="social-links">
@@ -1061,8 +1079,8 @@
             </div>
 
             <div class="farmer-card">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB8PwDWi6J8dGDIyk4V4ySzgx1PGv-LOr_2Q&s" 
-                     alt="Koteswara Rao" class="farmer-image">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB8PwDWi6J8dGDIyk4V4ySzgx1PGv-LOr_2Q&s"
+                    alt="Koteswara Rao" class="farmer-image">
                 <h3>Koteswara Rao</h3>
                 <p>Three generations growing orchard fruits</p>
                 <div class="social-links">
@@ -1123,8 +1141,8 @@
         <div class="footer-bottom">
             <p>© 2024 FarmFresh. All rights reserved.</p>
             <div>
-                <a href="#">Privacy Policy</a> • 
-                <a href="#">Terms of Service</a> • 
+                <a href="#">Privacy Policy</a> •
+                <a href="#">Terms of Service</a> •
                 <a href="#">FAQ</a>
             </div>
         </div>
@@ -1153,20 +1171,20 @@
 
             addToCart(product) {
                 const existingItem = this.cart.find(item => item.id === product.id);
-                
+
                 if (existingItem) {
                     existingItem.quantity += 1;
                 } else {
                     this.cart.push({ ...product, quantity: 1 });
                 }
-                
+
                 this.saveCart();
             }
 
             updateCartCount() {
                 const count = this.cart.reduce((total, item) => total + item.quantity, 0);
                 const badge = document.getElementById('cartCount');
-                
+
                 if (count > 0) {
                     badge.textContent = count;
                     badge.style.display = 'flex';
@@ -1200,9 +1218,9 @@
             if (event) {
                 event.preventDefault();
             }
-            
+
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            
+
             if (!isLoggedIn) {
                 showLoginModal();
             } else {
@@ -1220,7 +1238,7 @@
         }
 
         // Close modal when clicking outside
-        document.getElementById('loginModal')?.addEventListener('click', function(e) {
+        document.getElementById('loginModal')?.addEventListener('click', function (e) {
             if (e.target === this) {
                 this.classList.remove('show');
             }
@@ -1229,7 +1247,7 @@
         // ==================== EVENT HANDLERS ====================
         function addFeaturedProduct(id, name, price, unit, image) {
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            
+
             if (!isLoggedIn) {
                 showLoginModal();
                 return;
@@ -1242,7 +1260,7 @@
                 unit: unit,
                 image: image
             };
-            
+
             cartManager.addToCart(product);
             showToast(`✅ ${name} added to cart!`);
         }
@@ -1250,10 +1268,10 @@
         function showToast(message) {
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toastMessage');
-            
+
             toastMessage.textContent = message;
             toast.classList.add('show');
-            
+
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
@@ -1282,4 +1300,5 @@
         });
     </script>
 </body>
+
 </html>

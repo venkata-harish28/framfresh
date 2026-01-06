@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>FarmFresh - Products</title>
+    <title>FarmFresh - Honey & Specialty</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
@@ -89,9 +89,100 @@
             font-weight: bold;
             margin-left: 8px;
         }
+
+        /* Login Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            color: #e76f51;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2d6a4f;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .modal-btn {
+            padding: 0.9rem 2.5rem;
+            background: #2d6a4f;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn:hover {
+            background: #52b788;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(82, 183, 136, 0.4);
+        }
     </style>
 </head>
 <body class="bg-gray-100">
+    <!-- Login Required Modal -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h3>Login Required</h3>
+            <p>You need to login first to add items to your cart.</p>
+            <button class="modal-btn" onclick="redirectToLogin()">
+                OK - Go to Login
+            </button>
+        </div>
+    </div>
+
     <!-- NAVBAR -->
     <div class="navbar">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
@@ -100,7 +191,7 @@
                     <i class="fas fa-arrow-left"></i>
                     Back
                 </button>
-                <h1 class="text-2xl font-bold text-green-600" id="pageTitle">FarmFresh</h1>
+                <h1 class="text-2xl font-bold text-green-600" id="pageTitle">Honey & Specialty</h1>
             </div>
             <div class="flex items-center gap-6">
                 <a href="cart.html" class="flex items-center gap-2 text-green-600 font-bold hover:text-green-700">
@@ -121,7 +212,7 @@
 
     <!-- HEADER -->
     <div class="p-6">
-        <h2 class="text-3xl font-bold mb-8 text-center text-gray-800" id="categoryTitle">Products</h2>
+        <h2 class="text-3xl font-bold mb-8 text-center text-gray-800" id="categoryTitle">Honey & Specialty</h2>
 
         <!-- PRODUCTS GRID -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="productsGrid">
@@ -231,6 +322,27 @@
 
         const cartManager = new CartManager();
 
+        // ==================== LOGIN CHECK ====================
+        function isLoggedIn() {
+            return localStorage.getItem('isLoggedIn') === 'true';
+        }
+
+        function redirectToLogin() {
+            window.location.href = 'login.html';
+        }
+
+        function showLoginModal() {
+            const modal = document.getElementById('loginModal');
+            modal.classList.add('show');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('loginModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('show');
+            }
+        });
+
         // ==================== GET CURRENT CATEGORY ====================
         function getCurrentCategory() {
             const fileName = window.location.pathname.split('/').pop().replace('.html', '');
@@ -284,6 +396,12 @@
 
         // ==================== EVENT HANDLERS ====================
         function handleAddToCart(productId) {
+            // Check if user is logged in FIRST
+            if (!isLoggedIn()) {
+                showLoginModal();
+                return;
+            }
+
             const category = getCurrentCategory();
             const product = productsByCategory[category].products.find(p => p.id === productId);
             
@@ -316,5 +434,4 @@
         });
     </script>
 </body>
-
 </html>
